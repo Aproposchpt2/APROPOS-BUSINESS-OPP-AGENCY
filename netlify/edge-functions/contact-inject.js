@@ -1,3 +1,83 @@
+const seoHead = `
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="application-name" content="Apropos Business Opportunity Agency">
+<meta property="og:site_name" content="Apropos Business Opportunity Agency">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Apropos Business Opportunity Agency | Procurement Intelligence">
+<meta name="twitter:description" content="Creating business success through procurement intelligence, government contracting opportunities, and business opportunity development.">
+<meta name="twitter:image" content="https://aproposopportunity.org/headquarters.webp">
+<link rel="sitemap" type="application/xml" href="https://aproposopportunity.org/sitemap.xml">
+<link rel="alternate" type="text/plain" href="https://aproposopportunity.org/llms.txt" title="AI-readable site summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://aproposopportunity.org/#organization",
+      "name": "Apropos Business Opportunity Agency",
+      "alternateName": "ABOA",
+      "url": "https://aproposopportunity.org/",
+      "description": "A nonprofit opportunity development organization creating business success through procurement intelligence and business opportunity development.",
+      "slogan": "Creating Business Success Through Procurement Intelligence",
+      "email": "jmitchell@aproposgroupllc.com",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "general inquiries",
+        "email": "jmitchell@aproposgroupllc.com",
+        "url": "https://aproposopportunity.org/#contact"
+      },
+      "knowsAbout": [
+        "Procurement intelligence",
+        "Government contracting opportunities",
+        "Business opportunity development",
+        "Supplier opportunities",
+        "Subcontracting opportunities",
+        "Economic development",
+        "Business growth"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://aproposopportunity.org/#website",
+      "url": "https://aproposopportunity.org/",
+      "name": "Apropos Business Opportunity Agency",
+      "alternateName": "ABOA",
+      "publisher": {
+        "@id": "https://aproposopportunity.org/#organization"
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://aproposopportunity.org/#webpage",
+      "url": "https://aproposopportunity.org/",
+      "name": "Apropos Business Opportunity Agency | Procurement Intelligence",
+      "description": "Apropos Business Opportunity Agency helps businesses identify, pursue, and participate in procurement and business opportunities that can contribute to growth.",
+      "isPartOf": {
+        "@id": "https://aproposopportunity.org/#website"
+      },
+      "about": {
+        "@id": "https://aproposopportunity.org/#organization"
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "Service",
+      "@id": "https://aproposopportunity.org/#procurement-intelligence",
+      "name": "Procurement Intelligence and Business Opportunity Development",
+      "serviceType": "Procurement intelligence",
+      "provider": {
+        "@id": "https://aproposopportunity.org/#organization"
+      },
+      "url": "https://aproposopportunity.org/#marketplace",
+      "description": "Procurement intelligence and opportunity-development support designed to help businesses discover and pursue relevant government contracting, supplier, subcontracting, and growth opportunities."
+    }
+  ]
+}
+</script>`;
+
 const contactStyles = `
 <style id="aboa-contact-styles">
   .contact-section{background:var(--navy-deep);color:#fff;padding:150px 0 155px;border-top:1px solid rgba(229,207,154,.18)}
@@ -159,7 +239,7 @@ export default async (request, context) => {
   let html = await response.text();
   if (html.includes('id="inquiryForm"')) return new Response(html, response);
 
-  html = html.replace("</head>", `${contactStyles}\n</head>`);
+  html = html.replace("</head>", `${seoHead}\n${contactStyles}\n</head>`);
   html = html.replace(
     '<a href="#partnerships" class="nav-accent">Partnerships</a>',
     '<a href="#partnerships">Partnerships</a><a href="#contact" class="nav-accent">Contact</a>'
