@@ -9,6 +9,15 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
+# Reuse the exact National Enterprise Business Center hero image on the
+# Apropos Business Opportunity Agency homepage. Force the redirect so the
+# legacy local headquarters.webp asset does not override this route.
+[[redirects]]
+  from = "/headquarters.webp"
+  to = "https://nebc.aproposgroupllc.com/assets/nebc-hero.webp"
+  status = 302
+  force = true
+
 # Retired application routes from the previous site now return visitors
 # to the Apropos Business Opportunity Agency homepage.
 [[redirects]]
