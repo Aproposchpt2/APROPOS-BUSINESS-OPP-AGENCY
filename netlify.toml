@@ -1,9 +1,19 @@
 [build]
   publish = "."
 
+# Messaging refinement runs first so it can update the final rendered page
+# after downstream contact/SEO injection returns through the edge chain.
+[[edge_functions]]
+  function = "messaging-refine"
+  path = "/"
+
 [[edge_functions]]
   function = "contact-inject"
   path = "/"
+
+[[edge_functions]]
+  function = "messaging-refine"
+  path = "/index.html"
 
 [[edge_functions]]
   function = "contact-inject"
