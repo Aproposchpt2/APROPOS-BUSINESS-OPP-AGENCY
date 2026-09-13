@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apropos Business Opportunity Agency | Opportunity Builds Business</title>
-  <meta name="description" content="Apropos Business Opportunity Agency is a nonprofit opportunity development organization dedicated to expanding economic, business, and community growth." />
+  <title>Apropos Business Opportunity Agency | Procurement Intelligence</title>
+  <meta name="description" content="Apropos Business Opportunity Agency is a nonprofit opportunity development organization creating business success through procurement intelligence." />
   <meta name="theme-color" content="#06162f" />
   <meta property="og:title" content="Apropos Business Opportunity Agency" />
-  <meta property="og:description" content="Dedicated to building economic, business, and community growth." />
+  <meta property="og:description" content="Creating business success through procurement intelligence." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://aproposopportunity.org/" />
   <meta property="og:image" content="https://aproposopportunity.org/headquarters.webp" />
@@ -113,7 +113,6 @@
     }
     .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-    /* Header */
     .site-header {
       position: fixed;
       inset: 0 0 auto 0;
@@ -212,7 +211,6 @@
       padding: 12px 0;
     }
 
-    /* Hero */
     .hero {
       position: relative;
       min-height: 100svh;
@@ -259,7 +257,7 @@
       margin: 0 auto;
       min-height: 100svh;
       display: grid;
-      grid-template-columns: minmax(0, 850px) 1fr;
+      grid-template-columns: minmax(0, 900px) 1fr;
       align-items: center;
       gap: 72px;
       padding: calc(var(--header-h) + 70px) 0 94px;
@@ -279,24 +277,45 @@
     .hero-kicker::before { content: ""; width: 56px; height: 1px; background: var(--gold); }
     .hero h1 {
       margin: 0;
-      max-width: 830px;
+      max-width: 900px;
       font-family: var(--serif);
-      font-size: clamp(4rem, 7.6vw, 8.5rem);
-      line-height: .82;
-      letter-spacing: -.052em;
+      font-size: clamp(3.6rem, 6.6vw, 7.25rem);
+      line-height: .86;
+      letter-spacing: -.048em;
       font-weight: 600;
       text-wrap: balance;
       text-shadow: 0 20px 60px rgba(0,0,0,.25);
     }
-    .hero h1 .accent { color: var(--gold-light); font-style: italic; }
+    .hero-positioning {
+      margin-top: 30px;
+      padding: 22px 0 0 28px;
+      border-left: 1px solid rgba(229,207,154,.72);
+    }
+    .hero-positioning span {
+      display: block;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(1.75rem, 3vw, 3rem);
+      line-height: 1;
+      color: var(--gold-light);
+      margin-bottom: 9px;
+    }
+    .hero-positioning strong {
+      display: block;
+      font-family: var(--sans);
+      font-size: clamp(.78rem, 1vw, 1rem);
+      line-height: 1.4;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #fff;
+    }
     .hero-intro {
       max-width: 700px;
-      margin: 34px 0 0;
-      padding-left: 26px;
-      border-left: 1px solid rgba(229,207,154,.68);
-      font-size: clamp(1rem, 1.25vw, 1.2rem);
+      margin: 30px 0 0;
+      font-size: clamp(.95rem, 1.12vw, 1.12rem);
       line-height: 1.76;
-      color: rgba(255,255,255,.82);
+      color: rgba(255,255,255,.78);
     }
     .hero-actions {
       display: flex;
@@ -347,7 +366,6 @@
       color: rgba(255,255,255,.5);
     }
 
-    /* Manifesto strip */
     .manifesto {
       background: var(--navy-deep);
       color: #fff;
@@ -373,7 +391,6 @@
     .manifesto p:last-child { text-align: right; }
     .manifesto-mark { width: 1px; height: 58px; background: var(--gold); }
 
-    /* Purpose */
     .purpose {
       position: relative;
       padding: 150px 0 145px;
@@ -411,11 +428,7 @@
     }
     .purpose-content { max-width: 900px; }
     .purpose-content .section-title { max-width: 800px; }
-    .purpose-content > p {
-      max-width: 790px;
-      font-size: 1.05rem;
-      color: #3f4b5d;
-    }
+    .purpose-content > p { max-width: 790px; font-size: 1.05rem; color: #3f4b5d; }
     .economic-actions {
       margin-top: 58px;
       border-top: 1px solid rgba(6,22,47,.22);
@@ -426,462 +439,113 @@
     .economic-actions div { padding: 28px 22px 28px 0; border-right: 1px solid rgba(6,22,47,.16); }
     .economic-actions div:not(:first-child) { padding-left: 22px; }
     .economic-actions div:last-child { border-right: 0; }
-    .economic-actions strong {
-      display: block;
-      margin-bottom: 8px;
-      font-family: var(--serif);
-      font-size: 1.5rem;
-      color: var(--navy);
-      font-weight: 600;
-    }
+    .economic-actions strong { display: block; margin-bottom: 8px; font-family: var(--serif); font-size: 1.5rem; color: var(--navy); font-weight: 600; }
     .economic-actions span { font-size: .76rem; color: var(--muted); }
 
-    /* Growth model */
-    .growth-model {
-      background: var(--navy);
-      color: #fff;
-      padding: 145px 0 150px;
-      position: relative;
-      overflow: hidden;
-    }
-    .growth-model::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: linear-gradient(90deg, transparent 49.96%, rgba(255,255,255,.045) 50%, transparent 50.04%);
-    }
-    .model-grid {
-      display: grid;
-      grid-template-columns: .8fr 1.2fr;
-      gap: clamp(70px, 9vw, 130px);
-      position: relative;
-      z-index: 1;
-    }
+    .growth-model { background: var(--navy); color: #fff; padding: 145px 0 150px; position: relative; overflow: hidden; }
+    .growth-model::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, transparent 49.96%, rgba(255,255,255,.045) 50%, transparent 50.04%); }
+    .model-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(70px, 9vw, 130px); position: relative; z-index: 1; }
     .model-intro { position: sticky; top: 130px; align-self: start; }
     .model-intro .section-title { max-width: 520px; }
     .model-intro p { color: rgba(255,255,255,.66); max-width: 500px; }
     .model-sequence { border-top: 1px solid var(--white-line); }
-    .model-step {
-      display: grid;
-      grid-template-columns: 88px 1fr;
-      gap: 24px;
-      padding: 38px 0 42px;
-      border-bottom: 1px solid var(--white-line);
-    }
-    .model-step .num {
-      font-family: var(--serif);
-      font-size: 1.2rem;
-      color: var(--gold-light);
-    }
-    .model-step h3 {
-      margin: 0 0 8px;
-      font-family: var(--serif);
-      font-size: clamp(2.2rem, 4.2vw, 4.8rem);
-      line-height: .95;
-      font-weight: 600;
-      letter-spacing: -.035em;
-    }
+    .model-step { display: grid; grid-template-columns: 88px 1fr; gap: 24px; padding: 38px 0 42px; border-bottom: 1px solid var(--white-line); }
+    .model-step .num { font-family: var(--serif); font-size: 1.2rem; color: var(--gold-light); }
+    .model-step h3 { margin: 0 0 8px; font-family: var(--serif); font-size: clamp(2.2rem, 4.2vw, 4.8rem); line-height: .95; font-weight: 600; letter-spacing: -.035em; }
     .model-step p { margin: 0; max-width: 650px; color: rgba(255,255,255,.62); font-size: .95rem; }
 
-    /* Marketplace */
-    .marketplace {
-      position: relative;
-      background: var(--paper);
-      padding: 150px 0;
-      overflow: hidden;
-    }
-    .marketplace-grid {
-      display: grid;
-      grid-template-columns: 1.02fr .98fr;
-      gap: clamp(70px, 9vw, 140px);
-      align-items: start;
-    }
-    .marketplace-statement {
-      padding-top: 16px;
-      position: relative;
-    }
-    .marketplace-statement::before {
-      content: "";
-      position: absolute;
-      left: -48px;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background: linear-gradient(transparent, var(--gold), transparent);
-    }
-    .marketplace-statement h2 {
-      font-family: var(--serif);
-      font-size: clamp(3.2rem, 6.2vw, 6.7rem);
-      line-height: .93;
-      letter-spacing: -.045em;
-      font-weight: 600;
-      margin: 0;
-      color: var(--navy);
-    }
+    .marketplace { position: relative; background: var(--paper); padding: 150px 0; overflow: hidden; }
+    .marketplace-grid { display: grid; grid-template-columns: 1.02fr .98fr; gap: clamp(70px, 9vw, 140px); align-items: start; }
+    .marketplace-statement { padding-top: 16px; position: relative; }
+    .marketplace-statement::before { content: ""; position: absolute; left: -48px; top: 0; bottom: 0; width: 1px; background: linear-gradient(transparent, var(--gold), transparent); }
+    .marketplace-statement h2 { font-family: var(--serif); font-size: clamp(3.2rem, 6.2vw, 6.7rem); line-height: .93; letter-spacing: -.045em; font-weight: 600; margin: 0; color: var(--navy); }
     .marketplace-copy { padding-top: 132px; }
     .marketplace-copy p { color: #475468; font-size: 1.02rem; }
-    .marketplace-copy .closing-line {
-      margin-top: 30px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
-      color: var(--navy);
-      font-family: var(--serif);
-      font-size: 1.55rem;
-      line-height: 1.35;
-    }
+    .marketplace-copy .closing-line { margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--navy); font-family: var(--serif); font-size: 1.55rem; line-height: 1.35; }
 
-    /* Development */
-    .development {
-      background: #fff;
-      padding: 145px 0 155px;
-      border-top: 1px solid rgba(6,22,47,.08);
-    }
-    .development-head {
-      display: grid;
-      grid-template-columns: .8fr 1.2fr;
-      gap: 80px;
-      margin-bottom: 70px;
-      align-items: end;
-    }
+    .development { background: #fff; padding: 145px 0 155px; border-top: 1px solid rgba(6,22,47,.08); }
+    .development-head { display: grid; grid-template-columns: .8fr 1.2fr; gap: 80px; margin-bottom: 70px; align-items: end; }
     .development-head .section-title { margin: 0; }
     .development-head p { margin: 0; max-width: 660px; color: var(--muted); }
-    .opportunity-index {
-      border-top: 1px solid rgba(6,22,47,.22);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: 64px;
-    }
-    .opportunity-item {
-      min-height: 90px;
-      display: grid;
-      grid-template-columns: 54px 1fr;
-      align-items: center;
-      gap: 18px;
-      border-bottom: 1px solid rgba(6,22,47,.16);
-    }
+    .opportunity-index { border-top: 1px solid rgba(6,22,47,.22); display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; }
+    .opportunity-item { min-height: 90px; display: grid; grid-template-columns: 54px 1fr; align-items: center; gap: 18px; border-bottom: 1px solid rgba(6,22,47,.16); }
     .opportunity-item .index { color: var(--gold); font-family: var(--serif); font-size: 1.1rem; }
     .opportunity-item strong { font-family: var(--serif); font-size: clamp(1.25rem, 2vw, 1.8rem); font-weight: 600; color: var(--navy); }
-    .development-objective {
-      margin-top: 76px;
-      padding: 38px 0 0 54px;
-      border-left: 1px solid var(--gold);
-      max-width: 1040px;
-    }
-    .development-objective span {
-      display: block;
-      margin-bottom: 12px;
-      font-size: .68rem;
-      text-transform: uppercase;
-      letter-spacing: .2em;
-      color: var(--gold);
-      font-weight: 700;
-    }
-    .development-objective p {
-      margin: 0;
-      font-family: var(--serif);
-      font-size: clamp(2rem, 4vw, 4.3rem);
-      line-height: 1.02;
-      letter-spacing: -.03em;
-      color: var(--navy);
-    }
+    .development-objective { margin-top: 76px; padding: 38px 0 0 54px; border-left: 1px solid var(--gold); max-width: 1040px; }
+    .development-objective span { display: block; margin-bottom: 12px; font-size: .68rem; text-transform: uppercase; letter-spacing: .2em; color: var(--gold); font-weight: 700; }
+    .development-objective p { margin: 0; font-family: var(--serif); font-size: clamp(2rem, 4vw, 4.3rem); line-height: 1.02; letter-spacing: -.03em; color: var(--navy); }
 
-    /* Local growth */
-    .local-growth {
-      position: relative;
-      background: var(--navy-mid);
-      color: #fff;
-      padding: 160px 0 155px;
-      overflow: hidden;
-    }
-    .local-growth::before {
-      content: "CITY BY CITY";
-      position: absolute;
-      left: -2vw;
-      bottom: -2vw;
-      font-family: var(--serif);
-      font-size: clamp(9rem, 19vw, 21rem);
-      line-height: .75;
-      color: rgba(255,255,255,.026);
-      white-space: nowrap;
-    }
-    .local-grid {
-      position: relative;
-      display: grid;
-      grid-template-columns: .9fr 1.1fr;
-      gap: clamp(70px, 9vw, 135px);
-    }
+    .local-growth { position: relative; background: var(--navy-mid); color: #fff; padding: 160px 0 155px; overflow: hidden; }
+    .local-growth::before { content: "CITY BY CITY"; position: absolute; left: -2vw; bottom: -2vw; font-family: var(--serif); font-size: clamp(9rem, 19vw, 21rem); line-height: .75; color: rgba(255,255,255,.026); white-space: nowrap; }
+    .local-grid { position: relative; display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(70px, 9vw, 135px); }
     .local-copy p { color: rgba(255,255,255,.68); }
-    .local-question {
-      align-self: center;
-      padding: 34px 0 34px 48px;
-      border-left: 1px solid var(--gold);
-    }
-    .local-question span {
-      display: block;
-      margin-bottom: 16px;
-      font-size: .67rem;
-      text-transform: uppercase;
-      letter-spacing: .2em;
-      color: var(--gold-light);
-      font-weight: 700;
-    }
-    .local-question p {
-      margin: 0;
-      font-family: var(--serif);
-      font-size: clamp(2.6rem, 5.2vw, 5.8rem);
-      line-height: .95;
-      letter-spacing: -.035em;
-    }
+    .local-question { align-self: center; padding: 34px 0 34px 48px; border-left: 1px solid var(--gold); }
+    .local-question span { display: block; margin-bottom: 16px; font-size: .67rem; text-transform: uppercase; letter-spacing: .2em; color: var(--gold-light); font-weight: 700; }
+    .local-question p { margin: 0; font-family: var(--serif); font-size: clamp(2.6rem, 5.2vw, 5.8rem); line-height: .95; letter-spacing: -.035em; }
 
-    /* Why growth matters */
-    .why {
-      background: var(--ivory);
-      padding: 150px 0 160px;
-    }
-    .why-head {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 90px;
-      margin-bottom: 78px;
-    }
+    .why { background: var(--ivory); padding: 150px 0 160px; }
+    .why-head { display: grid; grid-template-columns: 300px 1fr; gap: 90px; margin-bottom: 78px; }
     .why-head .section-title { max-width: 920px; }
     .cause-chain { border-top: 1px solid rgba(6,22,47,.23); }
-    .cause-row {
-      display: grid;
-      grid-template-columns: 1.05fr .95fr;
-      align-items: center;
-      min-height: 145px;
-      border-bottom: 1px solid rgba(6,22,47,.18);
-    }
+    .cause-row { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; min-height: 145px; border-bottom: 1px solid rgba(6,22,47,.18); }
     .cause-row:nth-child(even) { grid-template-columns: .95fr 1.05fr; }
-    .cause-row .cause {
-      font-family: var(--serif);
-      font-size: clamp(2.2rem, 4.4vw, 4.8rem);
-      line-height: .95;
-      letter-spacing: -.04em;
-      color: var(--navy);
-    }
-    .cause-row .effect {
-      font-size: .9rem;
-      color: var(--muted);
-      max-width: 470px;
-      justify-self: end;
-    }
+    .cause-row .cause { font-family: var(--serif); font-size: clamp(2.2rem, 4.4vw, 4.8rem); line-height: .95; letter-spacing: -.04em; color: var(--navy); }
+    .cause-row .effect { font-size: .9rem; color: var(--muted); max-width: 470px; justify-self: end; }
     .cause-row:nth-child(even) .cause { order: 2; text-align: right; }
     .cause-row:nth-child(even) .effect { order: 1; justify-self: start; }
 
-    /* Community impact */
-    .community-impact {
-      background: var(--paper);
-      padding: 155px 0;
-    }
-    .impact-heading {
-      max-width: 1040px;
-      margin-bottom: 84px;
-    }
-    .impact-heading h2 {
-      margin: 0;
-      font-family: var(--serif);
-      font-size: clamp(3.4rem, 7vw, 7.8rem);
-      line-height: .83;
-      letter-spacing: -.05em;
-      font-weight: 600;
-      color: var(--navy);
-    }
+    .community-impact { background: var(--paper); padding: 155px 0; }
+    .impact-heading { max-width: 1040px; margin-bottom: 84px; }
+    .impact-heading h2 { margin: 0; font-family: var(--serif); font-size: clamp(3.4rem, 7vw, 7.8rem); line-height: .83; letter-spacing: -.05em; font-weight: 600; color: var(--navy); }
     .impact-heading h2 span { color: var(--gold); font-style: italic; }
-    .impact-copy-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 90px;
-      border-top: 1px solid var(--line);
-      padding-top: 48px;
-    }
+    .impact-copy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; border-top: 1px solid var(--line); padding-top: 48px; }
     .impact-copy-grid p { color: var(--muted); font-size: 1rem; }
-    .impact-copy-grid .impact-last {
-      font-family: var(--serif);
-      font-size: clamp(1.8rem, 3vw, 3rem);
-      line-height: 1.12;
-      color: var(--navy);
-    }
+    .impact-copy-grid .impact-last { font-family: var(--serif); font-size: clamp(1.8rem, 3vw, 3rem); line-height: 1.12; color: var(--navy); }
 
-    /* Role */
-    .role {
-      background: var(--navy-deep);
-      color: #fff;
-      padding: 150px 0 155px;
-      overflow: hidden;
-    }
-    .role-intro {
-      display: grid;
-      grid-template-columns: .9fr 1.1fr;
-      gap: 90px;
-      margin-bottom: 85px;
-      align-items: end;
-    }
+    .role { background: var(--navy-deep); color: #fff; padding: 150px 0 155px; overflow: hidden; }
+    .role-intro { display: grid; grid-template-columns: .9fr 1.1fr; gap: 90px; margin-bottom: 85px; align-items: end; }
     .role-intro p { color: rgba(255,255,255,.66); max-width: 650px; margin: 0; }
     .role-equation { border-top: 1px solid var(--white-line); border-bottom: 1px solid var(--white-line); }
-    .role-term {
-      display: grid;
-      grid-template-columns: 82px 1fr 70px;
-      align-items: center;
-      min-height: 118px;
-      border-bottom: 1px solid rgba(255,255,255,.11);
-    }
+    .role-term { display: grid; grid-template-columns: 82px 1fr 70px; align-items: center; min-height: 118px; border-bottom: 1px solid rgba(255,255,255,.11); }
     .role-term:last-child { border-bottom: 0; }
     .role-term .term-num { color: var(--gold-light); font-family: var(--serif); }
-    .role-term strong {
-      font-family: var(--serif);
-      font-size: clamp(2rem, 4vw, 4rem);
-      letter-spacing: -.025em;
-      font-weight: 600;
-    }
-    .role-term .plus {
-      justify-self: end;
-      font-family: var(--serif);
-      font-size: 2.1rem;
-      color: rgba(229,207,154,.7);
-    }
+    .role-term strong { font-family: var(--serif); font-size: clamp(2rem, 4vw, 4rem); letter-spacing: -.025em; font-weight: 600; }
+    .role-term .plus { justify-self: end; font-family: var(--serif); font-size: 2.1rem; color: rgba(229,207,154,.7); }
     .role-term:last-child .plus { visibility: hidden; }
 
-    /* Partnerships */
-    .partnerships {
-      background: #fff;
-      padding: 150px 0 160px;
-    }
-    .partnership-grid {
-      display: grid;
-      grid-template-columns: .85fr 1.15fr;
-      gap: clamp(70px, 9vw, 140px);
-    }
+    .partnerships { background: #fff; padding: 150px 0 160px; }
+    .partnership-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(70px, 9vw, 140px); }
     .partnership-copy { position: sticky; top: 130px; align-self: start; }
     .partnership-copy p { color: var(--muted); }
     .partner-list { border-top: 1px solid rgba(6,22,47,.22); }
-    .partner-row {
-      min-height: 84px;
-      display: grid;
-      grid-template-columns: 56px 1fr;
-      align-items: center;
-      border-bottom: 1px solid rgba(6,22,47,.15);
-    }
+    .partner-row { min-height: 84px; display: grid; grid-template-columns: 56px 1fr; align-items: center; border-bottom: 1px solid rgba(6,22,47,.15); }
     .partner-row span { color: var(--gold); font-family: var(--serif); }
     .partner-row strong { font-family: var(--serif); font-size: clamp(1.35rem, 2.3vw, 2.05rem); font-weight: 600; color: var(--navy); }
-    .partner-principle {
-      margin-top: 58px;
-      padding-top: 34px;
-      border-top: 1px solid rgba(6,22,47,.22);
-    }
-    .partner-principle p {
-      margin: 0;
-      font-family: var(--serif);
-      font-size: clamp(1.65rem, 3vw, 2.9rem);
-      line-height: 1.16;
-      color: var(--navy);
-    }
+    .partner-principle { margin-top: 58px; padding-top: 34px; border-top: 1px solid rgba(6,22,47,.22); }
+    .partner-principle p { margin: 0; font-family: var(--serif); font-size: clamp(1.65rem, 3vw, 2.9rem); line-height: 1.16; color: var(--navy); }
 
-    /* Commitment */
-    .commitment {
-      position: relative;
-      min-height: 92svh;
-      display: flex;
-      align-items: center;
-      background: var(--navy);
-      color: #fff;
-      overflow: hidden;
-      padding: 140px 0;
-    }
-    .commitment::before {
-      content: "OPPORTUNITY";
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      font-family: var(--serif);
-      font-size: clamp(11rem, 25vw, 30rem);
-      line-height: .8;
-      color: rgba(255,255,255,.018);
-      white-space: nowrap;
-      pointer-events: none;
-    }
+    .commitment { position: relative; min-height: 92svh; display: flex; align-items: center; background: var(--navy); color: #fff; overflow: hidden; padding: 140px 0; }
+    .commitment::before { content: "OPPORTUNITY"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-family: var(--serif); font-size: clamp(11rem, 25vw, 30rem); line-height: .8; color: rgba(255,255,255,.018); white-space: nowrap; pointer-events: none; }
     .commitment-inner { position: relative; max-width: 1030px; }
     .commitment .section-title { max-width: 900px; }
     .commitment p { max-width: 830px; color: rgba(255,255,255,.68); }
-    .reach-list {
-      margin-top: 46px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0;
-      border-top: 1px solid var(--white-line);
-      border-bottom: 1px solid var(--white-line);
-    }
-    .reach-list span {
-      padding: 17px 24px;
-      border-right: 1px solid var(--white-line);
-      font-family: var(--serif);
-      font-size: 1.2rem;
-      color: var(--gold-light);
-    }
+    .reach-list { margin-top: 46px; display: flex; flex-wrap: wrap; gap: 0; border-top: 1px solid var(--white-line); border-bottom: 1px solid var(--white-line); }
+    .reach-list span { padding: 17px 24px; border-right: 1px solid var(--white-line); font-family: var(--serif); font-size: 1.2rem; color: var(--gold-light); }
     .reach-list span:first-child { padding-left: 0; }
-    .closing-signature {
-      padding: 122px 0 130px;
-      background: var(--ivory);
-      text-align: center;
-    }
+    .closing-signature { padding: 122px 0 130px; background: var(--ivory); text-align: center; }
     .closing-signature .eyebrow { justify-content: center; }
     .closing-signature .eyebrow::after { content: ""; width: 44px; height: 1px; background: currentColor; }
-    .closing-signature h2 {
-      margin: 0;
-      font-family: var(--serif);
-      font-size: clamp(3.7rem, 8vw, 8.8rem);
-      line-height: .82;
-      letter-spacing: -.052em;
-      font-weight: 600;
-      color: var(--navy);
-    }
+    .closing-signature h2 { margin: 0; font-family: var(--serif); font-size: clamp(3.7rem, 8vw, 8.8rem); line-height: .82; letter-spacing: -.052em; font-weight: 600; color: var(--navy); }
     .closing-signature h2 span { display: block; color: var(--gold); font-style: italic; }
-    .closing-signature p {
-      margin: 38px auto 0;
-      max-width: 740px;
-      font-size: .78rem;
-      text-transform: uppercase;
-      letter-spacing: .18em;
-      color: var(--muted);
-      font-weight: 700;
-      line-height: 1.8;
-    }
+    .closing-signature p { margin: 38px auto 0; max-width: 740px; font-size: .78rem; text-transform: uppercase; letter-spacing: .18em; color: var(--muted); font-weight: 700; line-height: 1.8; }
 
-    /* Footer */
-    footer {
-      background: var(--navy-deep);
-      color: #fff;
-      border-top: 1px solid rgba(229,207,154,.18);
-      padding: 58px 0 34px;
-    }
-    .footer-top {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 60px;
-      align-items: end;
-      padding-bottom: 44px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .footer-name {
-      font-family: var(--serif);
-      font-size: clamp(1.8rem, 3.2vw, 3.2rem);
-      line-height: 1;
-      margin: 0 0 12px;
-    }
+    footer { background: var(--navy-deep); color: #fff; border-top: 1px solid rgba(229,207,154,.18); padding: 58px 0 34px; }
+    .footer-top { display: grid; grid-template-columns: 1fr auto; gap: 60px; align-items: end; padding-bottom: 44px; border-bottom: 1px solid rgba(255,255,255,.10); }
+    .footer-name { font-family: var(--serif); font-size: clamp(1.8rem, 3.2vw, 3.2rem); line-height: 1; margin: 0 0 12px; }
     .footer-tagline { margin: 0; color: var(--gold-light); font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; }
     .footer-nav { display: flex; gap: 26px; flex-wrap: wrap; justify-content: flex-end; }
     .footer-nav a { text-decoration: none; color: rgba(255,255,255,.62); font-size: .7rem; text-transform: uppercase; letter-spacing: .11em; }
-    .footer-bottom {
-      display: flex;
-      justify-content: space-between;
-      gap: 24px;
-      padding-top: 25px;
-      font-size: .68rem;
-      color: rgba(255,255,255,.42);
-    }
+    .footer-bottom { display: flex; justify-content: space-between; gap: 24px; padding-top: 25px; font-size: .68rem; color: rgba(255,255,255,.42); }
 
     @media (max-width: 1120px) {
       :root { --shell: min(100% - 56px, 1380px); }
@@ -915,26 +579,17 @@
       .nav.open { opacity: 1; visibility: visible; transform: translateY(0); }
       .nav a { font-size: .82rem; }
       .hero-inner { grid-template-columns: 1fr; padding-top: calc(var(--header-h) + 72px); }
-      .hero h1 { font-size: clamp(4.2rem, 13vw, 7rem); }
+      .hero h1 { font-size: clamp(3.8rem, 11vw, 6.4rem); }
       .hero-side { justify-self: start; align-self: start; width: min(440px,100%); }
       .scroll-cue { display: none; }
       .manifesto-inner { grid-template-columns: 1fr; gap: 18px; padding: 40px 0; }
       .manifesto p:last-child { text-align: left; }
       .manifesto-mark { width: 70px; height: 1px; }
-      .purpose-grid,
-      .model-grid,
-      .marketplace-grid,
-      .development-head,
-      .local-grid,
-      .why-head,
-      .impact-copy-grid,
-      .role-intro,
-      .partnership-grid { grid-template-columns: 1fr; }
+      .purpose-grid, .model-grid, .marketplace-grid, .development-head, .local-grid, .why-head, .impact-copy-grid, .role-intro, .partnership-grid { grid-template-columns: 1fr; }
       .purpose-grid { gap: 44px; }
       .purpose-aside { display: flex; align-items: end; gap: 30px; }
       .purpose-aside .section-number { margin: 0; }
-      .model-intro,
-      .partnership-copy { position: static; }
+      .model-intro, .partnership-copy { position: static; }
       .marketplace-copy { padding-top: 0; }
       .marketplace-statement::before { left: -20px; }
       .development-head { gap: 26px; }
@@ -951,14 +606,11 @@
       .brand-text strong { font-size: .84rem; letter-spacing: .16em; }
       .brand-text span { font-size: .48rem; letter-spacing: .12em; }
       .hero::before { background-position: 61% center; }
-      .hero::after {
-        background:
-          linear-gradient(90deg, rgba(2,11,24,.94), rgba(2,11,24,.70) 68%, rgba(2,11,24,.42)),
-          linear-gradient(180deg, rgba(2,11,24,.18), rgba(2,11,24,.90));
-      }
+      .hero::after { background: linear-gradient(90deg, rgba(2,11,24,.94), rgba(2,11,24,.70) 68%, rgba(2,11,24,.42)), linear-gradient(180deg, rgba(2,11,24,.18), rgba(2,11,24,.90)); }
       .hero-inner { padding-bottom: 62px; }
-      .hero h1 { font-size: clamp(3.65rem, 17vw, 5.5rem); line-height: .84; }
-      .hero-intro { padding-left: 18px; }
+      .hero h1 { font-size: clamp(3.1rem, 14vw, 4.8rem); line-height: .88; }
+      .hero-positioning { padding-left: 18px; }
+      .hero-positioning strong { letter-spacing: .15em; }
       .hero-actions { flex-direction: column; align-items: flex-start; }
       .button { width: 100%; max-width: 340px; }
       .purpose, .growth-model, .marketplace, .development, .local-growth, .why, .community-impact, .role, .partnerships { padding-top: 105px; padding-bottom: 110px; }
@@ -1018,14 +670,12 @@
       <div class="hero-inner">
         <div class="hero-copy-wrap reveal">
           <div class="hero-kicker">Nonprofit Opportunity Development Organization</div>
-          <h1>
-            Building <span class="accent">Opportunity.</span><br />
-            Building Business.<br />
-            Building Communities.
-          </h1>
-          <p class="hero-intro">
-            APROPOS BUSINESS OPPORTUNITY AGENCY is dedicated to expanding economic opportunity by helping businesses identify, pursue, and participate in opportunities that can contribute to their growth.
-          </p>
+          <h1>APROPOS BUSINESS<br />OPPORTUNITY AGENCY</h1>
+          <div class="hero-positioning" aria-label="Creating business success through procurement intelligence">
+            <span>Creating Business Success</span>
+            <strong>Through Procurement Intelligence</strong>
+          </div>
+          <p class="hero-intro">APROPOS BUSINESS OPPORTUNITY AGENCY is dedicated to expanding economic opportunity by helping businesses identify, pursue, and participate in opportunities that can contribute to their growth.</p>
           <div class="hero-actions">
             <a class="button gold-button" href="#purpose">Discover Our Purpose</a>
             <a class="button ghost-button" href="#partnerships">Explore Partnerships</a>
@@ -1056,15 +706,9 @@
         <div class="purpose-content reveal">
           <div class="eyebrow">Economic Growth Begins With Opportunity</div>
           <h2 class="section-title">Businesses are fundamental to the economic strength of a community.</h2>
-          <p>
-            They employ people. They purchase goods and services. They support suppliers. They generate commercial activity. They create pathways for entrepreneurship and advancement.
-          </p>
-          <p>
-            But businesses cannot pursue opportunities they cannot see. APROPOS BUSINESS OPPORTUNITY AGENCY works to improve the connection between businesses and the opportunities, markets, resources, and relationships that can help them grow.
-          </p>
-          <p>
-            Our purpose is not simply to distribute information. Our purpose is to help create an environment where opportunity can become economic activity.
-          </p>
+          <p>They employ people. They purchase goods and services. They support suppliers. They generate commercial activity. They create pathways for entrepreneurship and advancement.</p>
+          <p>But businesses cannot pursue opportunities they cannot see. APROPOS BUSINESS OPPORTUNITY AGENCY works to improve the connection between businesses and the opportunities, markets, resources, and relationships that can help them grow.</p>
+          <p>Our purpose is not simply to distribute information. Our purpose is to help create an environment where opportunity can become economic activity.</p>
           <div class="economic-actions" aria-label="How business strengthens communities">
             <div><strong>Employ</strong><span>People and talent</span></div>
             <div><strong>Purchase</strong><span>Goods and services</span></div>
@@ -1083,22 +727,10 @@
           <p>Business growth is not an isolated outcome. It can create a chain of economic activity that reaches employees, households, suppliers, and the wider community.</p>
         </div>
         <div class="model-sequence">
-          <div class="model-step reveal">
-            <div class="num">01</div>
-            <div><h3>Opportunity</h3><p>Creates pathways for business growth.</p></div>
-          </div>
-          <div class="model-step reveal">
-            <div class="num">02</div>
-            <div><h3>Business Growth</h3><p>Creates greater potential for revenue, investment, supplier activity, and employment.</p></div>
-          </div>
-          <div class="model-step reveal">
-            <div class="num">03</div>
-            <div><h3>Economic Participation</h3><p>Employment and participation contribute to household stability, career advancement, and local spending.</p></div>
-          </div>
-          <div class="model-step reveal">
-            <div class="num">04</div>
-            <div><h3>Stronger Communities</h3><p>Those outcomes help build stronger communities and stronger local economies.</p></div>
-          </div>
+          <div class="model-step reveal"><div class="num">01</div><div><h3>Opportunity</h3><p>Creates pathways for business growth.</p></div></div>
+          <div class="model-step reveal"><div class="num">02</div><div><h3>Business Growth</h3><p>Creates greater potential for revenue, investment, supplier activity, and employment.</p></div></div>
+          <div class="model-step reveal"><div class="num">03</div><div><h3>Economic Participation</h3><p>Employment and participation contribute to household stability, career advancement, and local spending.</p></div></div>
+          <div class="model-step reveal"><div class="num">04</div><div><h3>Stronger Communities</h3><p>Those outcomes help build stronger communities and stronger local economies.</p></div></div>
         </div>
       </div>
     </section>
@@ -1110,18 +742,10 @@
           <h2>Public contracting can be an engine for business growth.</h2>
         </div>
         <div class="marketplace-copy reveal">
-          <p>
-            Every year, federal, state, county, municipal, educational, and other public institutions purchase an enormous range of products and services from businesses.
-          </p>
-          <p>
-            For capable businesses, participation in this marketplace can provide another pathway to revenue, experience, capacity, employment, and long-term growth.
-          </p>
-          <p>
-            APROPOS BUSINESS OPPORTUNITY AGENCY works to make relevant public-sector opportunities easier for businesses to discover and pursue.
-          </p>
-          <p class="closing-line">
-            When government contracts are fulfilled by qualified businesses, those businesses have an opportunity to grow, strengthen their capabilities, create jobs, engage suppliers, and contribute to the economic vitality of the communities they serve.
-          </p>
+          <p>Every year, federal, state, county, municipal, educational, and other public institutions purchase an enormous range of products and services from businesses.</p>
+          <p>For capable businesses, participation in this marketplace can provide another pathway to revenue, experience, capacity, employment, and long-term growth.</p>
+          <p>APROPOS BUSINESS OPPORTUNITY AGENCY works to make relevant public-sector opportunities easier for businesses to discover and pursue.</p>
+          <p class="closing-line">When government contracts are fulfilled by qualified businesses, those businesses have an opportunity to grow, strengthen their capabilities, create jobs, engage suppliers, and contribute to the economic vitality of the communities they serve.</p>
         </div>
       </div>
     </section>
@@ -1129,13 +753,9 @@
     <section class="development" id="development">
       <div class="shell">
         <div class="development-head reveal">
-          <div>
-            <div class="eyebrow">Business Opportunity Development</div>
-            <h2 class="section-title">Growth requires more than contracts.</h2>
-          </div>
+          <div><div class="eyebrow">Business Opportunity Development</div><h2 class="section-title">Growth requires more than contracts.</h2></div>
           <p>A healthy business ecosystem contains many forms of opportunity. The Agency's work can connect businesses with a broader range of pathways for growth.</p>
         </div>
-
         <div class="opportunity-index" aria-label="Business opportunity pathways">
           <div class="opportunity-item reveal"><span class="index">01</span><strong>Government contracting opportunities</strong></div>
           <div class="opportunity-item reveal"><span class="index">02</span><strong>Private-sector business opportunities</strong></div>
@@ -1148,11 +768,7 @@
           <div class="opportunity-item reveal"><span class="index">09</span><strong>Entrepreneurship resources</strong></div>
           <div class="opportunity-item reveal"><span class="index">10</span><strong>Local and regional economic-development initiatives</strong></div>
         </div>
-
-        <div class="development-objective reveal">
-          <span>The Objective</span>
-          <p>Expand the number of pathways through which businesses can grow.</p>
-        </div>
+        <div class="development-objective reveal"><span>The Objective</span><p>Expand the number of pathways through which businesses can grow.</p></div>
       </div>
     </section>
 
@@ -1165,24 +781,13 @@
           <p>From there, the Agency can help identify the businesses, institutions, buyers, resources, partners, and opportunities that form the local economic ecosystem.</p>
           <p>This creates an opportunity-development infrastructure focused on generating greater business participation and economic activity within the community.</p>
         </div>
-        <div class="local-question reveal">
-          <span>Every local initiative begins with one question</span>
-          <p>What opportunities can help businesses in this community grow?</p>
-        </div>
+        <div class="local-question reveal"><span>Every local initiative begins with one question</span><p>What opportunities can help businesses in this community grow?</p></div>
       </div>
     </section>
 
     <section class="why" id="why">
       <div class="shell">
-        <div class="why-head reveal">
-          <div>
-            <div class="section-number">02</div>
-          </div>
-          <div>
-            <div class="eyebrow">Why Business Growth Matters</div>
-            <h2 class="section-title">A business opportunity can reach far beyond the business.</h2>
-          </div>
-        </div>
+        <div class="why-head reveal"><div><div class="section-number">02</div></div><div><div class="eyebrow">Why Business Growth Matters</div><h2 class="section-title">A business opportunity can reach far beyond the business.</h2></div></div>
         <div class="cause-chain">
           <div class="cause-row reveal"><div class="cause">A contract creates revenue.</div><div class="effect">Revenue can give a capable business room to invest, expand, and strengthen operations.</div></div>
           <div class="cause-row reveal"><div class="cause">Revenue supports expansion.</div><div class="effect">Expansion can create new capacity, new demand, and new pathways for growth.</div></div>
@@ -1195,29 +800,14 @@
 
     <section class="community-impact" id="impact">
       <div class="shell">
-        <div class="impact-heading reveal">
-          <div class="eyebrow">Community Impact</div>
-          <h2>Businesses grow.<br />People <span>prosper.</span><br />Communities become stronger.</h2>
-        </div>
-        <div class="impact-copy-grid reveal">
-          <div>
-            <p>When people gain access to meaningful employment, greater financial stability, and new opportunities for advancement, the benefits extend beyond the workplace.</p>
-            <p>Families gain greater economic security. Local purchasing power increases. Businesses gain customers. Neighborhoods gain economic activity. Communities become more resilient.</p>
-          </div>
-          <p class="impact-last">Economic development ultimately becomes meaningful when opportunity reaches people.</p>
-        </div>
+        <div class="impact-heading reveal"><div class="eyebrow">Community Impact</div><h2>Businesses grow.<br />People <span>prosper.</span><br />Communities become stronger.</h2></div>
+        <div class="impact-copy-grid reveal"><div><p>When people gain access to meaningful employment, greater financial stability, and new opportunities for advancement, the benefits extend beyond the workplace.</p><p>Families gain greater economic security. Local purchasing power increases. Businesses gain customers. Neighborhoods gain economic activity. Communities become more resilient.</p></div><p class="impact-last">Economic development ultimately becomes meaningful when opportunity reaches people.</p></div>
       </div>
     </section>
 
     <section class="role" id="role">
       <div class="shell">
-        <div class="role-intro reveal">
-          <div>
-            <div class="eyebrow">Our Role</div>
-            <h2 class="section-title">An opportunity development organization.</h2>
-          </div>
-          <p>We work to identify and connect the components of economic growth. Our role is to help those components connect more effectively so that more economic opportunity can move through the communities we serve.</p>
-        </div>
+        <div class="role-intro reveal"><div><div class="eyebrow">Our Role</div><h2 class="section-title">An opportunity development organization.</h2></div><p>We work to identify and connect the components of economic growth. Our role is to help those components connect more effectively so that more economic opportunity can move through the communities we serve.</p></div>
         <div class="role-equation" aria-label="Components of economic growth">
           <div class="role-term reveal"><span class="term-num">01</span><strong>Businesses</strong><span class="plus">+</span></div>
           <div class="role-term reveal"><span class="term-num">02</span><strong>Opportunities</strong><span class="plus">+</span></div>
@@ -1232,11 +822,7 @@
 
     <section class="partnerships" id="partnerships">
       <div class="shell partnership-grid">
-        <div class="partnership-copy reveal">
-          <div class="eyebrow">Partnerships</div>
-          <h2 class="section-title">Economic growth is collaborative.</h2>
-          <p>The Agency seeks to work alongside organizations already committed to strengthening businesses and communities.</p>
-        </div>
+        <div class="partnership-copy reveal"><div class="eyebrow">Partnerships</div><h2 class="section-title">Economic growth is collaborative.</h2><p>The Agency seeks to work alongside organizations already committed to strengthening businesses and communities.</p></div>
         <div>
           <div class="partner-list" aria-label="Potential agency partners">
             <div class="partner-row reveal"><span>01</span><strong>Cities and counties</strong></div>
@@ -1250,59 +836,27 @@
             <div class="partner-row reveal"><span>09</span><strong>Financial institutions</strong></div>
             <div class="partner-row reveal"><span>10</span><strong>Foundations and philanthropic organizations</strong></div>
           </div>
-          <div class="partner-principle reveal">
-            <p>The objective is not to duplicate the work of existing organizations. It is to strengthen the opportunity infrastructure connecting their resources to businesses and communities.</p>
-          </div>
+          <div class="partner-principle reveal"><p>The objective is not to duplicate the work of existing organizations. It is to strengthen the opportunity infrastructure connecting their resources to businesses and communities.</p></div>
         </div>
       </div>
     </section>
 
     <section class="commitment" id="commitment">
-      <div class="shell">
-        <div class="commitment-inner reveal">
-          <div class="eyebrow">Our Commitment</div>
-          <h2 class="section-title">Opportunity is one of the fundamental building blocks of economic development.</h2>
-          <p>Our commitment is to help communities create more pathways through which businesses can participate, compete, grow, employ people, and contribute to the economies around them.</p>
-          <p>Because when opportunity reaches business, its impact does not have to stop there.</p>
-          <div class="reach-list" aria-label="Where opportunity can reach">
-            <span>Employees</span>
-            <span>Families</span>
-            <span>Suppliers</span>
-            <span>Neighborhoods</span>
-            <span>Entire Communities</span>
-          </div>
-        </div>
-      </div>
+      <div class="shell"><div class="commitment-inner reveal"><div class="eyebrow">Our Commitment</div><h2 class="section-title">Opportunity is one of the fundamental building blocks of economic development.</h2><p>Our commitment is to help communities create more pathways through which businesses can participate, compete, grow, employ people, and contribute to the economies around them.</p><p>Because when opportunity reaches business, its impact does not have to stop there.</p><div class="reach-list" aria-label="Where opportunity can reach"><span>Employees</span><span>Families</span><span>Suppliers</span><span>Neighborhoods</span><span>Entire Communities</span></div></div></div>
     </section>
 
     <section class="closing-signature" aria-label="Closing statement">
-      <div class="shell reveal">
-        <div class="eyebrow">Apropos Business Opportunity Agency</div>
-        <h2>Opportunity Builds Business.<span>Business Builds Community.</span></h2>
-        <p>Dedicated to building economic, business, and community growth.</p>
-      </div>
+      <div class="shell reveal"><div class="eyebrow">Apropos Business Opportunity Agency</div><h2>Opportunity Builds Business.<span>Business Builds Community.</span></h2><p>Dedicated to building economic, business, and community growth.</p></div>
     </section>
   </main>
 
   <footer>
     <div class="shell">
       <div class="footer-top">
-        <div>
-          <p class="footer-name">Apropos Business Opportunity Agency</p>
-          <p class="footer-tagline">Economic. Business. Community Growth.</p>
-        </div>
-        <nav class="footer-nav" aria-label="Footer navigation">
-          <a href="#purpose">Purpose</a>
-          <a href="#model">Growth Model</a>
-          <a href="#marketplace">Opportunity</a>
-          <a href="#impact">Impact</a>
-          <a href="#partnerships">Partnerships</a>
-        </nav>
+        <div><p class="footer-name">Apropos Business Opportunity Agency</p><p class="footer-tagline">Economic. Business. Community Growth.</p></div>
+        <nav class="footer-nav" aria-label="Footer navigation"><a href="#purpose">Purpose</a><a href="#model">Growth Model</a><a href="#marketplace">Opportunity</a><a href="#impact">Impact</a><a href="#partnerships">Partnerships</a></nav>
       </div>
-      <div class="footer-bottom">
-        <span>Nonprofit Opportunity Development Organization</span>
-        <span>&copy; <span id="year"></span> Apropos Business Opportunity Agency</span>
-      </div>
+      <div class="footer-bottom"><span>Nonprofit Opportunity Development Organization</span><span>&copy; <span id="year"></span> Apropos Business Opportunity Agency</span></div>
     </div>
   </footer>
 
@@ -1310,20 +864,15 @@
     const header = document.getElementById('siteHeader');
     const menuToggle = document.getElementById('menuToggle');
     const nav = document.getElementById('primaryNav');
-
-    const setHeaderState = () => {
-      header.classList.toggle('scrolled', window.scrollY > 24);
-    };
+    const setHeaderState = () => { header.classList.toggle('scrolled', window.scrollY > 24); };
     setHeaderState();
     window.addEventListener('scroll', setHeaderState, { passive: true });
-
     menuToggle.addEventListener('click', () => {
       const isOpen = nav.classList.toggle('open');
       document.body.classList.toggle('menu-open', isOpen);
       menuToggle.setAttribute('aria-expanded', String(isOpen));
       menuToggle.textContent = isOpen ? 'Close' : 'Menu';
     });
-
     nav.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         nav.classList.remove('open');
@@ -1332,7 +881,6 @@
         menuToggle.textContent = 'Menu';
       });
     });
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1341,7 +889,6 @@
         }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
