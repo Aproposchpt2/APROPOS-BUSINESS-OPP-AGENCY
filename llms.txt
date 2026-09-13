@@ -1,31 +1,47 @@
 # Apropos Business Opportunity Agency
 
-> Creating Business Success Through Procurement Intelligence.
+> Building Economic, Business & Community Growth Through Opportunity.
 
-Apropos Business Opportunity Agency is a nonprofit opportunity development organization focused on helping businesses discover, pursue, and participate in opportunities that can contribute to business growth, economic participation, and stronger communities.
+Apropos Business Opportunity Agency is a nonprofit opportunity development organization focused on expanding pathways to economic opportunity so businesses can grow, participate, employ people, engage suppliers, invest, and strengthen the communities they serve.
 
 ## Primary Focus
 
-- Procurement intelligence
+- Economic opportunity development
+- Business growth
+- Community economic development
 - Government contracting opportunities
-- Business opportunity development
+- Procurement intelligence
 - Supplier and subcontracting opportunities
-- Business growth and economic participation
-- Partnerships with cities, counties, public agencies, economic-development organizations, chambers, colleges, universities, financial institutions, foundations, and institutional buyers
+- Buyer connections
+- Business development resources
+- Capital and funding resources
+- Technical assistance
+- Strategic partnerships
+- Market-expansion opportunities
+- Entrepreneurship resources
+- Local economic-development initiatives
 
 ## Core Positioning
 
 Opportunity Builds Business. Business Builds Community.
 
-The Agency works to improve the connection between businesses and the opportunities, buyers, markets, resources, capital, and partnerships that can help them grow.
+The Agency works to strengthen the connection between businesses and the opportunities, buyers, resources, capital, markets, and partnerships that can help create greater economic participation and local growth.
+
+## Economic Development Model
+
+Opportunity can lead to business growth. Business growth can create revenue, expansion, employment, investment, and supplier activity. Greater economic participation can strengthen families, communities, and local economies.
 
 ## Government Marketplace
 
-The Agency helps make relevant federal, state, county, municipal, educational, and other public-sector contracting opportunities easier for businesses to discover and pursue.
+Public contracting is one major economic-opportunity pathway within the Agency's broader mission. Federal, state, county, municipal, educational, and other public institutions purchase a wide range of products and services from businesses. The Agency works to improve access to relevant public-sector opportunities and the resources businesses need to pursue them.
 
 ## Business Opportunity Development
 
-The Agency supports pathways that include government contracting, private-sector opportunities, supplier and subcontracting opportunities, business-development resources, capital and funding resources, technical assistance, strategic partnerships, market expansion, entrepreneurship resources, and local or regional economic-development initiatives.
+The Agency supports pathways that include government contracting opportunities, supplier and subcontracting opportunities, buyer connections, business-development resources, capital and funding resources, technical assistance, strategic partnerships, market expansion, entrepreneurship resources, and local or regional economic-development initiatives.
+
+## Community Growth
+
+The Agency works to strengthen the connection between businesses and the opportunities, buyers, resources, capital, and partnerships that can contribute to economic growth within the communities it serves. Each community presents different businesses, industries, institutions, buyers, resources, and economic opportunities.
 
 ## Canonical Website
 
@@ -36,6 +52,7 @@ The Agency supports pathways that include government contracting, private-sector
 - Purpose: https://aproposopportunity.org/#purpose
 - Growth Model: https://aproposopportunity.org/#model
 - Government Marketplace Opportunity: https://aproposopportunity.org/#marketplace
+- Business Opportunity Development: https://aproposopportunity.org/#development
 - Community Impact: https://aproposopportunity.org/#impact
 - Partnerships: https://aproposopportunity.org/#partnerships
 - Contact the Agency: https://aproposopportunity.org/#contact
