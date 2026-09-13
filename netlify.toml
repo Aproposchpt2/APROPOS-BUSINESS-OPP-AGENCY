@@ -1,19 +1,5 @@
 [build]
   publish = "."
-  functions = "netlify/functions"
-
-  [build.environment]
-    NODE_VERSION = "18"
-
-[functions]
-  node_bundler = "esbuild"
-  # az-pipeline.js reads bids.json at runtime via fs.readFileSync, not a
-  # static require/import -- esbuild can't trace that, so without this the
-  # committed bids.json never makes it into the deployed function bundle and
-  # the function silently falls back to SAMPLE_BIDS forever. Confirmed live
-  # 2026-08-16: real bids.json committed, function still returned
-  # scanMode:"sample" until this was added.
-  included_files = ["bids.json"]
 
 [[headers]]
   for = "/*"
@@ -21,29 +7,56 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
+# Retired application routes from the previous site now return visitors
+# to the Apropos Business Opportunity Agency homepage.
 [[redirects]]
   from = "/dashboard"
-  to   = "/dashboard.html"
-  status = 200
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/dashboard.html"
+  to = "/"
+  status = 301
 
 [[redirects]]
   from = "/login"
-  to   = "/login.html"
-  status = 200
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/login.html"
+  to = "/"
+  status = 301
 
 [[redirects]]
   from = "/onboarding"
-  to   = "/onboarding.html"
-  status = 200
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/onboarding.html"
+  to = "/"
+  status = 301
 
 [[redirects]]
   from = "/proposal"
-  to   = "/proposal.html"
-  status = 200
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/proposal.html"
+  to = "/"
+  status = 301
 
 [[redirects]]
   from = "/services"
-  to   = "/services.html"
-  status = 200
+  to = "/#services"
+  status = 301
 
+[[redirects]]
+  from = "/services.html"
+  to = "/#services"
+  status = 301
