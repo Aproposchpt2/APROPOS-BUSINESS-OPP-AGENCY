@@ -1,6 +1,14 @@
 [build]
   publish = "."
 
+[[edge_functions]]
+  function = "contact-inject"
+  path = "/"
+
+[[edge_functions]]
+  function = "contact-inject"
+  path = "/index.html"
+
 [[headers]]
   for = "/*"
   [headers.values]
