@@ -3,430 +3,1346 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apropos Business Opportunity Agency | Economic Growth Through Opportunity</title>
-  <meta name="description" content="Apropos Business Opportunity Agency helps cities expand economic opportunity by connecting businesses to government contracts, buyers, funding resources, supplier development, and business-growth support." />
-  <meta name="theme-color" content="#07152f" />
+  <title>Apropos Business Opportunity Agency | Opportunity Builds Business</title>
+  <meta name="description" content="Apropos Business Opportunity Agency is a nonprofit opportunity development organization dedicated to expanding economic, business, and community growth." />
+  <meta name="theme-color" content="#06162f" />
+  <meta property="og:title" content="Apropos Business Opportunity Agency" />
+  <meta property="og:description" content="Dedicated to building economic, business, and community growth." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://aproposopportunity.org/" />
+  <meta property="og:image" content="https://aproposopportunity.org/headquarters.webp" />
+  <link rel="canonical" href="https://aproposopportunity.org/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    :root{
-      --navy:#07152f;
-      --navy2:#0d234d;
-      --navy3:#143566;
-      --gold:#c9a24f;
-      --gold2:#e4c77e;
-      --ivory:#f7f3e9;
-      --white:#ffffff;
-      --ink:#12213b;
-      --muted:#5d6b80;
-      --line:#dfe4ea;
-      --green:#1d6f5f;
-      --soft:#eef3f8;
-      --serif:'Libre Baskerville', Georgia, serif;
-      --sans:'DM Sans', Arial, sans-serif;
+    :root {
+      --navy: #06162f;
+      --navy-deep: #020b18;
+      --navy-mid: #0a2448;
+      --blue: #123a68;
+      --gold: #c8a45b;
+      --gold-light: #e5cf9a;
+      --ivory: #f6f0e3;
+      --ivory-2: #ede4d3;
+      --paper: #fbfaf6;
+      --ink: #101b2c;
+      --muted: #596474;
+      --line: rgba(16, 27, 44, .16);
+      --white-line: rgba(255, 255, 255, .17);
+      --serif: "Cormorant Garamond", Georgia, serif;
+      --sans: "Manrope", Arial, sans-serif;
+      --header-h: 88px;
+      --shell: min(1380px, calc(100vw - 96px));
     }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--white);line-height:1.6}
-    a{color:inherit}
-    .shell{width:min(1180px,calc(100% - 40px));margin:0 auto}
-    .eyebrow{font-size:.76rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 14px}
-    h1,h2,h3,p{margin-top:0}
-    h1,h2,h3{font-family:var(--serif)}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;border-radius:999px;padding:13px 22px;font-weight:700;font-size:.9rem;transition:.2s ease;border:1px solid transparent}
-    .btn:hover{transform:translateY(-2px)}
-    .btn-primary{background:var(--gold);color:var(--navy)}
-    .btn-primary:hover{background:var(--gold2)}
-    .btn-light{background:var(--white);color:var(--navy)}
-    .btn-outline{border-color:rgba(255,255,255,.35);color:var(--white)}
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      line-height: 1.68;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body.menu-open { overflow: hidden; }
+    a { color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    h1, h2, h3, p { margin-top: 0; }
+    ::selection { background: var(--gold); color: var(--navy-deep); }
+
+    .shell { width: var(--shell); margin: 0 auto; }
+    .serif { font-family: var(--serif); }
+    .gold { color: var(--gold-light); }
+    .section-number {
+      font-family: var(--serif);
+      font-size: clamp(4.8rem, 9vw, 9rem);
+      line-height: .78;
+      color: rgba(6, 22, 47, .08);
+      letter-spacing: -.05em;
+      user-select: none;
+    }
+    .section-number.light { color: rgba(255, 255, 255, .10); }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 0 0 24px;
+      font-size: .68rem;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .eyebrow::before {
+      content: "";
+      width: 44px;
+      height: 1px;
+      background: currentColor;
+      flex: 0 0 auto;
+    }
+    .display {
+      font-family: var(--serif);
+      font-size: clamp(3.1rem, 6.2vw, 6.8rem);
+      line-height: .92;
+      letter-spacing: -.045em;
+      font-weight: 600;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2.7rem, 5vw, 5.4rem);
+      line-height: .96;
+      letter-spacing: -.04em;
+      font-weight: 600;
+      margin-bottom: 28px;
+    }
+    .lead {
+      font-size: clamp(1.02rem, 1.25vw, 1.22rem);
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 760px;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
 
     /* Header */
-    .site-header{position:sticky;top:0;z-index:100;background:rgba(7,21,47,.96);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.09)}
-    .nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:28px}
-    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--white);min-width:0}
-    .brand-mark{width:42px;height:42px;border:1px solid rgba(201,162,79,.75);display:grid;place-items:center;font-weight:800;letter-spacing:.08em;color:var(--gold);border-radius:9px;flex:0 0 auto}
-    .brand-copy{display:flex;flex-direction:column;line-height:1.15}
-    .brand-copy strong{font-family:var(--serif);font-size:.98rem;font-weight:700}
-    .brand-copy span{font-size:.61rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:4px}
-    .nav-links{display:flex;align-items:center;gap:24px}
-    .nav-links a{text-decoration:none;color:rgba(255,255,255,.72);font-size:.84rem;font-weight:600}
-    .nav-links a:hover{color:var(--white)}
-    .nav-links .nav-cta{color:var(--navy);background:var(--gold);padding:10px 16px;border-radius:999px}
-    .menu-btn{display:none;background:none;border:0;color:#fff;font-size:1.45rem;cursor:pointer}
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 1000;
+      height: var(--header-h);
+      color: #fff;
+      background: linear-gradient(180deg, rgba(2,11,24,.84), rgba(2,11,24,.45), transparent);
+      transition: background .3s ease, border-color .3s ease, backdrop-filter .3s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .site-header.scrolled {
+      background: rgba(2, 11, 24, .94);
+      border-color: rgba(200, 164, 91, .20);
+      backdrop-filter: blur(18px);
+    }
+    .header-inner {
+      width: var(--shell);
+      height: 100%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) auto;
+      align-items: center;
+      gap: 40px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 18px;
+      width: fit-content;
+      text-decoration: none;
+      color: #fff;
+    }
+    .brand-rule {
+      width: 2px;
+      height: 42px;
+      background: linear-gradient(var(--gold-light), var(--gold));
+    }
+    .brand-text { line-height: 1; }
+    .brand-text strong {
+      display: block;
+      font-size: 1.05rem;
+      letter-spacing: .21em;
+      font-weight: 700;
+    }
+    .brand-text span {
+      display: block;
+      margin-top: 8px;
+      font-size: .56rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.68);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav a {
+      position: relative;
+      text-decoration: none;
+      font-size: .68rem;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: rgba(255,255,255,.78);
+      transition: color .2s ease;
+    }
+    .nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: width .25s ease;
+    }
+    .nav a:hover { color: #fff; }
+    .nav a:hover::after { width: 100%; }
+    .nav .nav-accent {
+      padding: 12px 18px;
+      border: 1px solid rgba(229,207,154,.62);
+      color: var(--gold-light);
+    }
+    .nav .nav-accent::after { display: none; }
+    .menu-toggle {
+      display: none;
+      background: transparent;
+      color: #fff;
+      border: 0;
+      font: inherit;
+      font-size: .68rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 12px 0;
+    }
 
     /* Hero */
-    .hero{position:relative;overflow:hidden;background:linear-gradient(115deg,var(--navy) 0%,#0b2149 56%,#173e70 100%);color:var(--white)}
-    .hero::before{content:'';position:absolute;right:-140px;top:-180px;width:650px;height:650px;border:1px solid rgba(201,162,79,.17);border-radius:50%}
-    .hero::after{content:'';position:absolute;right:80px;bottom:-250px;width:520px;height:520px;background:radial-gradient(circle,rgba(201,162,79,.18),transparent 66%);border-radius:50%}
-    .hero-grid{min-height:690px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(350px,.9fr);align-items:center;gap:70px;padding:70px 0;position:relative;z-index:1}
-    .hero h1{font-size:clamp(2.7rem,5.1vw,5.25rem);line-height:1.02;letter-spacing:-.04em;margin-bottom:24px;font-weight:400}
-    .hero h1 em{display:block;color:var(--gold2);font-style:italic}
-    .hero-copy{max-width:720px;color:rgba(255,255,255,.76);font-size:1.1rem;margin-bottom:30px}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
-    .hero-panel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:30px;box-shadow:0 30px 70px rgba(0,0,0,.2)}
-    .hero-panel-label{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);font-weight:700;margin-bottom:18px}
-    .flow{display:grid;gap:12px}
-    .flow-item{display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start;padding:14px;border-radius:14px;background:rgba(255,255,255,.05)}
-    .flow-num{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:var(--navy);font-weight:800}
-    .flow-item strong{display:block;margin-bottom:2px}
-    .flow-item span{font-size:.82rem;color:rgba(255,255,255,.62)}
-
-    /* Impact strip */
-    .impact-strip{background:var(--ivory);border-bottom:1px solid #e7dfcf}
-    .impact-grid{display:grid;grid-template-columns:repeat(4,1fr)}
-    .impact-item{padding:27px 26px;border-right:1px solid #e2dac9}
-    .impact-item:last-child{border-right:0}
-    .impact-item strong{display:block;font-family:var(--serif);font-size:1.08rem;color:var(--navy);margin-bottom:3px}
-    .impact-item span{font-size:.8rem;color:#6e675c}
-
-    /* Shared */
-    section{padding:92px 0}
-    .section-head{max-width:800px;margin-bottom:45px}
-    .section-head h2{font-size:clamp(2rem,3.8vw,3.6rem);line-height:1.08;letter-spacing:-.035em;color:var(--navy);margin-bottom:18px}
-    .section-head p{font-size:1.03rem;color:var(--muted);max-width:720px}
-
-    /* Mission */
-    .mission{background:#fff}
-    .mission-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:68px;align-items:start}
-    .mission-quote{background:var(--navy);color:#fff;padding:42px;border-radius:20px;position:sticky;top:100px}
-    .mission-quote p{font-family:var(--serif);font-size:1.65rem;line-height:1.45;margin-bottom:20px}
-    .mission-quote span{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2)}
-    .mission-copy h2{font-size:clamp(2rem,3vw,3.1rem);line-height:1.1;color:var(--navy);margin-bottom:18px}
-    .mission-copy p{color:var(--muted);font-size:1rem}
-    .principles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
-    .principle{background:var(--soft);padding:20px;border-radius:14px;border:1px solid #e2e8ef}
-    .principle strong{display:block;color:var(--navy);margin-bottom:5px}
-    .principle span{font-size:.84rem;color:var(--muted)}
-
-    /* Services */
-    .services{background:var(--soft)}
-    .service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .service-card{background:#fff;border:1px solid #dfe6ee;border-radius:18px;padding:28px;min-height:270px;display:flex;flex-direction:column;transition:.2s ease}
-    .service-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(16,39,76,.08)}
-    .service-icon{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:var(--navy);color:var(--gold2);font-weight:800;margin-bottom:20px}
-    .service-card h3{font-size:1.25rem;color:var(--navy);margin-bottom:10px}
-    .service-card p{font-size:.9rem;color:var(--muted);margin-bottom:16px}
-    .service-card ul{margin:auto 0 0;padding-left:18px;color:#536278;font-size:.82rem}
-
-    /* City section */
-    .cities{background:linear-gradient(130deg,#0a1b39,#102b59);color:#fff}
-    .cities .section-head h2{color:#fff}
-    .cities .section-head p{color:rgba(255,255,255,.68)}
-    .city-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .city-card{border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:28px;background:rgba(255,255,255,.05)}
-    .city-card .number{font-family:var(--serif);font-size:2.5rem;color:var(--gold2);margin-bottom:12px}
-    .city-card h3{font-size:1.18rem;margin-bottom:8px}
-    .city-card p{font-size:.88rem;color:rgba(255,255,255,.62);margin-bottom:0}
-    .city-outcomes{margin-top:38px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    .outcome{padding:18px;border-top:1px solid rgba(201,162,79,.5)}
-    .outcome strong{display:block;color:var(--gold2);font-size:.95rem;margin-bottom:5px}
-    .outcome span{font-size:.78rem;color:rgba(255,255,255,.58)}
-
-    /* Infrastructure */
-    .infrastructure{background:#fff}
-    .pipeline-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-    .pipeline{border:1px solid var(--line);border-radius:20px;padding:32px;position:relative;overflow:hidden}
-    .pipeline::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--gold)}
-    .pipeline-tag{font-size:.66rem;letter-spacing:.17em;text-transform:uppercase;color:var(--green);font-weight:800;margin-bottom:14px}
-    .pipeline h3{font-size:1.55rem;color:var(--navy);margin-bottom:10px}
-    .pipeline p{font-size:.92rem;color:var(--muted)}
-    .pipeline strong{color:var(--navy)}
-    .boundary{margin-top:24px;padding:23px 26px;border-radius:16px;background:var(--ivory);border:1px solid #e3dac7;color:#635c51;font-size:.86rem}
-    .boundary strong{color:var(--navy)}
-
-    /* Partners */
-    .partners{background:var(--ivory)}
-    .partner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    .partner{background:#fff;border:1px solid #e5dccb;border-radius:14px;padding:22px;text-align:center;font-weight:700;color:var(--navy);font-size:.9rem}
-
-    /* CTA */
-    .cta{padding:0;background:#fff}
-    .cta-box{margin:0 auto 90px;background:var(--navy);color:#fff;border-radius:26px;padding:54px;display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center;position:relative;overflow:hidden}
-    .cta-box::after{content:'';position:absolute;right:-100px;top:-100px;width:340px;height:340px;border:1px solid rgba(201,162,79,.22);border-radius:50%}
-    .cta-box h2{font-size:clamp(2rem,3.6vw,3.5rem);line-height:1.1;margin-bottom:14px}
-    .cta-box p{color:rgba(255,255,255,.68);margin-bottom:0;max-width:690px}
-    .cta-actions{display:flex;justify-content:flex-end;position:relative;z-index:1}
-
-    footer{background:#041025;color:rgba(255,255,255,.6);padding:50px 0 30px}
-    .footer-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:50px;align-items:start}
-    .footer-brand{font-family:var(--serif);font-size:1.15rem;color:#fff;margin-bottom:8px}
-    .footer-copy{font-size:.82rem;max-width:600px}
-    .footer-links{display:flex;flex-wrap:wrap;gap:16px;justify-content:flex-end}
-    .footer-links a{text-decoration:none;font-size:.8rem;color:rgba(255,255,255,.66)}
-    .legal{margin-top:34px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);font-size:.72rem;display:flex;justify-content:space-between;gap:20px}
-
-    @media(max-width:980px){
-      .nav-links{display:none;position:absolute;left:0;right:0;top:76px;background:var(--navy);padding:20px;flex-direction:column;align-items:flex-start;border-top:1px solid rgba(255,255,255,.1)}
-      .nav-links.open{display:flex}
-      .menu-btn{display:block}
-      .hero-grid{grid-template-columns:1fr;gap:40px;min-height:auto;padding:70px 0}
-      .hero-panel{max-width:720px}
-      .impact-grid{grid-template-columns:1fr 1fr}
-      .impact-item:nth-child(2){border-right:0}
-      .mission-grid{grid-template-columns:1fr}
-      .mission-quote{position:relative;top:auto}
-      .service-grid{grid-template-columns:1fr 1fr}
-      .city-grid{grid-template-columns:1fr}
-      .city-outcomes{grid-template-columns:1fr 1fr}
-      .partner-grid{grid-template-columns:1fr 1fr}
-      .cta-box{grid-template-columns:1fr}
-      .cta-actions{justify-content:flex-start}
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      color: #fff;
+      display: flex;
+      align-items: stretch;
+      isolation: isolate;
+      overflow: hidden;
+      background: var(--navy-deep);
     }
-    @media(max-width:640px){
-      .shell{width:min(100% - 28px,1180px)}
-      .brand-copy strong{font-size:.82rem}
-      .brand-copy span{font-size:.5rem}
-      .hero h1{font-size:2.65rem}
-      section{padding:72px 0}
-      .impact-grid,.service-grid,.pipeline-grid,.partner-grid,.principles,.city-outcomes{grid-template-columns:1fr}
-      .impact-item{border-right:0;border-bottom:1px solid #e2dac9}
-      .cta-box{padding:34px 24px;margin-bottom:65px}
-      .footer-grid{grid-template-columns:1fr}
-      .footer-links{justify-content:flex-start}
-      .legal{flex-direction:column}
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      background-image: url("headquarters.webp");
+      background-size: cover;
+      background-position: center 44%;
+      transform: scale(1.035);
+      animation: heroZoom 18s ease-out both;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(90deg, rgba(2,11,24,.96) 0%, rgba(3,15,33,.88) 34%, rgba(5,25,53,.58) 60%, rgba(5,25,53,.18) 100%),
+        linear-gradient(180deg, rgba(2,11,24,.22) 0%, rgba(2,11,24,.08) 54%, rgba(2,11,24,.82) 100%);
+    }
+    .hero-grid-lines {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(90deg, transparent calc(25% - .5px), rgba(255,255,255,.055) 25%, transparent calc(25% + .5px)),
+        linear-gradient(90deg, transparent calc(50% - .5px), rgba(255,255,255,.055) 50%, transparent calc(50% + .5px)),
+        linear-gradient(90deg, transparent calc(75% - .5px), rgba(255,255,255,.055) 75%, transparent calc(75% + .5px));
+    }
+    @keyframes heroZoom { from { transform: scale(1.08); } to { transform: scale(1.025); } }
+    .hero-inner {
+      width: var(--shell);
+      margin: 0 auto;
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: minmax(0, 850px) 1fr;
+      align-items: center;
+      gap: 72px;
+      padding: calc(var(--header-h) + 70px) 0 94px;
+    }
+    .hero-copy-wrap { align-self: center; }
+    .hero-kicker {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      font-size: .67rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--gold-light);
+    }
+    .hero-kicker::before { content: ""; width: 56px; height: 1px; background: var(--gold); }
+    .hero h1 {
+      margin: 0;
+      max-width: 830px;
+      font-family: var(--serif);
+      font-size: clamp(4rem, 7.6vw, 8.5rem);
+      line-height: .82;
+      letter-spacing: -.052em;
+      font-weight: 600;
+      text-wrap: balance;
+      text-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+    .hero h1 .accent { color: var(--gold-light); font-style: italic; }
+    .hero-intro {
+      max-width: 700px;
+      margin: 34px 0 0;
+      padding-left: 26px;
+      border-left: 1px solid rgba(229,207,154,.68);
+      font-size: clamp(1rem, 1.25vw, 1.2rem);
+      line-height: 1.76;
+      color: rgba(255,255,255,.82);
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 34px;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 14px 22px;
+      text-decoration: none;
+      font-size: .66rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,.34);
+      transition: transform .25s ease, background .25s ease, color .25s ease, border-color .25s ease;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .button.gold-button { background: var(--gold); border-color: var(--gold); color: var(--navy-deep); }
+    .button.ghost-button { color: #fff; background: rgba(2,11,24,.16); }
+    .hero-side {
+      align-self: end;
+      justify-self: end;
+      width: min(360px, 100%);
+      padding-bottom: 9px;
+    }
+    .hero-side-line { width: 100%; height: 1px; background: rgba(229,207,154,.55); margin-bottom: 18px; }
+    .hero-side p {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 2vw, 2.15rem);
+      line-height: 1.15;
+      color: #fff;
+    }
+    .hero-side p span { display: block; color: var(--gold-light); }
+    .scroll-cue {
+      position: absolute;
+      right: 30px;
+      bottom: 44px;
+      writing-mode: vertical-rl;
+      font-size: .56rem;
+      text-transform: uppercase;
+      letter-spacing: .23em;
+      color: rgba(255,255,255,.5);
+    }
+
+    /* Manifesto strip */
+    .manifesto {
+      background: var(--navy-deep);
+      color: #fff;
+      border-top: 1px solid rgba(229,207,154,.28);
+      border-bottom: 1px solid rgba(229,207,154,.20);
+    }
+    .manifesto-inner {
+      width: var(--shell);
+      margin: 0 auto;
+      min-height: 148px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 34px;
+    }
+    .manifesto p {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3.2vw, 3.4rem);
+      letter-spacing: -.02em;
+      line-height: 1;
+    }
+    .manifesto p:last-child { text-align: right; }
+    .manifesto-mark { width: 1px; height: 58px; background: var(--gold); }
+
+    /* Purpose */
+    .purpose {
+      position: relative;
+      padding: 150px 0 145px;
+      background: var(--ivory);
+      overflow: hidden;
+    }
+    .purpose::before {
+      content: "PURPOSE";
+      position: absolute;
+      right: -1.5vw;
+      top: 40px;
+      font-family: var(--serif);
+      font-size: clamp(8rem, 20vw, 22rem);
+      line-height: .8;
+      color: rgba(6,22,47,.032);
+      letter-spacing: -.06em;
+      pointer-events: none;
+    }
+    .purpose-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: clamp(70px, 10vw, 150px);
+    }
+    .purpose-aside { padding-top: 9px; }
+    .purpose-aside .section-number { margin-bottom: 34px; }
+    .purpose-aside p {
+      max-width: 240px;
+      margin: 0;
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .17em;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .purpose-content { max-width: 900px; }
+    .purpose-content .section-title { max-width: 800px; }
+    .purpose-content > p {
+      max-width: 790px;
+      font-size: 1.05rem;
+      color: #3f4b5d;
+    }
+    .economic-actions {
+      margin-top: 58px;
+      border-top: 1px solid rgba(6,22,47,.22);
+      border-bottom: 1px solid rgba(6,22,47,.22);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .economic-actions div { padding: 28px 22px 28px 0; border-right: 1px solid rgba(6,22,47,.16); }
+    .economic-actions div:not(:first-child) { padding-left: 22px; }
+    .economic-actions div:last-child { border-right: 0; }
+    .economic-actions strong {
+      display: block;
+      margin-bottom: 8px;
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      color: var(--navy);
+      font-weight: 600;
+    }
+    .economic-actions span { font-size: .76rem; color: var(--muted); }
+
+    /* Growth model */
+    .growth-model {
+      background: var(--navy);
+      color: #fff;
+      padding: 145px 0 150px;
+      position: relative;
+      overflow: hidden;
+    }
+    .growth-model::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent 49.96%, rgba(255,255,255,.045) 50%, transparent 50.04%);
+    }
+    .model-grid {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: clamp(70px, 9vw, 130px);
+      position: relative;
+      z-index: 1;
+    }
+    .model-intro { position: sticky; top: 130px; align-self: start; }
+    .model-intro .section-title { max-width: 520px; }
+    .model-intro p { color: rgba(255,255,255,.66); max-width: 500px; }
+    .model-sequence { border-top: 1px solid var(--white-line); }
+    .model-step {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 24px;
+      padding: 38px 0 42px;
+      border-bottom: 1px solid var(--white-line);
+    }
+    .model-step .num {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      color: var(--gold-light);
+    }
+    .model-step h3 {
+      margin: 0 0 8px;
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4.2vw, 4.8rem);
+      line-height: .95;
+      font-weight: 600;
+      letter-spacing: -.035em;
+    }
+    .model-step p { margin: 0; max-width: 650px; color: rgba(255,255,255,.62); font-size: .95rem; }
+
+    /* Marketplace */
+    .marketplace {
+      position: relative;
+      background: var(--paper);
+      padding: 150px 0;
+      overflow: hidden;
+    }
+    .marketplace-grid {
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      gap: clamp(70px, 9vw, 140px);
+      align-items: start;
+    }
+    .marketplace-statement {
+      padding-top: 16px;
+      position: relative;
+    }
+    .marketplace-statement::before {
+      content: "";
+      position: absolute;
+      left: -48px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(transparent, var(--gold), transparent);
+    }
+    .marketplace-statement h2 {
+      font-family: var(--serif);
+      font-size: clamp(3.2rem, 6.2vw, 6.7rem);
+      line-height: .93;
+      letter-spacing: -.045em;
+      font-weight: 600;
+      margin: 0;
+      color: var(--navy);
+    }
+    .marketplace-copy { padding-top: 132px; }
+    .marketplace-copy p { color: #475468; font-size: 1.02rem; }
+    .marketplace-copy .closing-line {
+      margin-top: 30px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--navy);
+      font-family: var(--serif);
+      font-size: 1.55rem;
+      line-height: 1.35;
+    }
+
+    /* Development */
+    .development {
+      background: #fff;
+      padding: 145px 0 155px;
+      border-top: 1px solid rgba(6,22,47,.08);
+    }
+    .development-head {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 80px;
+      margin-bottom: 70px;
+      align-items: end;
+    }
+    .development-head .section-title { margin: 0; }
+    .development-head p { margin: 0; max-width: 660px; color: var(--muted); }
+    .opportunity-index {
+      border-top: 1px solid rgba(6,22,47,.22);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 64px;
+    }
+    .opportunity-item {
+      min-height: 90px;
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      align-items: center;
+      gap: 18px;
+      border-bottom: 1px solid rgba(6,22,47,.16);
+    }
+    .opportunity-item .index { color: var(--gold); font-family: var(--serif); font-size: 1.1rem; }
+    .opportunity-item strong { font-family: var(--serif); font-size: clamp(1.25rem, 2vw, 1.8rem); font-weight: 600; color: var(--navy); }
+    .development-objective {
+      margin-top: 76px;
+      padding: 38px 0 0 54px;
+      border-left: 1px solid var(--gold);
+      max-width: 1040px;
+    }
+    .development-objective span {
+      display: block;
+      margin-bottom: 12px;
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .development-objective p {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 4.3rem);
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      color: var(--navy);
+    }
+
+    /* Local growth */
+    .local-growth {
+      position: relative;
+      background: var(--navy-mid);
+      color: #fff;
+      padding: 160px 0 155px;
+      overflow: hidden;
+    }
+    .local-growth::before {
+      content: "CITY BY CITY";
+      position: absolute;
+      left: -2vw;
+      bottom: -2vw;
+      font-family: var(--serif);
+      font-size: clamp(9rem, 19vw, 21rem);
+      line-height: .75;
+      color: rgba(255,255,255,.026);
+      white-space: nowrap;
+    }
+    .local-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: clamp(70px, 9vw, 135px);
+    }
+    .local-copy p { color: rgba(255,255,255,.68); }
+    .local-question {
+      align-self: center;
+      padding: 34px 0 34px 48px;
+      border-left: 1px solid var(--gold);
+    }
+    .local-question span {
+      display: block;
+      margin-bottom: 16px;
+      font-size: .67rem;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+    .local-question p {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(2.6rem, 5.2vw, 5.8rem);
+      line-height: .95;
+      letter-spacing: -.035em;
+    }
+
+    /* Why growth matters */
+    .why {
+      background: var(--ivory);
+      padding: 150px 0 160px;
+    }
+    .why-head {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 90px;
+      margin-bottom: 78px;
+    }
+    .why-head .section-title { max-width: 920px; }
+    .cause-chain { border-top: 1px solid rgba(6,22,47,.23); }
+    .cause-row {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      min-height: 145px;
+      border-bottom: 1px solid rgba(6,22,47,.18);
+    }
+    .cause-row:nth-child(even) { grid-template-columns: .95fr 1.05fr; }
+    .cause-row .cause {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4.4vw, 4.8rem);
+      line-height: .95;
+      letter-spacing: -.04em;
+      color: var(--navy);
+    }
+    .cause-row .effect {
+      font-size: .9rem;
+      color: var(--muted);
+      max-width: 470px;
+      justify-self: end;
+    }
+    .cause-row:nth-child(even) .cause { order: 2; text-align: right; }
+    .cause-row:nth-child(even) .effect { order: 1; justify-self: start; }
+
+    /* Community impact */
+    .community-impact {
+      background: var(--paper);
+      padding: 155px 0;
+    }
+    .impact-heading {
+      max-width: 1040px;
+      margin-bottom: 84px;
+    }
+    .impact-heading h2 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(3.4rem, 7vw, 7.8rem);
+      line-height: .83;
+      letter-spacing: -.05em;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .impact-heading h2 span { color: var(--gold); font-style: italic; }
+    .impact-copy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 90px;
+      border-top: 1px solid var(--line);
+      padding-top: 48px;
+    }
+    .impact-copy-grid p { color: var(--muted); font-size: 1rem; }
+    .impact-copy-grid .impact-last {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      line-height: 1.12;
+      color: var(--navy);
+    }
+
+    /* Role */
+    .role {
+      background: var(--navy-deep);
+      color: #fff;
+      padding: 150px 0 155px;
+      overflow: hidden;
+    }
+    .role-intro {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 90px;
+      margin-bottom: 85px;
+      align-items: end;
+    }
+    .role-intro p { color: rgba(255,255,255,.66); max-width: 650px; margin: 0; }
+    .role-equation { border-top: 1px solid var(--white-line); border-bottom: 1px solid var(--white-line); }
+    .role-term {
+      display: grid;
+      grid-template-columns: 82px 1fr 70px;
+      align-items: center;
+      min-height: 118px;
+      border-bottom: 1px solid rgba(255,255,255,.11);
+    }
+    .role-term:last-child { border-bottom: 0; }
+    .role-term .term-num { color: var(--gold-light); font-family: var(--serif); }
+    .role-term strong {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 4rem);
+      letter-spacing: -.025em;
+      font-weight: 600;
+    }
+    .role-term .plus {
+      justify-self: end;
+      font-family: var(--serif);
+      font-size: 2.1rem;
+      color: rgba(229,207,154,.7);
+    }
+    .role-term:last-child .plus { visibility: hidden; }
+
+    /* Partnerships */
+    .partnerships {
+      background: #fff;
+      padding: 150px 0 160px;
+    }
+    .partnership-grid {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: clamp(70px, 9vw, 140px);
+    }
+    .partnership-copy { position: sticky; top: 130px; align-self: start; }
+    .partnership-copy p { color: var(--muted); }
+    .partner-list { border-top: 1px solid rgba(6,22,47,.22); }
+    .partner-row {
+      min-height: 84px;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      align-items: center;
+      border-bottom: 1px solid rgba(6,22,47,.15);
+    }
+    .partner-row span { color: var(--gold); font-family: var(--serif); }
+    .partner-row strong { font-family: var(--serif); font-size: clamp(1.35rem, 2.3vw, 2.05rem); font-weight: 600; color: var(--navy); }
+    .partner-principle {
+      margin-top: 58px;
+      padding-top: 34px;
+      border-top: 1px solid rgba(6,22,47,.22);
+    }
+    .partner-principle p {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(1.65rem, 3vw, 2.9rem);
+      line-height: 1.16;
+      color: var(--navy);
+    }
+
+    /* Commitment */
+    .commitment {
+      position: relative;
+      min-height: 92svh;
+      display: flex;
+      align-items: center;
+      background: var(--navy);
+      color: #fff;
+      overflow: hidden;
+      padding: 140px 0;
+    }
+    .commitment::before {
+      content: "OPPORTUNITY";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--serif);
+      font-size: clamp(11rem, 25vw, 30rem);
+      line-height: .8;
+      color: rgba(255,255,255,.018);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .commitment-inner { position: relative; max-width: 1030px; }
+    .commitment .section-title { max-width: 900px; }
+    .commitment p { max-width: 830px; color: rgba(255,255,255,.68); }
+    .reach-list {
+      margin-top: 46px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      border-top: 1px solid var(--white-line);
+      border-bottom: 1px solid var(--white-line);
+    }
+    .reach-list span {
+      padding: 17px 24px;
+      border-right: 1px solid var(--white-line);
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      color: var(--gold-light);
+    }
+    .reach-list span:first-child { padding-left: 0; }
+    .closing-signature {
+      padding: 122px 0 130px;
+      background: var(--ivory);
+      text-align: center;
+    }
+    .closing-signature .eyebrow { justify-content: center; }
+    .closing-signature .eyebrow::after { content: ""; width: 44px; height: 1px; background: currentColor; }
+    .closing-signature h2 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(3.7rem, 8vw, 8.8rem);
+      line-height: .82;
+      letter-spacing: -.052em;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .closing-signature h2 span { display: block; color: var(--gold); font-style: italic; }
+    .closing-signature p {
+      margin: 38px auto 0;
+      max-width: 740px;
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.8;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--navy-deep);
+      color: #fff;
+      border-top: 1px solid rgba(229,207,154,.18);
+      padding: 58px 0 34px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 60px;
+      align-items: end;
+      padding-bottom: 44px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    .footer-name {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3.2vw, 3.2rem);
+      line-height: 1;
+      margin: 0 0 12px;
+    }
+    .footer-tagline { margin: 0; color: var(--gold-light); font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; }
+    .footer-nav { display: flex; gap: 26px; flex-wrap: wrap; justify-content: flex-end; }
+    .footer-nav a { text-decoration: none; color: rgba(255,255,255,.62); font-size: .7rem; text-transform: uppercase; letter-spacing: .11em; }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding-top: 25px;
+      font-size: .68rem;
+      color: rgba(255,255,255,.42);
+    }
+
+    @media (max-width: 1120px) {
+      :root { --shell: min(100% - 56px, 1380px); }
+      .nav { gap: 20px; }
+      .nav a { font-size: .62rem; }
+      .hero-inner { grid-template-columns: minmax(0, 760px) 1fr; gap: 40px; }
+      .purpose-grid { grid-template-columns: 240px 1fr; gap: 80px; }
+      .economic-actions { grid-template-columns: 1fr 1fr; }
+      .economic-actions div:nth-child(2) { border-right: 0; }
+      .economic-actions div:nth-child(-n+2) { border-bottom: 1px solid rgba(6,22,47,.16); }
+    }
+
+    @media (max-width: 900px) {
+      :root { --header-h: 76px; --shell: min(100% - 40px, 1380px); }
+      .header-inner { grid-template-columns: 1fr auto; }
+      .menu-toggle { display: block; }
+      .nav {
+        position: fixed;
+        inset: var(--header-h) 0 0 0;
+        background: rgba(2,11,24,.985);
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 60px 10vw;
+        gap: 30px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-14px);
+        transition: .25s ease;
+      }
+      .nav.open { opacity: 1; visibility: visible; transform: translateY(0); }
+      .nav a { font-size: .82rem; }
+      .hero-inner { grid-template-columns: 1fr; padding-top: calc(var(--header-h) + 72px); }
+      .hero h1 { font-size: clamp(4.2rem, 13vw, 7rem); }
+      .hero-side { justify-self: start; align-self: start; width: min(440px,100%); }
+      .scroll-cue { display: none; }
+      .manifesto-inner { grid-template-columns: 1fr; gap: 18px; padding: 40px 0; }
+      .manifesto p:last-child { text-align: left; }
+      .manifesto-mark { width: 70px; height: 1px; }
+      .purpose-grid,
+      .model-grid,
+      .marketplace-grid,
+      .development-head,
+      .local-grid,
+      .why-head,
+      .impact-copy-grid,
+      .role-intro,
+      .partnership-grid { grid-template-columns: 1fr; }
+      .purpose-grid { gap: 44px; }
+      .purpose-aside { display: flex; align-items: end; gap: 30px; }
+      .purpose-aside .section-number { margin: 0; }
+      .model-intro,
+      .partnership-copy { position: static; }
+      .marketplace-copy { padding-top: 0; }
+      .marketplace-statement::before { left: -20px; }
+      .development-head { gap: 26px; }
+      .local-grid { gap: 70px; }
+      .why-head { gap: 26px; }
+      .impact-copy-grid { gap: 32px; }
+      .role-intro { gap: 28px; }
+      .partnership-grid { gap: 72px; }
+    }
+
+    @media (max-width: 640px) {
+      :root { --shell: calc(100% - 30px); }
+      .brand-rule { height: 34px; }
+      .brand-text strong { font-size: .84rem; letter-spacing: .16em; }
+      .brand-text span { font-size: .48rem; letter-spacing: .12em; }
+      .hero::before { background-position: 61% center; }
+      .hero::after {
+        background:
+          linear-gradient(90deg, rgba(2,11,24,.94), rgba(2,11,24,.70) 68%, rgba(2,11,24,.42)),
+          linear-gradient(180deg, rgba(2,11,24,.18), rgba(2,11,24,.90));
+      }
+      .hero-inner { padding-bottom: 62px; }
+      .hero h1 { font-size: clamp(3.65rem, 17vw, 5.5rem); line-height: .84; }
+      .hero-intro { padding-left: 18px; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+      .button { width: 100%; max-width: 340px; }
+      .purpose, .growth-model, .marketplace, .development, .local-growth, .why, .community-impact, .role, .partnerships { padding-top: 105px; padding-bottom: 110px; }
+      .economic-actions { grid-template-columns: 1fr; }
+      .economic-actions div { border-right: 0 !important; border-bottom: 1px solid rgba(6,22,47,.16); padding: 20px 0 !important; }
+      .economic-actions div:last-child { border-bottom: 0; }
+      .model-step { grid-template-columns: 54px 1fr; gap: 12px; padding: 28px 0 32px; }
+      .opportunity-index { grid-template-columns: 1fr; column-gap: 0; }
+      .development-objective { padding-left: 24px; }
+      .local-question { padding-left: 24px; }
+      .cause-row, .cause-row:nth-child(even) { grid-template-columns: 1fr; gap: 14px; padding: 28px 0; }
+      .cause-row:nth-child(even) .cause { order: 1; text-align: left; }
+      .cause-row:nth-child(even) .effect { order: 2; }
+      .cause-row .effect { justify-self: start; }
+      .role-term { grid-template-columns: 44px 1fr 28px; min-height: 92px; }
+      .reach-list { flex-direction: column; }
+      .reach-list span { padding: 13px 0; border-right: 0; border-bottom: 1px solid var(--white-line); }
+      .reach-list span:last-child { border-bottom: 0; }
+      .closing-signature { padding: 94px 0 100px; }
+      .footer-top { grid-template-columns: 1fr; align-items: start; gap: 35px; }
+      .footer-nav { justify-content: flex-start; gap: 18px; }
+      .footer-bottom { flex-direction: column; gap: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .hero::before { animation: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .button, .nav a::after { transition: none; }
     }
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="shell nav">
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
       <a class="brand" href="#top" aria-label="Apropos Business Opportunity Agency home">
-        <div class="brand-mark">A</div>
-        <div class="brand-copy">
-          <strong>Apropos Business Opportunity Agency</strong>
-          <span>Economic Opportunity • City Growth</span>
-        </div>
+        <span class="brand-rule" aria-hidden="true"></span>
+        <span class="brand-text">
+          <strong>APROPOS</strong>
+          <span>Business Opportunity Agency</span>
+        </span>
       </a>
-      <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-        <a href="#mission">Mission</a>
-        <a href="#services">Services</a>
-        <a href="#cities">For Cities</a>
-        <a href="#infrastructure">Opportunity Pipelines</a>
-        <a href="#partners">Partners</a>
-        <a class="nav-cta" href="#connect">Explore a City Partnership</a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav">Menu</button>
+      <nav class="nav" id="primaryNav" aria-label="Primary navigation">
+        <a href="#purpose">Purpose</a>
+        <a href="#model">Growth Model</a>
+        <a href="#marketplace">Opportunity</a>
+        <a href="#impact">Impact</a>
+        <a href="#partnerships" class="nav-accent">Partnerships</a>
       </nav>
-      <button class="menu-btn" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰</button>
     </div>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="shell hero-grid">
-        <div>
-          <p class="eyebrow">A New Economic Opportunity Model</p>
-          <h1>Build stronger businesses. <em>Build stronger cities.</em></h1>
-          <p class="hero-copy">Apropos Business Opportunity Agency is being organized to help cities expand economic growth by connecting businesses to real market opportunity — government contracts, institutional buyers, funding resources, supplier-development support, and pathways to sustainable revenue.</p>
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-grid-lines" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-copy-wrap reveal">
+          <div class="hero-kicker">Nonprofit Opportunity Development Organization</div>
+          <h1>
+            Building <span class="accent">Opportunity.</span><br />
+            Building Business.<br />
+            Building Communities.
+          </h1>
+          <p class="hero-intro">
+            APROPOS BUSINESS OPPORTUNITY AGENCY is dedicated to expanding economic opportunity by helping businesses identify, pursue, and participate in opportunities that can contribute to their growth.
+          </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#cities">See the City Growth Model →</a>
-            <a class="btn btn-outline" href="#services">Explore Services</a>
+            <a class="button gold-button" href="#purpose">Discover Our Purpose</a>
+            <a class="button ghost-button" href="#partnerships">Explore Partnerships</a>
           </div>
         </div>
-        <aside class="hero-panel" aria-label="Economic opportunity model">
-          <div class="hero-panel-label">The Opportunity Development Cycle</div>
-          <div class="flow">
-            <div class="flow-item"><div class="flow-num">1</div><div><strong>Identify Local Businesses</strong><span>Understand capabilities, industries, readiness, and growth objectives.</span></div></div>
-            <div class="flow-item"><div class="flow-num">2</div><div><strong>Acquire Real Opportunities</strong><span>Surface state, local, federal, institutional, and buyer demand.</span></div></div>
-            <div class="flow-item"><div class="flow-num">3</div><div><strong>Develop Access</strong><span>Connect businesses to the right opportunity, resource, buyer, or support channel.</span></div></div>
-            <div class="flow-item"><div class="flow-num">4</div><div><strong>Grow the Local Economy</strong><span>More capable businesses, more revenue retained locally, stronger commercial ecosystems.</span></div></div>
-          </div>
+        <aside class="hero-side reveal" aria-label="Agency philosophy">
+          <div class="hero-side-line"></div>
+          <p>Opportunity Builds Business.<span>Business Builds Community.</span></p>
         </aside>
       </div>
+      <div class="scroll-cue" aria-hidden="true">Scroll to explore</div>
     </section>
 
-    <div class="impact-strip">
-      <div class="shell impact-grid">
-        <div class="impact-item"><strong>Opportunity Access</strong><span>Move businesses from searching to pursuing.</span></div>
-        <div class="impact-item"><strong>Supplier Development</strong><span>Strengthen the businesses already inside the city.</span></div>
-        <div class="impact-item"><strong>Buyer Connection</strong><span>Improve visibility between capable sellers and active buyers.</span></div>
-        <div class="impact-item"><strong>Economic Growth</strong><span>Turn business opportunity into local commercial activity.</span></div>
+    <section class="manifesto" aria-label="Agency commitment">
+      <div class="manifesto-inner reveal">
+        <p>Stronger local economies begin with <span class="gold">stronger businesses.</span></p>
+        <span class="manifesto-mark" aria-hidden="true"></span>
+        <p>Opportunity can become <span class="gold">economic activity.</span></p>
       </div>
-    </div>
+    </section>
 
-    <section class="mission" id="mission">
-      <div class="shell mission-grid">
-        <div class="mission-quote">
-          <p>“Economic growth begins when businesses can see, reach, and compete for the opportunities capable of moving them forward.”</p>
-          <span>Apropos Business Opportunity Agency</span>
-        </div>
-        <div class="mission-copy">
-          <p class="eyebrow">Our Mission</p>
-          <h2>Create access to opportunity — and convert that access into local economic growth.</h2>
-          <p>Apropos Business Opportunity Agency is being established as a nonprofit public-benefit organization focused on business opportunity development. Our role is not simply to publish opportunities. Our role is to help cities build an organized pathway from local business capability to real demand.</p>
-          <p>That means identifying what businesses can provide, acquiring the opportunities and buyer demand that fit those capabilities, and helping businesses navigate the path toward participation, revenue, and sustainable growth.</p>
-          <div class="principles">
-            <div class="principle"><strong>Local First</strong><span>Build around the businesses, industries, and economic priorities of each city.</span></div>
-            <div class="principle"><strong>Opportunity Driven</strong><span>Center services around real demand rather than generic programming.</span></div>
-            <div class="principle"><strong>Evidence Based</strong><span>Use verified sources, procurement data, and documented market signals.</span></div>
-            <div class="principle"><strong>Growth Measured</strong><span>Track participation, pursuits, buyer connections, and business outcomes.</span></div>
+    <section class="purpose" id="purpose">
+      <div class="shell purpose-grid">
+        <aside class="purpose-aside reveal">
+          <div class="section-number">01</div>
+          <p>Our Purpose</p>
+        </aside>
+        <div class="purpose-content reveal">
+          <div class="eyebrow">Economic Growth Begins With Opportunity</div>
+          <h2 class="section-title">Businesses are fundamental to the economic strength of a community.</h2>
+          <p>
+            They employ people. They purchase goods and services. They support suppliers. They generate commercial activity. They create pathways for entrepreneurship and advancement.
+          </p>
+          <p>
+            But businesses cannot pursue opportunities they cannot see. APROPOS BUSINESS OPPORTUNITY AGENCY works to improve the connection between businesses and the opportunities, markets, resources, and relationships that can help them grow.
+          </p>
+          <p>
+            Our purpose is not simply to distribute information. Our purpose is to help create an environment where opportunity can become economic activity.
+          </p>
+          <div class="economic-actions" aria-label="How business strengthens communities">
+            <div><strong>Employ</strong><span>People and talent</span></div>
+            <div><strong>Purchase</strong><span>Goods and services</span></div>
+            <div><strong>Support</strong><span>Suppliers and partners</span></div>
+            <div><strong>Create</strong><span>Pathways for advancement</span></div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="services" id="services">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Services</p>
-          <h2>Infrastructure for business opportunity development.</h2>
-          <p>ABOA is designed to provide cities with a practical economic-development layer focused on the point where business capability meets market demand.</p>
+    <section class="growth-model" id="model">
+      <div class="shell model-grid">
+        <div class="model-intro reveal">
+          <div class="eyebrow">The Economic Growth Model</div>
+          <h2 class="section-title">Opportunity moves through an economy.</h2>
+          <p>Business growth is not an isolated outcome. It can create a chain of economic activity that reaches employees, households, suppliers, and the wider community.</p>
         </div>
-        <div class="service-grid">
-          <article class="service-card">
-            <div class="service-icon">01</div>
-            <h3>Contract Opportunity Access</h3>
-            <p>Deliver current public-sector opportunities to businesses through dedicated state, local, and federal opportunity pipelines.</p>
-            <ul><li>State and local contracts</li><li>Federal opportunities</li><li>Buyer and agency visibility</li></ul>
-          </article>
-          <article class="service-card">
-            <div class="service-icon">02</div>
-            <h3>Buyer Discovery</h3>
-            <p>Reverse-engineer the market from what a business sells to the organizations that buy it.</p>
-            <ul><li>Public buyers</li><li>Institutional buyers</li><li>Supplier and vendor pathways</li></ul>
-          </article>
-          <article class="service-card">
-            <div class="service-icon">03</div>
-            <h3>Supplier Development</h3>
-            <p>Help local businesses understand the readiness, registration, positioning, and capability requirements of larger buyers.</p>
-            <ul><li>Procurement readiness</li><li>Capability positioning</li><li>Market participation support</li></ul>
-          </article>
-          <article class="service-card">
-            <div class="service-icon">04</div>
-            <h3>Funding Resource Discovery</h3>
-            <p>Identify relevant public, philanthropic, economic-development, and financing resources aligned to business growth objectives.</p>
-            <ul><li>Grant resources</li><li>Capital pathways</li><li>Economic-development programs</li></ul>
-          </article>
-          <article class="service-card">
-            <div class="service-icon">05</div>
-            <h3>Business Opportunity Navigation</h3>
-            <p>Help businesses understand where an opportunity came from, what it requires, and what next action is needed.</p>
-            <ul><li>Opportunity interpretation</li><li>Source navigation</li><li>Referral to appropriate support</li></ul>
-          </article>
-          <article class="service-card">
-            <div class="service-icon">06</div>
-            <h3>City Economic Intelligence</h3>
-            <p>Give city partners visibility into the opportunity activity, supplier needs, and participation patterns affecting local businesses.</p>
-            <ul><li>Opportunity trends</li><li>Business participation metrics</li><li>Program outcome reporting</li></ul>
-          </article>
+        <div class="model-sequence">
+          <div class="model-step reveal">
+            <div class="num">01</div>
+            <div><h3>Opportunity</h3><p>Creates pathways for business growth.</p></div>
+          </div>
+          <div class="model-step reveal">
+            <div class="num">02</div>
+            <div><h3>Business Growth</h3><p>Creates greater potential for revenue, investment, supplier activity, and employment.</p></div>
+          </div>
+          <div class="model-step reveal">
+            <div class="num">03</div>
+            <div><h3>Economic Participation</h3><p>Employment and participation contribute to household stability, career advancement, and local spending.</p></div>
+          </div>
+          <div class="model-step reveal">
+            <div class="num">04</div>
+            <div><h3>Stronger Communities</h3><p>Those outcomes help build stronger communities and stronger local economies.</p></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="cities" id="cities">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Organized City by City</p>
-          <h2>A local economic-growth program powered by a broader opportunity network.</h2>
-          <p>ABOA is designed to organize where businesses live and operate: in cities and communities. Each city program can be aligned to local industries, business populations, economic-development priorities, and public-sector partners.</p>
+    <section class="marketplace" id="marketplace">
+      <div class="shell marketplace-grid">
+        <div class="marketplace-statement reveal">
+          <div class="eyebrow">Government Marketplace Opportunity</div>
+          <h2>Public contracting can be an engine for business growth.</h2>
         </div>
-        <div class="city-grid">
-          <article class="city-card"><div class="number">01</div><h3>Map the Business Community</h3><p>Identify the businesses operating locally, what they sell, where they are positioned to grow, and which opportunity categories matter most.</p></article>
-          <article class="city-card"><div class="number">02</div><h3>Build the Opportunity Feed</h3><p>Bring relevant contracts, buyers, funding resources, and growth pathways into an organized opportunity environment for local businesses.</p></article>
-          <article class="city-card"><div class="number">03</div><h3>Measure Economic Participation</h3><p>Track engagement and outcomes so cities can see how opportunity-development efforts are reaching and supporting their business community.</p></article>
-        </div>
-        <div class="city-outcomes">
-          <div class="outcome"><strong>More Opportunity Visibility</strong><span>Businesses gain a clearer view of markets beyond their normal reach.</span></div>
-          <div class="outcome"><strong>Stronger Local Suppliers</strong><span>Businesses develop the capacity to pursue larger buyers and contracts.</span></div>
-          <div class="outcome"><strong>Expanded Market Access</strong><span>Local firms connect to state, federal, institutional, and regional demand.</span></div>
-          <div class="outcome"><strong>Measurable Economic Activity</strong><span>Participation can be tracked as a city economic-development outcome.</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="infrastructure" id="infrastructure">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Opportunity Infrastructure</p>
-          <h2>Two dedicated contract pipelines. One mission: access.</h2>
-          <p>ABOA's program model can draw upon contract-opportunity infrastructure operated by Apropos Group LLC, allowing the nonprofit to focus on opportunity development, business access, and economic outcomes.</p>
-        </div>
-        <div class="pipeline-grid">
-          <article class="pipeline">
-            <div class="pipeline-tag">State + Local</div>
-            <h3>Business Contract Pipeline</h3>
-            <p><strong>bcp.aproposgroupllc.com</strong></p>
-            <p>State, county, municipal, education, transit, utility, and other public-sector contract opportunities organized for business access.</p>
-          </article>
-          <article class="pipeline">
-            <div class="pipeline-tag">Federal</div>
-            <h3>Federal Contract Pipeline</h3>
-            <p><strong>fcp.aproposgroupllc.com</strong></p>
-            <p>Federal procurement opportunities and acquisition information delivered through a dedicated federal contract pipeline.</p>
-          </article>
-        </div>
-        <div class="boundary"><strong>Organizational independence matters.</strong> Apropos Business Opportunity Agency is being organized as a separate nonprofit public-benefit organization. Apropos Group LLC remains the commercial owner and operator of its technology and opportunity infrastructure. Any services, licensing, or data relationship between the organizations should be documented and governed appropriately.</div>
-      </div>
-    </section>
-
-    <section class="partners" id="partners">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Partnership Network</p>
-          <h2>Economic growth is collaborative.</h2>
-          <p>ABOA's city model is designed to work alongside existing organizations rather than replace them. The objective is to connect opportunity infrastructure with the trusted institutions already serving businesses.</p>
-        </div>
-        <div class="partner-grid">
-          <div class="partner">Cities & Municipalities</div>
-          <div class="partner">Economic Development Organizations</div>
-          <div class="partner">Small Business Support Organizations</div>
-          <div class="partner">Community Colleges & Universities</div>
-          <div class="partner">Chambers of Commerce</div>
-          <div class="partner">Procurement Support Organizations</div>
-          <div class="partner">Foundations & Philanthropy</div>
-          <div class="partner">Corporate & Institutional Buyers</div>
+        <div class="marketplace-copy reveal">
+          <p>
+            Every year, federal, state, county, municipal, educational, and other public institutions purchase an enormous range of products and services from businesses.
+          </p>
+          <p>
+            For capable businesses, participation in this marketplace can provide another pathway to revenue, experience, capacity, employment, and long-term growth.
+          </p>
+          <p>
+            APROPOS BUSINESS OPPORTUNITY AGENCY works to make relevant public-sector opportunities easier for businesses to discover and pursue.
+          </p>
+          <p class="closing-line">
+            When government contracts are fulfilled by qualified businesses, those businesses have an opportunity to grow, strengthen their capabilities, create jobs, engage suppliers, and contribute to the economic vitality of the communities they serve.
+          </p>
         </div>
       </div>
     </section>
 
-    <section class="cta" id="connect">
+    <section class="development" id="development">
       <div class="shell">
-        <div class="cta-box">
+        <div class="development-head reveal">
           <div>
-            <p class="eyebrow">Bring Opportunity Infrastructure to Your City</p>
-            <h2>Build a stronger pathway from local businesses to real economic opportunity.</h2>
-            <p>ABOA is developing its city partnership model for municipalities, economic-development organizations, funders, and institutions interested in expanding market access for local businesses.</p>
+            <div class="eyebrow">Business Opportunity Development</div>
+            <h2 class="section-title">Growth requires more than contracts.</h2>
           </div>
-          <div class="cta-actions">
-            <a class="btn btn-primary" href="mailto:partnerships@aproposopportunity.org?subject=City%20Partnership%20Inquiry">Start a Partnership Conversation →</a>
+          <p>A healthy business ecosystem contains many forms of opportunity. The Agency's work can connect businesses with a broader range of pathways for growth.</p>
+        </div>
+
+        <div class="opportunity-index" aria-label="Business opportunity pathways">
+          <div class="opportunity-item reveal"><span class="index">01</span><strong>Government contracting opportunities</strong></div>
+          <div class="opportunity-item reveal"><span class="index">02</span><strong>Private-sector business opportunities</strong></div>
+          <div class="opportunity-item reveal"><span class="index">03</span><strong>Supplier and subcontracting opportunities</strong></div>
+          <div class="opportunity-item reveal"><span class="index">04</span><strong>Business development resources</strong></div>
+          <div class="opportunity-item reveal"><span class="index">05</span><strong>Capital and funding resources</strong></div>
+          <div class="opportunity-item reveal"><span class="index">06</span><strong>Technical assistance</strong></div>
+          <div class="opportunity-item reveal"><span class="index">07</span><strong>Strategic partnerships</strong></div>
+          <div class="opportunity-item reveal"><span class="index">08</span><strong>Market-expansion opportunities</strong></div>
+          <div class="opportunity-item reveal"><span class="index">09</span><strong>Entrepreneurship resources</strong></div>
+          <div class="opportunity-item reveal"><span class="index">10</span><strong>Local and regional economic-development initiatives</strong></div>
+        </div>
+
+        <div class="development-objective reveal">
+          <span>The Objective</span>
+          <p>Expand the number of pathways through which businesses can grow.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="local-growth" id="local-growth">
+      <div class="shell local-grid">
+        <div class="local-copy reveal">
+          <div class="eyebrow">Local Economic Growth</div>
+          <h2 class="section-title">Building economic capacity — city by city.</h2>
+          <p>APROPOS BUSINESS OPPORTUNITY AGENCY is designed to organize its work within the communities it serves.</p>
+          <p>From there, the Agency can help identify the businesses, institutions, buyers, resources, partners, and opportunities that form the local economic ecosystem.</p>
+          <p>This creates an opportunity-development infrastructure focused on generating greater business participation and economic activity within the community.</p>
+        </div>
+        <div class="local-question reveal">
+          <span>Every local initiative begins with one question</span>
+          <p>What opportunities can help businesses in this community grow?</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="why" id="why">
+      <div class="shell">
+        <div class="why-head reveal">
+          <div>
+            <div class="section-number">02</div>
+          </div>
+          <div>
+            <div class="eyebrow">Why Business Growth Matters</div>
+            <h2 class="section-title">A business opportunity can reach far beyond the business.</h2>
           </div>
         </div>
+        <div class="cause-chain">
+          <div class="cause-row reveal"><div class="cause">A contract creates revenue.</div><div class="effect">Revenue can give a capable business room to invest, expand, and strengthen operations.</div></div>
+          <div class="cause-row reveal"><div class="cause">Revenue supports expansion.</div><div class="effect">Expansion can create new capacity, new demand, and new pathways for growth.</div></div>
+          <div class="cause-row reveal"><div class="cause">Expansion creates employment.</div><div class="effect">Employment can strengthen households through income, stability, and professional advancement.</div></div>
+          <div class="cause-row reveal"><div class="cause">Growing businesses support other businesses.</div><div class="effect">Purchasing from suppliers circulates economic activity across a broader local business ecosystem.</div></div>
+          <div class="cause-row reveal"><div class="cause">Successful entrepreneurs invest in community.</div><div class="effect">Communities with stronger businesses have a broader economic foundation from which to grow.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="community-impact" id="impact">
+      <div class="shell">
+        <div class="impact-heading reveal">
+          <div class="eyebrow">Community Impact</div>
+          <h2>Businesses grow.<br />People <span>prosper.</span><br />Communities become stronger.</h2>
+        </div>
+        <div class="impact-copy-grid reveal">
+          <div>
+            <p>When people gain access to meaningful employment, greater financial stability, and new opportunities for advancement, the benefits extend beyond the workplace.</p>
+            <p>Families gain greater economic security. Local purchasing power increases. Businesses gain customers. Neighborhoods gain economic activity. Communities become more resilient.</p>
+          </div>
+          <p class="impact-last">Economic development ultimately becomes meaningful when opportunity reaches people.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="role" id="role">
+      <div class="shell">
+        <div class="role-intro reveal">
+          <div>
+            <div class="eyebrow">Our Role</div>
+            <h2 class="section-title">An opportunity development organization.</h2>
+          </div>
+          <p>We work to identify and connect the components of economic growth. Our role is to help those components connect more effectively so that more economic opportunity can move through the communities we serve.</p>
+        </div>
+        <div class="role-equation" aria-label="Components of economic growth">
+          <div class="role-term reveal"><span class="term-num">01</span><strong>Businesses</strong><span class="plus">+</span></div>
+          <div class="role-term reveal"><span class="term-num">02</span><strong>Opportunities</strong><span class="plus">+</span></div>
+          <div class="role-term reveal"><span class="term-num">03</span><strong>Buyers</strong><span class="plus">+</span></div>
+          <div class="role-term reveal"><span class="term-num">04</span><strong>Capital</strong><span class="plus">+</span></div>
+          <div class="role-term reveal"><span class="term-num">05</span><strong>Resources</strong><span class="plus">+</span></div>
+          <div class="role-term reveal"><span class="term-num">06</span><strong>Partners</strong><span class="plus">+</span></div>
+          <div class="role-term reveal"><span class="term-num">07</span><strong>Communities</strong><span class="plus">+</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="partnerships" id="partnerships">
+      <div class="shell partnership-grid">
+        <div class="partnership-copy reveal">
+          <div class="eyebrow">Partnerships</div>
+          <h2 class="section-title">Economic growth is collaborative.</h2>
+          <p>The Agency seeks to work alongside organizations already committed to strengthening businesses and communities.</p>
+        </div>
+        <div>
+          <div class="partner-list" aria-label="Potential agency partners">
+            <div class="partner-row reveal"><span>01</span><strong>Cities and counties</strong></div>
+            <div class="partner-row reveal"><span>02</span><strong>Economic-development organizations</strong></div>
+            <div class="partner-row reveal"><span>03</span><strong>Community organizations</strong></div>
+            <div class="partner-row reveal"><span>04</span><strong>Colleges and universities</strong></div>
+            <div class="partner-row reveal"><span>05</span><strong>Chambers of commerce</strong></div>
+            <div class="partner-row reveal"><span>06</span><strong>Business-development organizations</strong></div>
+            <div class="partner-row reveal"><span>07</span><strong>Public agencies</strong></div>
+            <div class="partner-row reveal"><span>08</span><strong>Corporations and institutional buyers</strong></div>
+            <div class="partner-row reveal"><span>09</span><strong>Financial institutions</strong></div>
+            <div class="partner-row reveal"><span>10</span><strong>Foundations and philanthropic organizations</strong></div>
+          </div>
+          <div class="partner-principle reveal">
+            <p>The objective is not to duplicate the work of existing organizations. It is to strengthen the opportunity infrastructure connecting their resources to businesses and communities.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="commitment" id="commitment">
+      <div class="shell">
+        <div class="commitment-inner reveal">
+          <div class="eyebrow">Our Commitment</div>
+          <h2 class="section-title">Opportunity is one of the fundamental building blocks of economic development.</h2>
+          <p>Our commitment is to help communities create more pathways through which businesses can participate, compete, grow, employ people, and contribute to the economies around them.</p>
+          <p>Because when opportunity reaches business, its impact does not have to stop there.</p>
+          <div class="reach-list" aria-label="Where opportunity can reach">
+            <span>Employees</span>
+            <span>Families</span>
+            <span>Suppliers</span>
+            <span>Neighborhoods</span>
+            <span>Entire Communities</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing-signature" aria-label="Closing statement">
+      <div class="shell reveal">
+        <div class="eyebrow">Apropos Business Opportunity Agency</div>
+        <h2>Opportunity Builds Business.<span>Business Builds Community.</span></h2>
+        <p>Dedicated to building economic, business, and community growth.</p>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="shell">
-      <div class="footer-grid">
+      <div class="footer-top">
         <div>
-          <div class="footer-brand">Apropos Business Opportunity Agency</div>
-          <p class="footer-copy">Creating access to business opportunity and building stronger local economies through opportunity development, supplier growth, buyer connection, and market access.</p>
+          <p class="footer-name">Apropos Business Opportunity Agency</p>
+          <p class="footer-tagline">Economic. Business. Community Growth.</p>
         </div>
-        <div class="footer-links">
-          <a href="#mission">Mission</a>
-          <a href="#services">Services</a>
-          <a href="#cities">For Cities</a>
-          <a href="#infrastructure">Pipelines</a>
-          <a href="mailto:partnerships@aproposopportunity.org">Contact</a>
-        </div>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="#purpose">Purpose</a>
+          <a href="#model">Growth Model</a>
+          <a href="#marketplace">Opportunity</a>
+          <a href="#impact">Impact</a>
+          <a href="#partnerships">Partnerships</a>
+        </nav>
       </div>
-      <div class="legal">
-        <span>© <span id="year"></span> Apropos Business Opportunity Agency</span>
-        <span>Nonprofit public-benefit organization in development • aproposopportunity.org</span>
+      <div class="footer-bottom">
+        <span>Nonprofit Opportunity Development Organization</span>
+        <span>&copy; <span id="year"></span> Apropos Business Opportunity Agency</span>
       </div>
     </div>
   </footer>
 
   <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const navLinks = document.getElementById('navLinks');
-    menuBtn.addEventListener('click', () => {
-      const open = navLinks.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded', String(open));
+    const header = document.getElementById('siteHeader');
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('primaryNav');
+
+    const setHeaderState = () => {
+      header.classList.toggle('scrolled', window.scrollY > 24);
+    };
+    setHeaderState();
+    window.addEventListener('scroll', setHeaderState, { passive: true });
+
+    menuToggle.addEventListener('click', () => {
+      const isOpen = nav.classList.toggle('open');
+      document.body.classList.toggle('menu-open', isOpen);
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+      menuToggle.textContent = isOpen ? 'Close' : 'Menu';
     });
-    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      menuBtn.setAttribute('aria-expanded', 'false');
-    }));
+
+    nav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        nav.classList.remove('open');
+        document.body.classList.remove('menu-open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.textContent = 'Menu';
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
