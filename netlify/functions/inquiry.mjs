@@ -18,7 +18,7 @@ export default async (request) => {
   const inquiryType = clean(data.inquiryType, 80);
   const message = clean(data.message, 5000);
   const consent = data.consent === true;
-  const validTypes = ["Business Opportunity", "Procurement Intelligence", "Partnership", "Funding or Sponsorship", "General Inquiry"];
+  const validTypes = ["Business Opportunity", "Procurement Intelligence", "Contract Preparedness", "Partnership", "Funding or Sponsorship", "General Inquiry"];
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   if (!name || !email || !state || !message || !consent || !validEmail || !validTypes.includes(inquiryType)) {
