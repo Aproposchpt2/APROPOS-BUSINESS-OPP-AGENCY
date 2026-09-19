@@ -116,3 +116,26 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
+
+
+[[redirects]]
+  from = "/opportunity-survey"
+  to = "/opportunity-survey.html"
+  status = 200
+
+[[redirects]]
+  from = "/opportunity-next-steps"
+  to = "/opportunity-next-steps.html"
+  status = 200
+
+[[headers]]
+  for = "/opportunity-survey.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[headers]]
+  for = "/opportunity-next-steps.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
