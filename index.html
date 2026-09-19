@@ -317,6 +317,38 @@
       line-height: 1.76;
       color: rgba(255,255,255,.78);
     }
+    .hero-opportunity {
+      max-width: 780px;
+      margin-top: 34px;
+      padding: 28px 0 0 28px;
+      border-left: 1px solid rgba(229,207,154,.72);
+    }
+    .hero-opportunity h2 {
+      margin: 0;
+      max-width: 760px;
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.35vw, 3.8rem);
+      line-height: .98;
+      letter-spacing: -.025em;
+      font-weight: 600;
+      color: var(--gold-light);
+      text-wrap: balance;
+    }
+    .hero-opportunity > p {
+      max-width: 720px;
+      margin: 18px 0 0;
+      font-size: clamp(.95rem, 1.08vw, 1.08rem);
+      line-height: 1.72;
+      color: rgba(255,255,255,.82);
+    }
+    .hero-opportunity .hero-actions {
+      margin-top: 24px;
+    }
+    .claim-button {
+      min-height: 54px;
+      padding-inline: 26px;
+      text-align: center;
+    }
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
@@ -611,6 +643,8 @@
       .hero h1 { font-size: clamp(3.1rem, 14vw, 4.8rem); line-height: .88; }
       .hero-positioning { padding-left: 18px; }
       .hero-positioning strong { letter-spacing: .15em; }
+      .hero-opportunity { padding-left: 18px; }
+      .claim-button { max-width: 100%; }
       .hero-actions { flex-direction: column; align-items: flex-start; }
       .button { width: 100%; max-width: 340px; }
       .purpose, .growth-model, .marketplace, .development, .local-growth, .why, .community-impact, .role, .partnerships { padding-top: 105px; padding-bottom: 110px; }
@@ -686,14 +720,13 @@
         <div class="hero-copy-wrap reveal">
           <div class="hero-kicker">Nonprofit Opportunity Development Organization</div>
           <h1>APROPOS BUSINESS<br />OPPORTUNITY AGENCY</h1>
-          <div class="hero-positioning" aria-label="Creating business success through procurement intelligence">
-            <span>Creating Business Success</span>
-            <strong>Through Procurement Intelligence</strong>
-          </div>
-          <p class="hero-intro">APROPOS BUSINESS OPPORTUNITY AGENCY is dedicated to expanding economic opportunity by helping businesses identify, pursue, and participate in opportunities that can contribute to their growth.</p>
-          <div class="hero-actions">
-            <a class="button gold-button" href="#purpose">Discover Our Purpose</a>
-            <a class="button ghost-button" href="#partnerships">Explore Partnerships</a>
+          <p class="hero-intro">APROPOS BUSINESS OPPORTUNITY AGENCY is dedicated to expanding economic opportunity by helping businesses identify, pursue, and participate in opportunities that can contribute to their growth and strengthen the communities they serve.</p>
+          <div class="hero-opportunity" aria-label="Complimentary contract opportunity service">
+            <h2>REAL CONTRACT OPPORTUNITIES. REAL REVENUE POTENTIAL.</h2>
+            <p>Apropos identifies real contract opportunities with revenue potential and delivers them directly to businesses — as a complimentary service</p>
+            <div class="hero-actions">
+              <a class="button gold-button claim-button" href="https://marketplace.aproposgroupllc.com/claim-opportunity.html">CLAIM YOUR COMPLIMENTARY CONTRACT OPPORTUNITY</a>
+            </div>
           </div>
         </div>
         <aside class="hero-side reveal" aria-label="Agency philosophy">
