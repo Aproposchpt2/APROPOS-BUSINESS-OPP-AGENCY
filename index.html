@@ -725,7 +725,7 @@
             <h2>REAL CONTRACT OPPORTUNITIES. REAL REVENUE POTENTIAL.</h2>
             <p>Apropos identifies real contract opportunities with revenue potential and delivers them directly to businesses — as a complimentary service</p>
             <div class="hero-actions">
-              <a class="button gold-button claim-button" href="/claim">CLAIM YOUR COMPLIMENTARY CONTRACT OPPORTUNITY</a>
+              <a class="button gold-button claim-button" id="claimOpportunityCta" href="/claim">CLAIM YOUR COMPLIMENTARY CONTRACT OPPORTUNITY</a>
             </div>
           </div>
         </div>
@@ -956,6 +956,16 @@
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    const claimCta = document.getElementById('claimOpportunityCta');
+    if (claimCta) {
+      const inbound = new URLSearchParams(window.location.search);
+      const claimParams = new URLSearchParams();
+      ['ref','business','email','name'].forEach(key => {
+        const value = inbound.get(key);
+        if (value) claimParams.set(key, value);
+      });
+      claimCta.href = claimParams.toString() ? '/claim?' + claimParams.toString() : '/claim';
+    }
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
