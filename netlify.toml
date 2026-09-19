@@ -87,3 +87,9 @@
   from = "/services.html"
   to = "/#services"
   status = 301
+
+
+[[redirects]]
+  from = "/contract-preparedness"
+  to = "/contract-preparedness.html"
+  status = 200
