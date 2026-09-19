@@ -641,6 +641,20 @@
       .reveal { opacity: 1; transform: none; transition: none; }
       .button, .nav a::after { transition: none; }
     }
+
+    .preparedness-promo{position:relative;background:linear-gradient(135deg,#06162f 0%,#0a2448 100%);color:#fff;padding:110px 0;border-top:1px solid rgba(229,207,154,.24);border-bottom:1px solid rgba(229,207,154,.24);overflow:hidden}
+    .preparedness-promo::after{content:"READY";position:absolute;right:-1vw;bottom:-2vw;font-family:var(--serif);font-size:clamp(9rem,20vw,22rem);line-height:.72;color:rgba(255,255,255,.025);pointer-events:none}
+    .preparedness-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(60px,8vw,120px);align-items:center}
+    .preparedness-promo .section-title{color:#fff;margin-bottom:24px}
+    .preparedness-promo p{color:rgba(255,255,255,.68);max-width:720px}
+    .preparedness-kicker{font-family:var(--serif);font-size:clamp(2rem,3.8vw,4rem);line-height:1.03;color:var(--gold-light);padding:34px 0 34px 38px;border-left:1px solid var(--gold)}
+    .preparedness-kicker span{display:block;margin-top:15px;font-family:var(--sans);font-size:.67rem;line-height:1.6;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+    .preparedness-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+    .preparedness-links a{display:inline-flex;align-items:center;min-height:48px;padding:13px 20px;text-decoration:none;font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+    .preparedness-links .primary{background:var(--gold);color:var(--navy-deep);border:1px solid var(--gold)}
+    .preparedness-links .secondary{border:1px solid rgba(255,255,255,.30);color:#fff}
+    @media(max-width:900px){.preparedness-grid{grid-template-columns:1fr}.preparedness-kicker{max-width:720px}}
+    @media(max-width:640px){.preparedness-promo{padding:88px 0}.preparedness-links{flex-direction:column}.preparedness-links a{justify-content:center}}
   </style>
 </head>
 <body>
@@ -658,6 +672,7 @@
         <a href="#purpose">Purpose</a>
         <a href="#model">Growth Model</a>
         <a href="#marketplace">Opportunity</a>
+        <a href="/contract-preparedness">Contract Preparedness</a>
         <a href="#impact">Impact</a>
         <a href="#partnerships" class="nav-accent">Partnerships</a>
       </nav>
@@ -772,6 +787,24 @@
       </div>
     </section>
 
+    <section class="preparedness-promo" id="contract-preparedness">
+      <div class="shell preparedness-grid">
+        <div class="reveal">
+          <div class="eyebrow">New Business Resource Pathway</div>
+          <h2 class="section-title">Contract Preparedness Services</h2>
+          <p>Finding a contract is only the beginning. Businesses may also need bonding, licenses, insurance, financing, certifications, proposal support, and other resources before they can confidently pursue or perform the work.</p>
+          <p>APROPOS BUSINESS OPPORTUNITY AGENCY is building a preparedness resource network to help businesses identify those next-step resources.</p>
+          <div class="preparedness-links">
+            <a class="primary" href="/contract-preparedness">Explore Contract Preparedness</a>
+            <a class="secondary" href="#contact">Request Resource Guidance</a>
+          </div>
+        </div>
+        <div class="preparedness-kicker reveal">Before You Bid,<br>Get Contract Prepared.
+          <span>Bonding · Licensing · Insurance · Financing · Certifications · Proposal Support · More</span>
+        </div>
+      </div>
+    </section>
+
     <section class="local-growth" id="local-growth">
       <div class="shell local-grid">
         <div class="local-copy reveal">
@@ -854,7 +887,7 @@
     <div class="shell">
       <div class="footer-top">
         <div><p class="footer-name">Apropos Business Opportunity Agency</p><p class="footer-tagline">Economic. Business. Community Growth.</p></div>
-        <nav class="footer-nav" aria-label="Footer navigation"><a href="#purpose">Purpose</a><a href="#model">Growth Model</a><a href="#marketplace">Opportunity</a><a href="#impact">Impact</a><a href="#partnerships">Partnerships</a></nav>
+        <nav class="footer-nav" aria-label="Footer navigation"><a href="#purpose">Purpose</a><a href="#model">Growth Model</a><a href="#marketplace">Opportunity</a><a href="/contract-preparedness">Contract Preparedness</a><a href="#impact">Impact</a><a href="#partnerships">Partnerships</a></nav>
       </div>
       <div class="footer-bottom"><span>Nonprofit Opportunity Development Organization</span><span>&copy; <span id="year"></span> Apropos Business Opportunity Agency</span></div>
     </div>
