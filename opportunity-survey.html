@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Opportunity Experience Survey | Apropos Business Opportunity Agency</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#06162f;--deep:#020b18;--gold:#c8a45b;--gold2:#e5cf9a;--paper:#fbfaf6;--ivory:#f6f0e3;--ink:#101b2c;--muted:#667184;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,var(--deep),var(--navy) 40%,var(--paper) 40%);font-family:var(--sans);color:var(--ink);min-height:100vh}.shell{width:min(980px,calc(100% - 32px));margin:auto}.head{padding:24px 0;color:#fff;letter-spacing:.18em;font-weight:700}.hero{padding:46px 0 32px;color:#fff}.eyebrow{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);font-weight:700}.hero h1{font-family:var(--serif);font-size:clamp(3.2rem,7vw,6.2rem);line-height:.9;margin:10px 0 18px;font-weight:600}.hero p{max-width:760px;color:rgba(255,255,255,.72);line-height:1.7}.card{background:#fff;border:1px solid rgba(16,27,44,.14);box-shadow:0 24px 70px rgba(2,11,24,.14);padding:32px;margin:20px 0 70px}.context{background:var(--ivory);border-left:3px solid var(--gold);padding:16px 18px;margin-bottom:24px;line-height:1.6}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{margin-bottom:18px}.field label{display:block;font-size:.68rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#5a6677;margin-bottom:8px}.field select,.field textarea{width:100%;border:1px solid #ccd3dc;padding:13px;font:inherit;background:#fff}.field textarea{min-height:130px;resize:vertical}.consent{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:.82rem;line-height:1.55}.btn{margin-top:22px;min-height:52px;padding:13px 22px;border:1px solid var(--gold);background:var(--gold);color:var(--deep);font:inherit;font-size:.68rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}.status{margin-top:14px;min-height:20px}.error{color:#8b1e1e}.ok{color:#166b4b}@media(max-width:700px){.grid{grid-template-columns:1fr}.card{padding:24px 20px}}
+</style></head>
+<body><div class="shell"><div class="head">APROPOS BUSINESS OPPORTUNITY AGENCY</div></div>
+<section class="hero"><div class="shell"><div class="eyebrow">Opportunity Experience</div><h1>Before You Continue.</h1><p>Your feedback helps Apropos improve how complimentary contract opportunities are delivered to businesses.</p></div></section>
+<main class="shell"><section class="card"><div id="context" class="context">Your opportunity information is being carried forward automatically.</div>
+<form id="survey">
+<div class="grid"><div class="field"><label for="rating">Overall Experience</label><select id="rating"><option value="">Select rating</option><option value="5">5 — Excellent</option><option value="4">4 — Very Good</option><option value="3">3 — Good</option><option value="2">2 — Fair</option><option value="1">1 — Poor</option></select></div><div class="field"><label for="action">How did you keep the opportunity?</label><select id="action"><option value="">Select one</option><option>Downloaded contract & documents</option><option>Saved / printed contract</option></select></div></div>
+<div class="field"><label for="comment">Tell us about your experience</label><textarea id="comment" required placeholder="What was useful? What could be improved?"></textarea></div>
+<label class="consent"><input id="permission" type="checkbox"><span>I give Apropos permission to publish this review. Publication remains subject to moderation.</span></label>
+<button class="btn" type="submit">Submit Survey & Continue</button><div id="status" class="status" role="status" aria-live="polite"></div>
+</form></section></main>
+<script>
+'use strict';
+const claim=(()=>{try{return JSON.parse(sessionStorage.getItem('aboaOpportunityClaim')||'{}')}catch{return{}}})();
+const opp=(()=>{try{return JSON.parse(sessionStorage.getItem('aboaOpportunityContext')||'{}')}catch{return{}}})();
+const qs=new URLSearchParams(location.search),act=qs.get('action')||'';
+if(act==='download')document.getElementById('action').value='Downloaded contract & documents';
+if(act==='save-print')document.getElementById('action').value='Saved / printed contract';
+document.getElementById('context').textContent=[claim.business_name||'Your business',opp.title||'your complimentary contract opportunity'].filter(Boolean).join(' — ');
+document.getElementById('survey').addEventListener('submit',async e=>{
+ e.preventDefault();const status=document.getElementById('status'),btn=e.currentTarget.querySelector('button');const comment=document.getElementById('comment').value.trim();
+ if(!comment){status.className='status error';status.textContent='Please enter a comment before continuing.';return}
+ btn.disabled=true;status.className='status';status.textContent='Saving your survey…';
+ try{
+  const ratingValue=document.getElementById('rating').value;
+  const payload={kind:'COMMENT',business_name:claim.business_name||'',contact_name:claim.contact_name||'',contact_email:claim.contact_email||'',opportunity_reference:claim.opportunity_reference||'',notice_id:opp.notice_id||'',comment,rating:ratingValue?Number(ratingValue):null,permission_to_publish:document.getElementById('permission').checked};
+  const r=await fetch('/api/opportunity-experience',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});const d=await r.json().catch(()=>({}));
+  if(!r.ok||!d.ok)throw new Error(d.error||'Your survey could not be saved.');
+  status.className='status ok';status.textContent='Thank you. Continuing to your next-step options…';
+  setTimeout(()=>location.assign('/opportunity-next-steps'),650);
+ }catch(err){status.className='status error';status.textContent=err.message;btn.disabled=false}
+});
+</script></body></html>
