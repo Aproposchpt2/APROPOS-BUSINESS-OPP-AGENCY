@@ -160,6 +160,7 @@ const contactSection = `
             <option value="">Select inquiry type</option>
             <option>Business Opportunity</option>
             <option>Procurement Intelligence</option>
+            <option>Contract Preparedness</option>
             <option>Partnership</option>
             <option>Funding or Sponsorship</option>
             <option>General Inquiry</option>
