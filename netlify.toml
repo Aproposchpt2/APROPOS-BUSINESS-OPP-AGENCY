@@ -93,3 +93,26 @@
   from = "/contract-preparedness"
   to = "/contract-preparedness.html"
   status = 200
+
+
+[[redirects]]
+  from = "/claim"
+  to = "/claim-opportunity.html"
+  status = 200
+
+[[redirects]]
+  from = "/opportunity-workspace"
+  to = "/opportunity-workspace.html"
+  status = 200
+
+[[headers]]
+  for = "/claim-opportunity.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/opportunity-workspace.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
