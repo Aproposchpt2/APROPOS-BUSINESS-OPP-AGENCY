@@ -74,7 +74,7 @@ function place(p){if(!p)return'Not stated';const city=p.city?.name||p.city||'',s
 function renderFederal(d){
  const o=d.opportunity||{},docs=d.documents||[],pkg=d.package||{};
  const requirements=list(o.required_certifications||o.required_certifications_licenses||o.mandatory_requirements||o.requirements);
- currentOpportunity={type:'federal',title:o.title||'',notice_id:o.notice_id||'',agency:o.agency||'',solicitation_number:o.solicitation_number||''};
+ currentOpportunity={type:'federal',title:o.title||'',notice_id:o.notice_id||'',agency:o.agency||'',solicitation_number:o.solicitation_number||'',business_name:d.access?.business_name||''};
  sessionStorage.setItem('aboaOpportunityContext',JSON.stringify(currentOpportunity));
  titleEl.textContent=o.title||'Federal Contract Opportunity';
 
