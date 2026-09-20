@@ -82,11 +82,21 @@ function renderFederal(d){
  // in the workspace summary cards below.
  metaEl.innerHTML='';
 
- const plainSummary=req.primary_requirement
-   ? '<section style="margin-top:28px"><div class="eyebrow" style="color:var(--gold)">Plain-Language Contract Summary</div><h2 style="font-size:1.7rem;margin-top:8px">What the Government Is Buying</h2><p class="scope">'+esc(req.primary_requirement)+'</p>'
-     +(list(req.products_services).length?'<h3>Products / Services</h3><ul class="reqs">'+list(req.products_services).map(x=>'<li>'+esc(typeof x==='string'?x:JSON.stringify(x))+'</li>').join('')+'</ul>':'')
-     +(list(req.required_capabilities).length?'<h3>Required Capabilities</h3><ul class="reqs">'+list(req.required_capabilities).map(x=>'<li>'+esc(typeof x==='string'?x:JSON.stringify(x))+'</li>').join('')+'</ul>':'')
-     +(list(hard.mandatory_requirements).length?'<h3>Mandatory Requirements</h3><ul class="reqs">'+list(hard.mandatory_requirements).map(x=>'<li>'+esc(typeof x==='string'?x:JSON.stringify(x))+'</li>').join('')+'</ul>':'')
+ const arrHtml=(items,emptyText)=>list(items).length
+   ? '<ul class="reqs">'+list(items).map(x=>'<li>'+esc(typeof x==='string'?x:JSON.stringify(x))+'</li>').join('')+'</ul>'
+   : '<p class="note">'+esc(emptyText)+'</p>';
+ const plainSummary=pl.status==='AVAILABLE'
+   ? '<section style="margin-top:28px"><div class="eyebrow" style="color:var(--gold)">Plain-Language Contract Summary</div>'
+     +'<h2 style="font-size:1.7rem;margin-top:8px">What the Government Is Buying</h2><p class="scope">'+esc(req.primary_requirement||'The source materials did not state a fuller plain-language scope beyond the opportunity title.')+'</p>'
+     +'<h3>Products / Services</h3>'+arrHtml(req.products_services,'Not specifically stated in the reviewed source material.')
+     +'<h3>Required Capabilities</h3>'+arrHtml(req.required_capabilities,'No specific capability list was stated in the reviewed source material.')
+     +'<h3>Required Experience</h3>'+arrHtml(req.required_experience,'No specific experience requirement was stated in the reviewed source material.')
+     +'<h3>Required Certifications</h3>'+arrHtml(req.required_certifications,'No specific certification requirement was stated in the reviewed source material.')
+     +'<h3>Mandatory Requirements</h3>'+arrHtml(hard.mandatory_requirements,'No additional mandatory requirements were stated in the reviewed source material.')
+     +'<h3>Registration Requirements</h3>'+arrHtml(hard.registration_requirements,'No additional registration requirements were stated in the reviewed source material.')
+     +'<h3>Geographic Restrictions</h3>'+arrHtml(hard.geographic_restrictions,'No additional geographic restrictions were stated in the reviewed source material.')
+     +'<div class="meta" style="margin-top:22px">'+meta('Supplier Role',req.supplier_role||'Not stated')+meta('Primary NAICS',cls.derived_primary_naics||cls.sam_assigned_naics||o.naics||'Not stated')+meta('PSC',cls.psc||'Not stated')+meta('Analysis Confidence',dna.confidence||'Not stated')+'</div>'
+     +'<p class="delivery-note" style="margin-top:16px">This summary reflects only facts supported by the SAM.gov notice and available public source material. Review the contract package and authoritative solicitation before deciding whether to pursue the opportunity.</p>'
      +'</section>'
    : '<section style="margin-top:28px"><div class="eyebrow" style="color:var(--gold)">Plain-Language Contract Summary</div><p class="note">Plain-language analysis is not currently available for this opportunity. Review the downloaded contract package and authoritative solicitation for complete requirements.</p></section>';
 
