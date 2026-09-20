@@ -5,11 +5,56 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#06162f;--deep:#020b18;--mid:#0a2448;--gold:#c8a45b;--gold2:#e5cf9a;--paper:#fbfaf6;--ivory:#f6f0e3;--ink:#101b2c;--muted:#667184;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink)}.hero{background:linear-gradient(125deg,var(--deep),var(--mid));color:#fff;padding:64px 0}.shell{width:min(1180px,calc(100% - 36px));margin:auto}.eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2)}h1,h2,h3{font-family:var(--serif);font-weight:600}.hero h1{font-size:clamp(3.4rem,7vw,6.8rem);line-height:.88;margin:10px 0 18px}.hero p{max-width:780px;color:rgba(255,255,255,.72);line-height:1.7}.cards{display:grid;grid-template-columns:1.05fr .95fr .95fr;gap:20px;padding:42px 0 80px}.card{background:#fff;border:1px solid rgba(16,27,44,.14);padding:28px;display:flex;flex-direction:column;min-height:430px}.card.featured{background:linear-gradient(145deg,var(--navy),var(--mid));color:#fff;border-color:rgba(229,207,154,.28)}.card .tag{font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}.card h2{font-size:2.1rem;line-height:1.02;margin:10px 0 12px;color:var(--navy)}.card.featured h2{color:#fff}.card p{color:var(--muted);line-height:1.7}.card.featured p{color:rgba(255,255,255,.72)}.features{padding-left:20px;line-height:1.75;margin-bottom:24px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:13px 18px;border:1px solid var(--navy);background:var(--navy);color:#fff;text-decoration:none;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:auto}.featured .btn{background:var(--gold);border-color:var(--gold);color:var(--deep)}.free{display:inline-block;border:1px solid var(--gold2);color:var(--gold2);padding:6px 9px;font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-top:12px}@media(max-width:900px){.cards{grid-template-columns:1fr}.card{min-height:auto}}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink)}.hero{background:linear-gradient(125deg,var(--deep),var(--mid));color:#fff;padding:64px 0}.shell{width:min(1180px,calc(100% - 36px));margin:auto}.eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2)}h1,h2,h3{font-family:var(--serif);font-weight:600}.hero h1{font-size:clamp(3.4rem,7vw,6.8rem);line-height:.88;margin:10px 0 18px}.hero p{max-width:780px;color:rgba(255,255,255,.72);line-height:1.7}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;padding:42px 0 80px}.card{background:#fff;border:1px solid rgba(16,27,44,.14);padding:28px;display:flex;flex-direction:column;min-height:430px}.card.featured{background:linear-gradient(145deg,var(--navy),var(--mid));color:#fff;border-color:rgba(229,207,154,.28)}.card.claim{background:linear-gradient(145deg,#06162f,#102c59);color:#fff;border:1px solid rgba(229,207,154,.42)}.card .tag{font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}.card h2{font-size:2.1rem;line-height:1.02;margin:10px 0 12px;color:var(--navy)}.card.featured h2,.card.claim h2{color:#fff}.card p{color:var(--muted);line-height:1.7}.card.featured p,.card.claim p{color:rgba(255,255,255,.72)}.features{padding-left:20px;line-height:1.75;margin-bottom:24px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:13px 18px;border:1px solid var(--navy);background:var(--navy);color:#fff;text-decoration:none;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:auto}.featured .btn,.claim .btn{background:var(--gold);border-color:var(--gold);color:var(--deep)}.free{display:inline-block;border:1px solid var(--gold2);color:var(--gold2);padding:6px 9px;font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-top:12px}.claim-note{font-size:.78rem;color:rgba(255,255,255,.58);line-height:1.6;margin-top:14px}.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(2,11,24,.82);z-index:999;place-items:center;padding:20px}.modal-backdrop.open{display:grid}.modal{width:min(620px,100%);background:#fff;color:var(--ink);border:1px solid rgba(16,27,44,.18);padding:30px;box-shadow:0 30px 90px rgba(0,0,0,.4)}.modal h2{font-size:2.4rem;color:var(--navy);margin:8px 0 12px}.modal p{color:var(--muted);line-height:1.7}.modal .features{margin:18px 0 24px}.modal-actions{display:flex;gap:12px;flex-wrap:wrap}.modal .btn.secondary{background:#fff;color:var(--navy);border-color:rgba(6,22,47,.25)}@media(max-width:900px){.cards{grid-template-columns:1fr}.card{min-height:auto}}
 </style></head>
 <body><section class="hero"><div class="shell"><div class="eyebrow">Your Next Step</div><h1>Keep Moving Forward.</h1><p>You have your contract opportunity. Choose the resource path that best fits what your business needs next.</p></div></section>
 <main class="shell"><section class="cards">
+<article class="card claim"><div class="tag">Vendor Profile Claim</div><span class="free">14-Day Free Trial</span><h2>Claim Your Vendor Name</h2><p>Turn your federal contractor identity into a business-development asset inside the Apropos ecosystem.</p><ul class="features"><li>Public-facing federal contractor profile</li><li>Control the business information you add to your profile</li><li>Visibility for teaming and partnership discovery</li><li>Personalized RFCP contract dashboard</li><li>NAT-CORP contract-search access</li><li>Free Contract Preparedness Guidance</li></ul><button class="btn" id="claimVendorBtn" type="button">Claim Your Vendor Name</button><p class="claim-note">Your SAM.gov registration remains the authoritative federal registration record. Apropos is a private commercial service and does not confer government status or endorsement.</p></article>
 <article class="card featured"><div class="tag">Complimentary Service</div><span class="free">Free Access</span><h2>Contract Preparedness Services</h2><p>Use Apropos Business Opportunity Agency's complimentary preparedness pathway to find resources for bonding, licensing, insurance, financing, certifications, proposal support, accounting, workforce, and other contract-readiness needs.</p><ul class="features"><li>Bonding & surety resources</li><li>Insurance and licensing resources</li><li>Financing and working-capital resources</li><li>Certification and proposal-support resources</li></ul><a class="btn" href="/contract-preparedness">Use Free Contract Preparedness Service</a></article>
 <article class="card"><div class="tag">Subscription Service</div><h2>Registered Federal Contractors Portal</h2><p>Ongoing federal and state public-sector opportunity access for registered federal contractors.</p><ul class="features"><li>Federal opportunity discovery</li><li>State opportunity access</li><li>Contract package access</li><li>Ongoing subscription access</li></ul><a class="btn" href="https://federalcontractorportal.aproposgroupllc.com/">Explore RFCP</a></article>
 <article class="card"><div class="tag">Subscription Service</div><h2>National Corporate Contract Exchange</h2><p>Business-first state and local public-sector opportunity intelligence for licensed businesses.</p><ul class="features"><li>Capability-centered opportunity discovery</li><li>State and local contracting focus</li><li>Business capability intelligence</li><li>Ongoing subscription access</li></ul><a class="btn" href="https://natcorp.aproposgroupllc.com/">Explore NAT-CORP</a></article>
-</section></main></body></html>
+</section></main>
+<div class="modal-backdrop" id="claimModal" role="dialog" aria-modal="true" aria-labelledby="claimTitle">
+  <div class="modal">
+    <div class="tag">Apropos Federal Contractor Ecosystem</div>
+    <h2 id="claimTitle">Claim Your Vendor Name</h2>
+    <p>Claiming your vendor name starts the process of establishing and controlling your Apropos contractor profile. Your complimentary contract is only the beginning.</p>
+    <ul class="features">
+      <li>Publish a contractor profile based on approved public registration data plus information you choose to add</li>
+      <li>Control your contractor-managed profile information</li>
+      <li>Receive a personalized RFCP contract dashboard</li>
+      <li>Access NAT-CORP contract search</li>
+      <li>Use free Contract Preparedness Guidance and referral resources</li>
+      <li>Start with a free 14-day trial</li>
+    </ul>
+    <div class="modal-actions">
+      <a class="btn" id="startClaimLink" href="https://federalcontractorportal.aproposgroupllc.com/intake?source=aboa-claim&claim=vendor">Start My Free 14-Day Trial</a>
+      <button class="btn secondary" id="closeClaimModal" type="button">Not Now</button>
+    </div>
+  </div>
+</div>
+<script>
+(()=>{'use strict';
+const modal=document.getElementById('claimModal');
+const open=document.getElementById('claimVendorBtn');
+const close=document.getElementById('closeClaimModal');
+const link=document.getElementById('startClaimLink');
+function openModal(){
+  try{
+    const ctx=JSON.parse(sessionStorage.getItem('aboaOpportunityContext')||'{}');
+    if(ctx && ctx.business_name){
+      const u=new URL(link.href);
+      u.searchParams.set('business',ctx.business_name);
+      link.href=u.toString();
+    }
+  }catch{}
+  modal.classList.add('open');
+}
+function closeModal(){modal.classList.remove('open')}
+open?.addEventListener('click',openModal);
+close?.addEventListener('click',closeModal);
+modal?.addEventListener('click',e=>{if(e.target===modal)closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+})();
+</script>
+</body></html>
