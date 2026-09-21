@@ -28,7 +28,7 @@
       <li>Start with a free 14-day trial</li>
     </ul>
     <div class="modal-actions">
-      <a class="btn" id="startClaimLink" href="https://ai4-product-purchasing.ai4businesses.org/ngcc?source=aboa-vendor-claim">Start My Free 14-Day Trial</a>
+      <a class="btn" id="startClaimLink" href="/vendor-claim">Continue to Vendor Claim</a>
       <button class="btn secondary" id="closeClaimModal" type="button">Not Now</button>
     </div>
   </div>
@@ -43,9 +43,9 @@ function openModal(){
   try{
     const ctx=JSON.parse(sessionStorage.getItem('aboaOpportunityContext')||'{}');
     if(ctx && ctx.business_name){
-      const u=new URL(link.href);
+      const u=new URL(link.href,location.origin);
       u.searchParams.set('business',ctx.business_name);
-      link.href=u.toString();
+      link.href=u.pathname+u.search;
     }
   }catch{}
   modal.classList.add('open');
