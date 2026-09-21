@@ -139,3 +139,15 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
+
+
+[[redirects]]
+  from = "/vendor-claim"
+  to = "/vendor-claim.html"
+  status = 200
+
+[[headers]]
+  for = "/vendor-claim.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
