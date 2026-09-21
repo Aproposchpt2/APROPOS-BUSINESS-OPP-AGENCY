@@ -5,8 +5,8 @@ function refineMessaging(html) {
       '<title>Apropos Business Opportunity Agency | Economic Opportunity Development</title>'
     ],
     [
-      '<meta name="description" content="Apropos Business Opportunity Agency is a nonprofit opportunity development organization creating business success through procurement intelligence." />',
-      '<meta name="description" content="Apropos Business Opportunity Agency is a nonprofit opportunity development organization building economic, business, and community growth through opportunity." />'
+      '<meta name="description" content="Apropos Business Opportunity Agency is a business-opportunity and contract-opportunity service platform expanding economic opportunity for businesses and communities." />',
+      '<meta name="description" content="Apropos Business Opportunity Agency is a business-opportunity and contract-opportunity service platform building economic, business, and community growth through opportunity." />'
     ],
     [
       '<meta property="og:description" content="Creating business success through procurement intelligence." />',
@@ -21,8 +21,8 @@ function refineMessaging(html) {
       '<meta name="twitter:description" content="Building economic, business and community growth by expanding pathways to opportunity for businesses and the communities they serve.">'
     ],
     [
-      '"description": "A nonprofit opportunity development organization creating business success through procurement intelligence and business opportunity development."',
-      '"description": "A nonprofit opportunity development organization building economic, business, and community growth by expanding pathways to opportunity."'
+      '"description": "A business-opportunity and contract-opportunity service platform expanding economic opportunity through procurement intelligence and business development."',
+      '"description": "A business-opportunity and contract-opportunity service platform building economic, business, and community growth by expanding pathways to opportunity."'
     ],
     [
       '"slogan": "Creating Business Success Through Procurement Intelligence"',

@@ -19,7 +19,7 @@ const seoHead = `
       "name": "Apropos Business Opportunity Agency",
       "alternateName": "ABOA",
       "url": "https://aproposopportunity.org/",
-      "description": "A nonprofit opportunity development organization creating business success through procurement intelligence and business opportunity development.",
+      "description": "A business-opportunity and contract-opportunity service platform expanding economic opportunity through procurement intelligence and business development.",
       "slogan": "Creating Business Success Through Procurement Intelligence",
       "email": "jmitchell@aproposgroupllc.com",
       "contactPoint": {

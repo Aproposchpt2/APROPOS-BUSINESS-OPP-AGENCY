@@ -1,4 +1,5 @@
 [build]
+  command = "node scripts/validate-entity-classification.cjs"
   publish = "."
 
 # Messaging refinement runs first so it can update the final rendered page
