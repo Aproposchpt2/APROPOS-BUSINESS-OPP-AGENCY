@@ -135,6 +135,30 @@ async function profileSeed(businessName, claimantEmail) {
     }
   } catch (e) { console.warn('business profile seed unavailable', e?.message); }
 
+  // FCP (fcp_contractor_contacts) and BCP (cbrief_match_completed) both live
+  // in a different Supabase project than boda_vendor_profiles, so this calls
+  // a small read-only endpoint FCP already exposes with its own service_role
+  // credentials for that project, rather than minting new credentials here.
+  try {
+    const seedKey = Netlify.env.get('VENDOR_SEED_SHARED_SECRET');
+    if (seedKey) {
+      const r = await fetch(
+        'https://fcp.aproposgroupllc.com/.netlify/functions/vendor-seed-lookup?business=' + encodeURIComponent(businessName),
+        { headers: { 'x-aboa-seed-key': seedKey } }
+      );
+      if (r.ok) {
+        const d = await r.json().catch(() => null);
+        const row = d?.found ? d.seed : null;
+        if (row) {
+          if (!seed.state) seed.state = clean(row.state,80);
+          if (!seed.naics.length && Array.isArray(row.naics)) seed.naics = row.naics.map(x=>clean(x,120)).filter(Boolean).slice(0,20);
+          if (!seed.core_capabilities.length && Array.isArray(row.core_capabilities)) seed.core_capabilities = row.core_capabilities.map(x=>clean(x,220)).filter(Boolean).slice(0,20);
+          if (!seed.public_contact_email && emailOk(clean(row.public_contact_email,180))) seed.public_contact_email = clean(row.public_contact_email,180);
+        }
+      }
+    }
+  } catch (e) { console.warn('FCP/BCP vendor seed lookup unavailable', e?.message); }
+
   return seed;
 }
 
