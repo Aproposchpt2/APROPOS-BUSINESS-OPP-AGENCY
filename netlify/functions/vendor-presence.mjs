@@ -162,6 +162,35 @@ async function profileSeed(businessName, claimantEmail) {
   return seed;
 }
 
+async function findOrCreateProfile({ businessName, claimId, claimantEmail }) {
+  const nameFilter = encodeURIComponent(businessName.replace(/[%*]/g, ''));
+  const existing = await db('boda_vendor_profiles', 'GET',
+    `?select=*&or=(business_name.ilike.${nameFilter},owner_email.eq.${encodeURIComponent(claimantEmail)})&limit=1`);
+  if (existing?.length) return { profile: existing[0], created: false };
+
+  const slug = await uniqueSlug(businessName);
+  const seed = await profileSeed(businessName, claimantEmail);
+  const rows = await db('boda_vendor_profiles', 'POST', '', [{
+    claim_id: claimId,
+    business_name: businessName,
+    slug,
+    owner_email: claimantEmail,
+    public_contact_email: seed.public_contact_email || claimantEmail,
+    headline: 'Tell customers what your business does best.',
+    about: seed.about || '',
+    website: seed.website || '',
+    city: seed.city || '',
+    state: seed.state || '',
+    service_area: seed.service_area || '',
+    core_capabilities: seed.core_capabilities || [],
+    products_services: [],
+    past_performance: [],
+    certifications: seed.certifications || [],
+    naics: seed.naics || []
+  }], 'return=representation');
+  return { profile: rows?.[0], created: true };
+}
+
 async function uniqueSlug(name) {
   const base = slugify(name);
   for (let i = 0; i < 20; i++) {
@@ -225,27 +254,11 @@ export default async (req) => {
         profile = rows?.[0];
       }
       if (!profile) {
-        const slug = await uniqueSlug(claim.business_name);
-        const seed = await profileSeed(claim.business_name, claim.claimant_email);
-        const rows = await db('boda_vendor_profiles','POST','', [{
-          claim_id: claim.id,
-          business_name: claim.business_name,
-          slug,
-          owner_email: claim.claimant_email,
-          public_contact_email: seed.public_contact_email || claim.claimant_email,
-          headline: 'Tell customers what your business does best.',
-          about: seed.about || '',
-          website: seed.website || '',
-          city: seed.city || '',
-          state: seed.state || '',
-          service_area: seed.service_area || '',
-          core_capabilities: seed.core_capabilities || [],
-          products_services: [],
-          past_performance: [],
-          certifications: seed.certifications || [],
-          naics: seed.naics || []
-        }], 'return=representation');
-        profile = rows?.[0];
+        ({ profile } = await findOrCreateProfile({
+          businessName: claim.business_name,
+          claimId: claim.id,
+          claimantEmail: claim.claimant_email
+        }));
       }
       await db('boda_vendor_claims','PATCH',`?id=eq.${encodeURIComponent(claim.id)}`,{
         status:'VERIFIED', verified_at:new Date().toISOString(),
@@ -307,6 +320,56 @@ export default async (req) => {
       }]);
       await sendVerification({businessName,claimantName,email,rawToken});
       return json({ok:true,message:'Check your business email to verify your claim.'});
+    }
+
+    // Called by claim-opportunity.html immediately after a contract claim
+    // succeeds on FCP/BCP -- that claim already verified the business email
+    // against the original outreach record (email + Opportunity Reference
+    // must match), so this skips the separate magic-link round trip and
+    // provisions the Vendor Page directly. Silent/best-effort by design:
+    // the contract claim itself is the thing that must not fail.
+    if (req.method === 'POST' && action === 'auto-claim') {
+      const input = await req.json().catch(()=>({}));
+      const businessName = clean(input.business_name,180);
+      const claimantName = clean(input.claimant_name,140);
+      const email = clean(input.claimant_email,180).toLowerCase();
+      const source = clean(input.source,80);
+      const opportunityRef = clean(input.opportunity_ref,120);
+      if (businessName.length < 2 || claimantName.length < 2 || !emailOk(email))
+        return json({ok:false,error:'Business name, claimant name, and a valid email are required.'},400);
+
+      const claimRows = await db('boda_vendor_claims','POST','',[{
+        business_name:businessName,
+        claimant_name:claimantName,
+        claimant_email:email,
+        source: source || 'auto:contract_claim',
+        opportunity_ref:opportunityRef,
+        status:'VERIFIED',
+        verified_at:new Date().toISOString(),
+        verification_token_hash:null,
+        verification_expires_at:null
+      }], 'return=representation');
+      const claim = claimRows?.[0];
+
+      const { profile, created } = await findOrCreateProfile({
+        businessName, claimId: claim?.id || null, claimantEmail: email
+      });
+      if (!profile) return json({ok:false,error:'Vendor Page could not be provisioned.'},500);
+
+      if (claim && !profile.claim_id) {
+        await db('boda_vendor_claims','PATCH',`?id=eq.${encodeURIComponent(claim.id)}`,
+          {profile_id:profile.id,updated_at:new Date().toISOString()},'return=minimal');
+      }
+
+      const rawSession = token();
+      await db('boda_vendor_sessions','POST','',[{
+        profile_id:profile.id,
+        token_hash:hash(rawSession),
+        expires_at:new Date(Date.now()+1000*60*60*24*30).toISOString()
+      }]);
+      return json({ok:true,profile:{business_name:profile.business_name,slug:profile.slug},created},200,{
+        'set-cookie':`boda_vendor_session=${encodeURIComponent(rawSession)}; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000; Path=/`
+      });
     }
 
     if (req.method === 'POST' && action === 'save') {

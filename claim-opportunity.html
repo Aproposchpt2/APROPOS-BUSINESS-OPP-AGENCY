@@ -69,6 +69,14 @@ form.addEventListener('submit',async e=>{
    sessionStorage.setItem('aboaOpportunityToken',d.workspace_token);
    sessionStorage.setItem('aboaOpportunityType',type);
    sessionStorage.setItem('aboaOpportunityClaim',JSON.stringify({business_name:d.business_name||payload.business_name,contact_name:payload.name,contact_email:payload.email,opportunity_reference:ref,expires_at:d.expires_at}));
+   try{
+     const vp=await Promise.race([
+       fetch('/api/vendor-presence?action=auto-claim',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({business_name:d.business_name||payload.business_name,claimant_name:payload.name,claimant_email:payload.email,source:'contract_claim:'+type,opportunity_ref:ref})}),
+       new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),4000))
+     ]);
+     const vd=await vp.json().catch(()=>null);
+     if(vp.ok&&vd?.ok)sessionStorage.setItem('aboaVendorSlug',vd.profile.slug);
+   }catch(e){ /* Vendor Page provisioning is best-effort; the contract claim above already succeeded and must not be blocked by this. */ }
    location.assign('/opportunity-workspace');
  }catch(err){
    statusEl.textContent=err.message||'Claim could not be completed.';
