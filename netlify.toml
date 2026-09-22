@@ -152,3 +152,25 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
+
+
+[[redirects]]
+  from = "/vendor-workspace"
+  to = "/vendor-workspace.html"
+  status = 200
+
+[[headers]]
+  for = "/vendor-workspace.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[redirects]]
+  from = "/vendor/:slug"
+  to = "/vendor-public.html?slug=:slug"
+  status = 200
+
+[[headers]]
+  for = "/vendor-public.html"
+  [headers.values]
+    Cache-Control = "public, max-age=60"
