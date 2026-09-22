@@ -69,6 +69,63 @@ async function sessionProfile(req) {
   return profiles?.[0] || null;
 }
 
+async function profileSeed(businessName, claimantEmail) {
+  const seed = {
+    website:'', city:'', state:'', service_area:'', about:'',
+    naics:[], certifications:[], core_capabilities:[], public_contact_email:claimantEmail
+  };
+  const filter = encodeURIComponent('*' + businessName.replace(/[%*]/g,'') + '*');
+  try {
+    const federal = await db('ngcc_contractor_candidates','GET',
+      '?select=business_name,city,state,registered_naics,business_classifications,official_website_url,contact_email,capability_verification&business_name=ilike.'+filter+'&order=updated_at.desc&limit=1');
+    const row = federal?.[0];
+    if (row) {
+      seed.website = clean(row.official_website_url,1000);
+      seed.city = clean(row.city,120);
+      seed.state = clean(row.state,80);
+      seed.naics = Array.isArray(row.registered_naics) ? row.registered_naics.map(x=>clean(x,80)).filter(Boolean).slice(0,20) : [];
+      seed.certifications = Array.isArray(row.business_classifications) ? row.business_classifications.map(x=>clean(x,120)).filter(Boolean).slice(0,30) : [];
+      if (emailOk(clean(row.contact_email,180))) seed.public_contact_email = clean(row.contact_email,180);
+      const cv = row.capability_verification;
+      if (cv && typeof cv === 'object') {
+        const possible = cv.capabilities || cv.verified_capabilities || cv.services || [];
+        if (Array.isArray(possible)) seed.core_capabilities = possible.map(x=>clean(typeof x==='string'?x:(x?.name||x?.capability||''),220)).filter(Boolean).slice(0,20);
+      }
+    }
+  } catch (e) { console.warn('federal profile seed unavailable', e?.message); }
+
+  try {
+    const local = await db('natcorp_business_discovery_candidates','GET',
+      '?select=business_name,website,location,capability_evidence,contact_email&business_name=ilike.'+filter+'&order=updated_at.desc&limit=1');
+    const row = local?.[0];
+    if (row) {
+      if (!seed.website) seed.website = clean(row.website,1000);
+      if (!seed.service_area) seed.service_area = clean(row.location,200);
+      if (emailOk(clean(row.contact_email,180)) && !seed.public_contact_email) seed.public_contact_email = clean(row.contact_email,180);
+      const ev = row.capability_evidence;
+      if (!seed.core_capabilities.length && Array.isArray(ev)) seed.core_capabilities = ev.map(x=>clean(typeof x==='string'?x:(x?.name||x?.capability||''),220)).filter(Boolean).slice(0,20);
+    }
+  } catch (e) { console.warn('state-local profile seed unavailable', e?.message); }
+
+  try {
+    const aoie = await db('aoie_business_profiles','GET',
+      '?select=legal_business_name,business_description,website,primary_location,service_territory&legal_business_name=ilike.'+filter+'&order=updated_at.desc&limit=1');
+    const row = aoie?.[0];
+    if (row) {
+      if (!seed.about) seed.about = clean(row.business_description,4000);
+      if (!seed.website) seed.website = clean(row.website,1000);
+      if (row.primary_location && typeof row.primary_location==='object') {
+        if (!seed.city) seed.city = clean(row.primary_location.city,120);
+        if (!seed.state) seed.state = clean(row.primary_location.state,80);
+      }
+      if (!seed.service_area && row.service_territory) seed.service_area = clean(
+        typeof row.service_territory==='string' ? row.service_territory : JSON.stringify(row.service_territory),200);
+    }
+  } catch (e) { console.warn('business profile seed unavailable', e?.message); }
+
+  return seed;
+}
+
 async function uniqueSlug(name) {
   const base = slugify(name);
   for (let i = 0; i < 20; i++) {
@@ -133,19 +190,24 @@ export default async (req) => {
       }
       if (!profile) {
         const slug = await uniqueSlug(claim.business_name);
+        const seed = await profileSeed(claim.business_name, claim.claimant_email);
         const rows = await db('boda_vendor_profiles','POST','', [{
           claim_id: claim.id,
           business_name: claim.business_name,
           slug,
           owner_email: claim.claimant_email,
-          public_contact_email: claim.claimant_email,
+          public_contact_email: seed.public_contact_email || claim.claimant_email,
           headline: 'Tell customers what your business does best.',
-          about: '',
-          core_capabilities: [],
+          about: seed.about || '',
+          website: seed.website || '',
+          city: seed.city || '',
+          state: seed.state || '',
+          service_area: seed.service_area || '',
+          core_capabilities: seed.core_capabilities || [],
           products_services: [],
           past_performance: [],
-          certifications: [],
-          naics: []
+          certifications: seed.certifications || [],
+          naics: seed.naics || []
         }], 'return=representation');
         profile = rows?.[0];
       }
