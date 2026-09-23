@@ -153,9 +153,16 @@ async function profileSeed(businessName, claimantEmail) {
 }
 
 async function findOrCreateProfile({ businessName, claimId, claimantEmail, publishOnCreate = false, opportunity = null }) {
+  // PostgREST's or=() combinator can't handle a raw comma inside a filter
+  // value (common in real business names, e.g. "Precision Grade, Inc."),
+  // so this is two plain queries instead of one or=(...) query.
   const nameFilter = encodeURIComponent(businessName.replace(/[%*]/g, ''));
-  const existing = await db('boda_vendor_profiles', 'GET',
-    `?select=*&or=(business_name.ilike.${nameFilter},owner_email.eq.${encodeURIComponent(claimantEmail)})&limit=1`);
+  let existing = await db('boda_vendor_profiles', 'GET',
+    `?select=*&business_name=ilike.${nameFilter}&limit=1`);
+  if (!existing?.length) {
+    existing = await db('boda_vendor_profiles', 'GET',
+      `?select=*&owner_email=eq.${encodeURIComponent(claimantEmail)}&limit=1`);
+  }
   if (existing?.length) {
     let profile = existing[0];
     if (opportunity) {
