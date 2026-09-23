@@ -57,7 +57,6 @@ h1{font:400 47px/1 var(--serif);margin:0 0 9px}
 .body{padding:34px 44px 38px}
 .eyebrow{font-size:9px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:#8b6e2b}
 h2{font:400 29px/1.15 var(--serif);color:var(--navy);margin:7px 0 13px}
-.about{color:#53667b;font-size:14px;line-height:1.75;max-width:760px}
 .panel{
   border:1px solid #d7e2ea;border-radius:15px;padding:21px;
   background:linear-gradient(180deg,#fff,var(--ice))
@@ -102,13 +101,10 @@ h2{font:400 29px/1.15 var(--serif);color:var(--navy);margin:7px 0 13px}
 .opp-scope small{display:block;color:#7c8997;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
 .opp-scope p{margin:0;color:#3a4d64;font-size:13px;line-height:1.75}
 .opp-link{margin-top:6px}
-.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-top:26px}
-.capabilities{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}
-.cap{padding:12px;border-radius:9px;background:#fff;border:1px solid #dce5ec;font-size:12px;color:#334a63}
-.snapshot-row{display:flex;gap:24px;margin-top:15px;flex-wrap:wrap}
 .snapshot-block{margin-top:18px}
 .snapshot-block:first-child{margin-top:0}
 .snapshot-block>small{display:block;color:#7c8997;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}
+.snapshot-facts{flex:1;min-width:200px;display:flex;flex-direction:column}
 .snapshot-tags{display:flex;flex-wrap:wrap;gap:8px}
 .tag{padding:8px 12px;border-radius:999px;background:#fff;border:1px solid #dce5ec;font-size:11px;color:#334a63;white-space:nowrap}
 .tag.cert{background:#fdf8ee;border-color:var(--gold);color:#8b6e2b;font-weight:700}
@@ -121,8 +117,7 @@ h2{font:400 29px/1.15 var(--serif);color:var(--navy);margin:7px 0 13px}
 .missing h1{font:400 3rem var(--serif)}
 @media(max-width:700px){
   .hero,.body{padding-left:24px;padding-right:24px}
-  .profile-head,.grid{grid-template-columns:1fr}
-  .capabilities{grid-template-columns:1fr}
+  .profile-head{grid-template-columns:1fr}
   .engage{align-items:flex-start;flex-direction:column}
   h1{font-size:39px}
 }
@@ -137,6 +132,7 @@ const slug=decodeURIComponent(location.pathname.split('/').filter(Boolean).pop()
 const app=document.getElementById('app');
 function initials(name){return String(name||'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'BV'}
 function fact(label,value){return value?'<div class="fact"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong></div>':''}
+function fact2(label,value){return value?'<div class="fact" style="flex:1;min-width:140px"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong></div>':''}
 function date(v){if(!v)return'';const d=new Date(v);return isNaN(d.getTime())?String(v):d.toLocaleDateString('en-US',{dateStyle:'long'})}
 
 async function loadOpportunity(){
@@ -181,14 +177,11 @@ async function load(){
       +'</section>'
       +'<section class="body">'
       +opportunityHtml
-      +'<div class="grid"><section class="panel"><div class="eyebrow">About This Business</div><h2>'+esc(p.headline||'Business Overview')+'</h2>'
-      +'<div class="about">'+esc(p.about||'This verified Vendor Page is being prepared by the business owner.')+'</div>'
-      +'<div class="capabilities">'+(caps.length?caps.map(x=>'<div class="cap">'+esc(x)+'</div>').join(''):'<div class="cap">Capabilities will be added by the business owner.</div>')+'</div>'
-      +'</section>'
-      +'<aside class="panel"><div class="eyebrow">Business Snapshot</div>'
+      +'<div class="panel"><div class="eyebrow">Business Snapshot</div>'
+      +(caps.length?'<div class="snapshot-block"><small>Capabilities</small><div class="snapshot-tags">'+caps.map(x=>'<span class="tag">'+esc(x)+'</span>').join('')+'</div></div>':'')
       +(certs.length?'<div class="snapshot-block"><small>Certifications &amp; Designations</small><div class="snapshot-tags">'+certs.map(x=>'<span class="tag cert">'+esc(x)+'</span>').join('')+'</div></div>':'')
-      +'<div class="snapshot-block"><small>Registration</small><div>'+fact('SAM UEI',p.uei)+fact('Service Area',p.service_area)+fact('Website',p.website)+fact('Phone',p.phone)+'</div></div>'
-      +'</aside></div>'
+      +(p.sam_registration_status||p.uei?'<div class="snapshot-block"><small>Registration</small><div class="snapshot-facts" style="flex-direction:row;gap:24px;flex-wrap:wrap">'+fact2('SAM Status',p.sam_registration_status)+fact2('UEI',p.uei)+'</div></div>':'')
+      +'</div>'
       +'<div class="engage"><div><strong>Connect with '+esc(p.business_name)+'.</strong><span>Customers, buyers, primes and teaming partners can engage directly with this business.</span></div>'
       +(mail?'<a class="button" href="'+mail+'">'+esc(p.customer_cta_label||'Contact This Business')+'</a>':(p.website?'<a class="button" href="'+esc(p.website)+'">Visit Business Website</a>':''))
       +'</div>'
