@@ -49,13 +49,18 @@ function naicsCode(entry) {
   return clean(String(entry ?? '').split(' — ')[0], 20);
 }
 
+// Fetches all NAICS codes in parallel with a per-request timeout -- doing
+// this sequentially (the original implementation) summed each call's
+// latency and could exceed Netlify's function time limit with 8 codes,
+// intermittently returning an HTML timeout page instead of JSON. Found live
+// during E2E testing.
 async function fetchNaicsOpportunities(samKey, naicsCodes, days = 90) {
   const now = new Date();
   const from = new Date(now); from.setDate(from.getDate() - days);
   const seen = new Map();
 
-  for (const naics of naicsCodes.slice(0, 8)) {
-    if (!/^\d{6}$/.test(naics)) continue;
+  async function fetchOne(naics) {
+    if (!/^\d{6}$/.test(naics)) return;
     try {
       const u = new URL(SAM_OPP_URL);
       u.searchParams.set('api_key', samKey);
@@ -64,8 +69,8 @@ async function fetchNaicsOpportunities(samKey, naicsCodes, days = 90) {
       u.searchParams.set('ncode', naics);
       u.searchParams.set('limit', String(SAM_PAGE_LIMIT));
       u.searchParams.set('offset', '0');
-      const r = await fetch(u, { headers: { accept: 'application/json' } });
-      if (!r.ok) continue;
+      const r = await fetch(u, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(8000) });
+      if (!r.ok) return;
       const data = await r.json();
       for (const o of (data.opportunitiesData || [])) {
         if (!o.noticeId || seen.has(o.noticeId)) continue;
@@ -87,6 +92,8 @@ async function fetchNaicsOpportunities(samKey, naicsCodes, days = 90) {
       }
     } catch (e) { console.warn('[vendor-presence dashboard] SAM fetch', naics, e?.message); }
   }
+
+  await Promise.all(naicsCodes.slice(0, 8).map(fetchOne));
 
   return [...seen.values()]
     .filter(o => o.days_left === null || o.days_left >= 1)
