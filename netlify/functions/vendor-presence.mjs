@@ -40,7 +40,8 @@ async function db(table, method = 'GET', query = '', body, prefer = '') {
   }
   if (!r.ok) {
     console.error('vendor-presence db error', table, r.status, data);
-    throw new Error('Vendor profile data service request failed.');
+    const detail = typeof data === 'string' ? data : JSON.stringify(data || {});
+    throw new Error(`Vendor profile data service ${table} ${method} ${r.status}: ${detail.slice(0, 300)}`);
   }
   return data;
 }
