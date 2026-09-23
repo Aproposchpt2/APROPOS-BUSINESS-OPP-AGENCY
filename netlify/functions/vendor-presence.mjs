@@ -145,6 +145,32 @@ function dbConfig() {
   return { url: url.replace(/\/$/, ''), key };
 }
 
+// Vendor Card Post Manager entitlement check. Real payment status lives in
+// product_entitlements on the AI4 Product Purchasing hub's shared Stripe
+// webhook -- a DIFFERENT Supabase project (judislfknmhofcgzyozc) than this
+// site's own tables (pwvstaigtdrccirdvqka). Checked live on every profile
+// load and synced back onto boda_vendor_profiles.subscription_status so the
+// rest of the app (dashboard, etc.) can keep reading the local column.
+async function checkEntitlement(email) {
+  const url = Netlify.env.get('ENTITLEMENTS_SUPABASE_URL');
+  const key = Netlify.env.get('ENTITLEMENTS_SUPABASE_SERVICE_KEY');
+  if (!url || !key || !email) return null;
+  try {
+    const r = await fetch(
+      `${url.replace(/\/$/, '')}/rest/v1/product_entitlements?customer_email=eq.${encodeURIComponent(email.toLowerCase())}&product_code=eq.boda_vendor_card&select=status&order=updated_at.desc&limit=1`,
+      { headers: { apikey: key, authorization: `Bearer ${key}`, accept: 'application/json' }, signal: AbortSignal.timeout(8000) }
+    );
+    if (!r.ok) { console.error('[vendor-presence] entitlement check failed', r.status); return null; }
+    const rows = await r.json().catch(() => []);
+    const status = rows?.[0]?.status;
+    if (!status) return null;
+    return ['active', 'trialing'].includes(status) ? 'active' : status === 'past_due' ? 'past_due' : 'canceled';
+  } catch (e) {
+    console.error('[vendor-presence] entitlement check error', e?.message);
+    return null;
+  }
+}
+
 async function db(table, method = 'GET', query = '', body, prefer = '') {
   const { url, key } = dbConfig();
   const r = await fetch(`${url}/rest/v1/${table}${query}`, {
@@ -406,8 +432,16 @@ export default async (req) => {
     }
 
     if (req.method === 'GET' && action === 'profile') {
-      const profile = await sessionProfile(req);
-      return profile ? json({ok:true,profile}) : json({ok:false,error:'Session required.'},401);
+      let profile = await sessionProfile(req);
+      if (!profile) return json({ok:false,error:'Session required.'},401);
+
+      const live = await checkEntitlement(profile.owner_email);
+      if (live && live !== profile.subscription_status) {
+        const rows = await db('boda_vendor_profiles','PATCH',`?id=eq.${encodeURIComponent(profile.id)}`,
+          { subscription_status: live, updated_at: new Date().toISOString() }, 'return=representation');
+        if (rows?.[0]) profile = rows[0];
+      }
+      return json({ok:true,profile});
     }
 
     if (req.method === 'GET' && action === 'dashboard') {
