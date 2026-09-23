@@ -154,20 +154,23 @@ function dbConfig() {
 async function checkEntitlement(email) {
   const url = Netlify.env.get('ENTITLEMENTS_SUPABASE_URL');
   const key = Netlify.env.get('ENTITLEMENTS_SUPABASE_SERVICE_KEY');
-  if (!url || !key || !email) return null;
+  const debug = { hasUrl: Boolean(url), hasKey: Boolean(key) };
+  if (!url || !key || !email) return { status: null, debug };
   try {
     const r = await fetch(
       `${url.replace(/\/$/, '')}/rest/v1/product_entitlements?customer_email=eq.${encodeURIComponent(email.toLowerCase())}&product_code=eq.boda_vendor_card&select=status&order=updated_at.desc&limit=1`,
       { headers: { apikey: key, authorization: `Bearer ${key}`, accept: 'application/json' }, signal: AbortSignal.timeout(8000) }
     );
-    if (!r.ok) { console.error('[vendor-presence] entitlement check failed', r.status); return null; }
+    debug.httpStatus = r.status;
+    if (!r.ok) { debug.body = (await r.text()).slice(0, 300); return { status: null, debug }; }
     const rows = await r.json().catch(() => []);
+    debug.rowCount = rows?.length || 0;
     const status = rows?.[0]?.status;
-    if (!status) return null;
-    return ['active', 'trialing'].includes(status) ? 'active' : status === 'past_due' ? 'past_due' : 'canceled';
+    if (!status) return { status: null, debug };
+    return { status: ['active', 'trialing'].includes(status) ? 'active' : status === 'past_due' ? 'past_due' : 'canceled', debug };
   } catch (e) {
-    console.error('[vendor-presence] entitlement check error', e?.message);
-    return null;
+    debug.error = e?.message;
+    return { status: null, debug };
   }
 }
 
@@ -435,13 +438,13 @@ export default async (req) => {
       let profile = await sessionProfile(req);
       if (!profile) return json({ok:false,error:'Session required.'},401);
 
-      const live = await checkEntitlement(profile.owner_email);
+      const { status: live, debug } = await checkEntitlement(profile.owner_email);
       if (live && live !== profile.subscription_status) {
         const rows = await db('boda_vendor_profiles','PATCH',`?id=eq.${encodeURIComponent(profile.id)}`,
           { subscription_status: live, updated_at: new Date().toISOString() }, 'return=representation');
         if (rows?.[0]) profile = rows[0];
       }
-      return json({ok:true,profile});
+      return json({ok:true,profile,_entitlementDebug:debug});
     }
 
     if (req.method === 'GET' && action === 'dashboard') {
