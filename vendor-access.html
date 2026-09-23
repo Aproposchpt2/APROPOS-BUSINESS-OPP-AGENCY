@@ -3,61 +3,67 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
 <title>Vendor Access | Business Opportunity Development Agency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital@0;1&family=Cormorant+Garamond:ital@1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#071a33;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;--ice:#edf5fa;--paper:#fbfdff;--ink:#17283d;--muted:#66778a;--line:#cad9e4;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif}
+:root{--bg:#0A1A3A;--surface:#0f2244;--panel:#132954;--line:rgba(199,167,90,.18);--line2:rgba(199,167,90,.32);
+  --text:#f0f6ff;--muted:#8facd0;--soft:#5a7899;--gold:#c7a75a;--gold2:#ead9a5;--green:#2ecc8a;--amber:#f0a500;--red:#e05555;
+  --serif:"Cormorant Garamond",Georgia,serif;--disp:"Bodoni Moda",Georgia,serif;--sans:"Manrope",Arial,sans-serif}
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#f7fafc,#eaf1f5);color:var(--ink);font-family:var(--sans)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
 a{text-decoration:none;color:inherit}
-header{background:rgba(2,11,24,.96);border-bottom:1px solid rgba(229,207,154,.2);color:#fff}
-.head{max-width:1040px;margin:auto;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+header{background:var(--surface);border-bottom:1px solid var(--line);color:#fff}
+.head{max-width:1160px;margin:auto;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
 .brand{display:flex;align-items:center;gap:13px}
 .brand strong{display:block;letter-spacing:.14em;font-size:.9rem}
-.brand span{display:block;margin-top:4px;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.brand span{display:block;margin-top:4px;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .back{color:var(--gold2);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase}
-.hero{background:radial-gradient(circle at 86% 12%,rgba(234,217,165,.19),transparent 28%),linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:52px 24px;border-bottom:4px solid var(--gold)}
-.hero-in{max-width:1040px;margin:auto}
-.eyebrow{font-size:.64rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);margin-bottom:14px}
-h1{font:500 clamp(2.2rem,5vw,3.4rem)/1.1 var(--serif);margin:0 0 14px;max-width:760px}
-.lead{color:rgba(255,255,255,.75);max-width:680px;line-height:1.7}
-.wrap{max-width:1180px;margin:auto;padding:44px 24px 30px}
-.section-label{font-size:.64rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--navy2);text-align:center;margin:0 0 8px}
-.section-title{font:500 1.9rem var(--serif);color:var(--navy);text-align:center;margin:0 auto 36px;max-width:640px}
+.hero{background:linear-gradient(135deg,var(--bg),var(--panel));padding:56px 24px;border-bottom:1px solid var(--line2)}
+.hero-in{max-width:1160px;margin:auto}
+.eyebrow{font-size:.64rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2);margin-bottom:14px}
+h1{font:400 clamp(2.2rem,5vw,3.4rem)/1.12 var(--disp);margin:0 0 14px;max-width:800px;color:#fff}
+h1 em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--gold2)}
+.lead{color:var(--muted);max-width:700px;line-height:1.75;font-size:.98rem}
+.wrap{max-width:1160px;margin:auto;padding:48px 24px 30px}
+.section-label{font-size:.64rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2);text-align:center;margin:0 0 10px}
+.section-title{font:400 1.9rem var(--disp);color:#fff;text-align:center;margin:0 auto 40px;max-width:680px}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;display:flex;flex-direction:column;position:relative;overflow:hidden}
-.card.feature{border-color:var(--gold);box-shadow:0 10px 30px rgba(18,55,94,.08)}
-.card .tag{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-.card h2{font:500 1.5rem var(--serif);color:var(--navy);margin:0 0 6px}
-.card .tagline{font-size:.82rem;color:var(--muted);margin:0 0 16px;line-height:1.55}
-.card .benefits{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:10px;flex:1}
-.card .benefits li{display:flex;gap:9px;align-items:flex-start;color:#3a4d64;font-size:.83rem;line-height:1.55}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:26px;display:flex;flex-direction:column;position:relative}
+.card.feature{border-color:var(--line2);background:linear-gradient(160deg,rgba(199,167,90,.07),var(--surface) 55%)}
+.card .tag{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);margin-bottom:10px}
+.card h2{font:400 1.4rem var(--disp);color:#fff;margin:0 0 8px}
+.card .tagline{font-size:.82rem;color:var(--muted);margin:0 0 18px;line-height:1.6}
+.card .benefits{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:11px;flex:1}
+.card .benefits li{display:flex;gap:9px;align-items:flex-start;color:var(--text);opacity:.85;font-size:.83rem;line-height:1.55}
 .card .benefits li::before{content:'✓';color:var(--gold);font-weight:800;flex:none;margin-top:1px}
-.card .cta{display:block;width:100%;min-height:48px;line-height:48px;text-align:center;border:1px solid var(--gold);background:var(--gold);color:var(--navy);font:inherit;font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:8px}
-.card .cta.outline{background:transparent;color:var(--navy2);border-color:var(--navy2)}
-.trial-note{text-align:center;font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--navy2);margin-bottom:8px}
+.card .cta{display:block;width:100%;min-height:48px;line-height:48px;text-align:center;border:1px solid var(--gold);background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);font:inherit;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:6px}
+.card .cta.outline{background:transparent;color:var(--gold2);border-color:var(--line2)}
+.card .cta.outline:hover{border-color:var(--gold)}
+.trial-note{text-align:center;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-bottom:8px}
 .pill-row{display:flex;justify-content:center;margin:46px 0 8px}
-.pill{display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:14px 26px;font-size:.78rem;font-weight:700;color:var(--navy2)}
-.pill .free{background:var(--navy);color:#fff;font-size:.58rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px}
+.pill{display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:14px 26px;font-size:.78rem;font-weight:600;color:var(--text)}
+.pill .free{background:var(--gold);color:var(--bg);font-size:.58rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px}
 .pill:hover{border-color:var(--gold)}
-.contact{max-width:640px;margin:56px auto 0;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:28px}
-.contact h2{font:500 1.3rem var(--serif);color:var(--navy);margin:0 0 6px}
+.contact{max-width:640px;margin:56px auto 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:28px}
+.contact h2{font:400 1.3rem var(--disp);color:#fff;margin:0 0 6px}
 .contact .sub{font-size:.82rem;color:var(--muted);margin:0 0 18px}
 .field{margin-bottom:14px}
-.field label{display:block;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#566174;margin-bottom:6px}
-.field input,.field select,.field textarea{width:100%;border:1px solid #ccd3dc;background:#fff;padding:11px 12px;font:inherit;font-size:.92rem;outline:none;border-radius:8px}
+.field label{display:block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line2);background:var(--panel);color:var(--text);padding:11px 12px;font:inherit;font-size:.92rem;outline:none;border-radius:6px}
+.field input::placeholder,.field textarea::placeholder{color:var(--soft)}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
 .field textarea{min-height:84px;resize:vertical}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .consent{display:flex;gap:8px;align-items:flex-start;font-size:.76rem;color:var(--muted);margin:14px 0 18px}
 .consent input{width:auto;margin-top:3px}
-button{width:100%;min-height:50px;border:1px solid var(--gold);background:var(--gold);color:var(--navy);font:inherit;font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:8px}
+button{width:100%;min-height:50px;border:1px solid var(--gold);background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);font:inherit;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:6px}
 button:disabled{opacity:.55;cursor:wait}
 .status{margin-top:14px;padding:12px 14px;border-radius:8px;display:none;font-size:.82rem}
-.status.error{display:block;background:#fff0f0;color:#8b1e1e}
-.status.success{display:block;background:#eefcf4;color:#166b4b}
+.status.error{display:block;background:rgba(224,85,85,.12);color:#ff9b9b;border:1px solid rgba(224,85,85,.3)}
+.status.success{display:block;background:rgba(46,204,138,.12);color:var(--green);border:1px solid rgba(46,204,138,.3)}
 .hp{position:absolute;left:-9999px}
 @media(max-width:860px){.cards{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
 </style>
@@ -70,7 +76,7 @@ button:disabled{opacity:.55;cursor:wait}
 
 <section class="hero"><div class="hero-in">
   <div class="eyebrow">Vendor Access</div>
-  <h1>See every opportunity, not just the first one.</h1>
+  <h1>See every opportunity, <em>not just the first one.</em></h1>
   <p class="lead">Your Vendor Dashboard already found current opportunities matching your registered capabilities. Below are the three ways to go further — full federal contract intelligence, full state &amp; local coverage, and putting your business in front of the buyers searching the Agency's Vendor Registry.</p>
 </div></section>
 
