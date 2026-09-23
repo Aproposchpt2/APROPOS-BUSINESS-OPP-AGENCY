@@ -77,36 +77,6 @@ async function profileSeed(businessName, claimantEmail) {
     naics:[], certifications:[], core_capabilities:[], public_contact_email:claimantEmail
   };
   const filter = encodeURIComponent('*' + businessName.replace(/[%*]/g,'') + '*');
-  try {
-    const federal = await db('ngcc_contractor_candidates','GET',
-      '?select=business_name,city,state,registered_naics,business_classifications,official_website_url,contact_email,capability_verification&business_name=ilike.'+filter+'&order=updated_at.desc&limit=1');
-    const row = federal?.[0];
-    if (row) {
-      seed.website = clean(row.official_website_url,1000);
-      seed.city = clean(row.city,120);
-      seed.state = clean(row.state,80);
-      seed.naics = Array.isArray(row.registered_naics) ? row.registered_naics.map(x=>{
-        if (typeof x === 'string') return clean(x,120);
-        if (x && typeof x === 'object') {
-          const code = clean(x.naics_code || x.code,20);
-          const description = clean(x.description || x.title,100);
-          return [code, description].filter(Boolean).join(' — ');
-        }
-        return '';
-      }).filter(Boolean).slice(0,20) : [];
-      seed.certifications = Array.isArray(row.business_classifications) ? row.business_classifications.map(x=>{
-        if (typeof x === 'string') return clean(x,120);
-        if (x && typeof x === 'object') return clean(x.name || x.classification || x.description,120);
-        return '';
-      }).filter(Boolean).slice(0,30) : [];
-      if (emailOk(clean(row.contact_email,180))) seed.public_contact_email = clean(row.contact_email,180);
-      const cv = row.capability_verification;
-      if (cv && typeof cv === 'object') {
-        const possible = cv.capabilities || cv.verified_capabilities || cv.services || [];
-        if (Array.isArray(possible)) seed.core_capabilities = possible.map(x=>clean(typeof x==='string'?x:(x?.name||x?.capability||''),220)).filter(Boolean).slice(0,20);
-      }
-    }
-  } catch (e) { console.warn('federal profile seed unavailable', e?.message); }
 
   try {
     const local = await db('natcorp_business_discovery_candidates','GET',
