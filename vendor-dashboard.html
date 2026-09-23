@@ -230,6 +230,22 @@ function renderLocked(matches) {
   }).join('');
 }
 
+// Federal opportunities don't carry real scope-of-work text (SAM.gov only
+// gives a description URL, not the text) -- synthesize a plain-language
+// recap from the facts already on screen so the drawer never looks bare.
+// State-local opportunities that DO have a real scope_summary use that
+// verbatim instead.
+function summaryText(o) {
+  if (o.scope_summary) return o.scope_summary;
+  const bits = [];
+  bits.push((o.title || 'This opportunity') + (o.agency_name ? ', issued by ' + o.agency_name + ',' : '') + ' is open for bid.');
+  if (o.naics) bits.push('It is classified under NAICS ' + o.naics + '.');
+  bits.push(o.set_aside && o.set_aside !== 'Unrestricted' ? 'Set-aside: ' + o.set_aside + '.' : 'No set-aside restriction applies.');
+  if (o.place_of_performance) bits.push('Place of performance: ' + o.place_of_performance + '.');
+  bits.push(o.response_deadline ? 'Responses are due by ' + fmtDate(o.response_deadline) + '.' : 'No response deadline is listed.');
+  return bits.join(' ');
+}
+
 function openCompliment() {
   const o = currentComplimentary;
   if (!o) return;
@@ -244,8 +260,9 @@ function openCompliment() {
     + '<div class="cd-item"><div class="cd-item-lbl">Location</div><div class="cd-item-val">' + esc(o.place_of_performance || '—') + '</div></div>'
     + '<div class="cd-item"><div class="cd-item-lbl">Set-Aside</div><div class="cd-item-val" style="font-size:.8rem">' + esc(o.set_aside || 'Unrestricted') + '</div></div>';
   const descLbl = document.getElementById('cdDescLbl'), desc = document.getElementById('cdDesc');
-  if (o.scope_summary) { descLbl.style.display = 'block'; desc.style.display = 'block'; desc.textContent = o.scope_summary; }
-  else { descLbl.style.display = 'none'; desc.style.display = 'none'; }
+  descLbl.textContent = o.scope_summary ? 'Scope Of Work' : 'Summary';
+  descLbl.style.display = 'block'; desc.style.display = 'block';
+  desc.textContent = summaryText(o);
   const viewLink = document.getElementById('cdViewLink');
   if (o.authoritative_url) { viewLink.style.display = 'block'; viewLink.href = o.authoritative_url; }
   else { viewLink.style.display = 'none'; }
@@ -268,7 +285,7 @@ function downloadSummary() {
     'Solicitation #: ' + (o.solicitation_number || '—'),
     'Response Deadline: ' + fmtDate(o.response_deadline),
     'Location: ' + (o.place_of_performance || '—'),
-    o.scope_summary ? ('\nScope Of Work:\n' + o.scope_summary) : '',
+    '\n' + (o.scope_summary ? 'Scope Of Work' : 'Summary') + ':\n' + summaryText(o),
     o.authoritative_url ? ('\nFull Opportunity: ' + o.authoritative_url) : ''
   ].join('\n');
   const blob = new Blob([text], { type: 'text/plain' });
