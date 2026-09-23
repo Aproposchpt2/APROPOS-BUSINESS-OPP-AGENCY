@@ -24,7 +24,10 @@ function cleanOpportunity(o) {
     scope_summary: clean(o.scope_summary || o.description, 4000),
     authoritative_url: clean(o.authoritative_url, 1000),
     place_of_performance: clean(o.place_of_performance, 200)
-      || [clean(o.city, 120), clean(o.state, 80)].filter(Boolean).join(', ')
+      || [clean(o.city, 120), clean(o.state, 80)].filter(Boolean).join(', '),
+    naics: clean(o.naics, 20),
+    set_aside: clean(o.set_aside, 120),
+    state: clean(o.state, 80)
   };
   return Object.values(out).some(Boolean) ? out : null;
 }

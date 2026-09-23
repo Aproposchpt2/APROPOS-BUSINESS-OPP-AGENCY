@@ -40,6 +40,14 @@ h1{font:500 clamp(1.9rem,4vw,2.6rem)/1.1 var(--serif);color:var(--navy);margin:6
 .fact small{display:block;color:#7c8997;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 .fact strong{display:block;margin-top:3px;color:#263d57;font-size:.86rem}
 .comp-scope{border-top:1px solid #dfe8ee;padding-top:14px;margin-top:4px;color:#3a4d64;font-size:.86rem;line-height:1.7}
+.score-row{display:flex;align-items:center;gap:14px;background:var(--ice);border-radius:10px;padding:12px 16px;margin-bottom:16px}
+.score-num{font-size:2rem;font-weight:900;line-height:1;color:var(--green);flex:none}
+.score-label{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.criteria-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.crit{padding:4px 9px;border-radius:5px;font-size:.66rem;font-weight:700;white-space:nowrap}
+.crit-good{background:rgba(46,204,138,.13);color:#1e8f5f;border:1px solid rgba(46,204,138,.3)}
+.crit-warn{background:rgba(199,167,90,.15);color:#8b6e2b;border:1px solid rgba(199,167,90,.35)}
+.crit-bad{background:rgba(224,85,85,.12);color:#b23a3a;border:1px solid rgba(224,85,85,.28)}
 .btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;margin-top:16px}
 .btn-gold{background:var(--gold);color:var(--navy)}
 .btn-outline{background:none;border:1px solid var(--line);color:var(--navy)}
@@ -133,9 +141,36 @@ function scoreOpp(opp, naicsCodes, setAsides, companyState) {
   return { score: Math.min(score, 100), criteria: c };
 }
 
-function renderComplimentary(opp) {
+// 7-criteria evidence chips, cloned from RFCP-V2 opportunity.html criteriaHtml().
+// Shown only on the unlocked complimentary card -- locked cards stay minimal
+// by design (the funnel spec reserves the full analysis for after unlock).
+function criteriaHtml(c) {
+  function chip(label, val, goodVals, badVals) {
+    var cls = goodVals.includes(val) ? 'crit-good' : badVals.includes(val) ? 'crit-bad' : 'crit-warn';
+    var icon = goodVals.includes(val) ? '✓ ' : badVals.includes(val) ? '✗ ' : '~ ';
+    return '<span class="crit ' + cls + '">' + icon + label + '</span>';
+  }
+  return '<div class="criteria-row">'
+    + chip('NAICS', c.naics || '—', ['aligned'], ['none'])
+    + chip('Set-Aside', c.setaside || '—', ['eligible', 'open'], ['ineligible'])
+    + chip('Capability', c.capability || '—', ['aligned'], [])
+    + chip('Risk', c.risk || '—', ['low', 'no_deadline'], ['high', 'critical'])
+    + chip('Past Perf.', c.past_performance || '—', ['relevant'], [])
+    + chip('Location', c.location || '—', ['national', 'home_state'], ['out_of_state'])
+    + chip('Certifications', c.certifications || '—', ['verified'], [])
+    + '</div>';
+}
+
+function renderComplimentary(opp, naicsCodes, setAsides, companyState) {
   const area = document.getElementById('compArea');
   if (!opp) { area.innerHTML = ''; return; }
+  let scoreHtml = '';
+  if (opp.naics) {
+    const dl = opp.response_deadline ? Math.floor((new Date(opp.response_deadline) - new Date()) / 86400000) : null;
+    const s = scoreOpp({ naics: opp.naics, set_aside: opp.set_aside, days_left: dl, state: opp.state }, naicsCodes, setAsides, companyState);
+    scoreHtml = '<div class="score-row"><div class="score-num">' + s.score + '</div><div class="score-label">Match<br>Score</div></div>'
+      + criteriaHtml(s.criteria);
+  }
   area.innerHTML = '<div class="comp-card">'
     + '<div class="comp-head"><div class="eyebrow">Your Complimentary Contract Opportunity</div><div class="comp-pill">Unlocked</div></div>'
     + '<div class="comp-body">'
@@ -144,6 +179,7 @@ function renderComplimentary(opp) {
     + fact('Agency', opp.agency_name) + fact('Solicitation #', opp.solicitation_number)
     + fact('Response Deadline', fmtDate(opp.response_deadline)) + fact('Location', opp.place_of_performance)
     + '</div>'
+    + scoreHtml
     + (opp.scope_summary ? '<div class="comp-scope">' + esc(opp.scope_summary) + '</div>' : '')
     + (opp.authoritative_url ? '<a class="btn btn-gold" target="_blank" rel="noopener noreferrer" href="' + esc(opp.authoritative_url) + '">View Full Opportunity →</a>' : '')
     + '</div></div>';
@@ -196,7 +232,7 @@ async function load() {
     document.getElementById('loadingEl').style.display = 'none';
     document.getElementById('content').style.display = 'block';
 
-    renderComplimentary(d.complimentary);
+    renderComplimentary(d.complimentary, naicsCodes, setAsides, companyState);
     renderLocked(scored);
   } catch (e) {
     document.getElementById('loadingEl').textContent = 'Error: ' + e.message;
