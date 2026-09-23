@@ -135,24 +135,15 @@ function fact(label,value){return value?'<div class="fact"><small>'+esc(label)+'
 function fact2(label,value){return value?'<div class="fact" style="flex:1;min-width:140px"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong></div>':''}
 function date(v){if(!v)return'';const d=new Date(v);return isNaN(d.getTime())?String(v):d.toLocaleDateString('en-US',{dateStyle:'long'})}
 
-async function loadOpportunity(){
-  try{
-    if(sessionStorage.getItem('aboaVendorSlug')!==slug)return'';
-    const type=sessionStorage.getItem('aboaOpportunityType');
-    const tok=sessionStorage.getItem('aboaOpportunityToken');
-    if(type!=='state-local'||!tok)return'';
-    const r=await fetch('/api/opportunity-gateway?action=workspace&type=state-local&t='+encodeURIComponent(tok),{cache:'no-store'});
-    const d=await r.json();
-    if(!r.ok||!d.ok)return'';
-    const o=d.opportunity||{};
-    const loc=o.place_of_performance||[o.city,o.state].filter(Boolean).join(', ')||'';
-    return '<div class="opportunity"><div class="opportunity-head"><div class="eyebrow">Current Contract Opportunity</div><div class="live">Open For Bid</div></div>'
-      +'<div class="opportunity-body"><div class="opp-title">'+esc(o.title||'Government Contract Opportunity')+'</div>'
-      +'<div class="opp-facts">'+fact('Agency',o.agency_name)+fact('Solicitation #',o.solicitation_number)+fact('Response Deadline',date(o.response_deadline))+fact('Location',loc)+'</div>'
-      +(o.scope_summary||o.description?'<div class="opp-scope"><small>Scope Of Work</small><p>'+esc(o.scope_summary||o.description)+'</p></div>':'')
-      +(o.authoritative_url?'<a class="button opp-link" target="_blank" rel="noopener noreferrer" href="'+esc(o.authoritative_url)+'">Open Authoritative Procurement Site</a>':'')
-      +'</div></div>';
-  }catch(e){return''}
+function opportunityCard(o){
+  if(!o||typeof o!=='object')return'';
+  if(!o.title&&!o.agency_name&&!o.solicitation_number)return'';
+  return '<div class="opportunity"><div class="opportunity-head"><div class="eyebrow">Current Contract Opportunity</div><div class="live">Open For Bid</div></div>'
+    +'<div class="opportunity-body"><div class="opp-title">'+esc(o.title||'Government Contract Opportunity')+'</div>'
+    +'<div class="opp-facts">'+fact('Agency',o.agency_name)+fact('Solicitation #',o.solicitation_number)+fact('Response Deadline',date(o.response_deadline))+fact('Location',o.place_of_performance)+'</div>'
+    +(o.scope_summary?'<div class="opp-scope"><small>Scope Of Work</small><p>'+esc(o.scope_summary)+'</p></div>':'')
+    +(o.authoritative_url?'<a class="button opp-link" target="_blank" rel="noopener noreferrer" href="'+esc(o.authoritative_url)+'">Open Authoritative Procurement Site</a>':'')
+    +'</div></div>';
 }
 
 async function load(){
@@ -167,7 +158,7 @@ async function load(){
     const certs=(p.certifications||[]).slice(0,10);
     const mail=p.public_contact_email?'mailto:'+encodeURIComponent(p.public_contact_email):'';
 
-    const opportunityHtml=await loadOpportunity();
+    const opportunityHtml=opportunityCard(p.claimed_opportunity);
 
     app.innerHTML='<article class="card">'
       +'<section class="hero"><div class="agency">Business Opportunity Development Agency &middot; Vendor Presence</div>'

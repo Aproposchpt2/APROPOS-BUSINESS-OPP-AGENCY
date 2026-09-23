@@ -70,9 +70,20 @@ form.addEventListener('submit',async e=>{
    sessionStorage.setItem('aboaOpportunityType',type);
    sessionStorage.setItem('aboaOpportunityClaim',JSON.stringify({business_name:d.business_name||payload.business_name,contact_name:payload.name,contact_email:payload.email,opportunity_reference:ref,expires_at:d.expires_at}));
    let vendorSlug='';
+   let opportunitySnapshot=null;
+   if(type==='state-local'){
+     try{
+       const wr=await Promise.race([
+         fetch('/api/opportunity-gateway?action=workspace&type=state-local&t='+encodeURIComponent(d.workspace_token),{cache:'no-store'}),
+         new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),4000))
+       ]);
+       const wd=await wr.json();
+       if(wr.ok&&wd.ok&&wd.opportunity)opportunitySnapshot=wd.opportunity;
+     }catch(e){ /* Contract details are attached to the Vendor Page best-effort; missing them must not block the claim. */ }
+   }
    try{
      const vp=await Promise.race([
-       fetch('/api/vendor-presence?action=auto-claim',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({business_name:d.business_name||payload.business_name,claimant_name:payload.name,claimant_email:payload.email,source:'contract_claim:'+type,opportunity_ref:ref})}),
+       fetch('/api/vendor-presence?action=auto-claim',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({business_name:d.business_name||payload.business_name,claimant_name:payload.name,claimant_email:payload.email,source:'contract_claim:'+type,opportunity_ref:ref,opportunity:opportunitySnapshot})}),
        new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),4000))
      ]);
      const vd=await vp.json().catch(()=>null);

@@ -14,6 +14,21 @@ const token = () => randomBytes(32).toString('base64url');
 const slugify = s => clean(s, 120).toLowerCase()
   .replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 72) || 'business';
 
+function cleanOpportunity(o) {
+  if (!o || typeof o !== 'object') return null;
+  const out = {
+    title: clean(o.title, 300),
+    agency_name: clean(o.agency_name, 300),
+    solicitation_number: clean(o.solicitation_number, 120),
+    response_deadline: clean(o.response_deadline, 60),
+    scope_summary: clean(o.scope_summary || o.description, 4000),
+    authoritative_url: clean(o.authoritative_url, 1000),
+    place_of_performance: clean(o.place_of_performance, 200)
+      || [clean(o.city, 120), clean(o.state, 80)].filter(Boolean).join(', ')
+  };
+  return Object.values(out).some(Boolean) ? out : null;
+}
+
 function dbConfig() {
   const url = Netlify.env.get('SUPABASE_URL');
   const key = Netlify.env.get('SUPABASE_SERVICE_KEY');
@@ -137,11 +152,21 @@ async function profileSeed(businessName, claimantEmail) {
   return seed;
 }
 
-async function findOrCreateProfile({ businessName, claimId, claimantEmail, publishOnCreate = false }) {
+async function findOrCreateProfile({ businessName, claimId, claimantEmail, publishOnCreate = false, opportunity = null }) {
   const nameFilter = encodeURIComponent(businessName.replace(/[%*]/g, ''));
   const existing = await db('boda_vendor_profiles', 'GET',
     `?select=*&or=(business_name.ilike.${nameFilter},owner_email.eq.${encodeURIComponent(claimantEmail)})&limit=1`);
-  if (existing?.length) return { profile: existing[0], created: false };
+  if (existing?.length) {
+    let profile = existing[0];
+    if (opportunity) {
+      const rows = await db('boda_vendor_profiles', 'PATCH',
+        `?id=eq.${encodeURIComponent(profile.id)}`,
+        { claimed_opportunity: opportunity, updated_at: new Date().toISOString() },
+        'return=representation');
+      if (rows?.[0]) profile = rows[0];
+    }
+    return { profile, created: false };
+  }
 
   const slug = await uniqueSlug(businessName);
   const seed = await profileSeed(businessName, claimantEmail);
@@ -164,7 +189,8 @@ async function findOrCreateProfile({ businessName, claimId, claimantEmail, publi
     products_services: [],
     past_performance: [],
     certifications: seed.certifications || [],
-    naics: seed.naics || []
+    naics: seed.naics || [],
+    claimed_opportunity: opportunity
   }], 'return=representation');
   return { profile: rows?.[0], created: true };
 }
@@ -268,7 +294,7 @@ export default async (req) => {
       const slug = clean(url.searchParams.get('slug'),100);
       if (!slug) return json({ok:false,error:'Profile not found.'},404);
       const rows = await db('boda_vendor_profiles','GET',
-        `?select=business_name,slug,headline,about,logo_url,website,phone,city,state,uei,sam_registration_status,service_area,naics,certifications,core_capabilities,products_services,past_performance,teaming_interests,social_links,capability_statement_url,public_contact_email,customer_cta_label,customer_cta_url,is_published&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true&limit=1`);
+        `?select=business_name,slug,headline,about,logo_url,website,phone,city,state,uei,sam_registration_status,service_area,naics,certifications,core_capabilities,products_services,past_performance,teaming_interests,social_links,capability_statement_url,public_contact_email,customer_cta_label,customer_cta_url,is_published,claimed_opportunity&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true&limit=1`);
       return rows?.length ? json({ok:true,profile:rows[0]}) : json({ok:false,error:'Profile not found.'},404);
     }
 
@@ -313,6 +339,7 @@ export default async (req) => {
       const email = clean(input.claimant_email,180).toLowerCase();
       const source = clean(input.source,80);
       const opportunityRef = clean(input.opportunity_ref,120);
+      const opportunity = cleanOpportunity(input.opportunity);
       if (businessName.length < 2 || claimantName.length < 2 || !emailOk(email))
         return json({ok:false,error:'Business name, claimant name, and a valid email are required.'},400);
 
@@ -330,7 +357,7 @@ export default async (req) => {
       const claim = claimRows?.[0];
 
       const { profile, created } = await findOrCreateProfile({
-        businessName, claimId: claim?.id || null, claimantEmail: email, publishOnCreate: true
+        businessName, claimId: claim?.id || null, claimantEmail: email, publishOnCreate: true, opportunity
       });
       if (!profile) return json({ok:false,error:'Vendor Page could not be provisioned.'},500);
 
