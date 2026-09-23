@@ -78,58 +78,43 @@ async function profileSeed(businessName, claimantEmail) {
   };
   const filter = encodeURIComponent('*' + businessName.replace(/[%*]/g,'') + '*');
 
-  try {
-    const local = await db('natcorp_business_discovery_candidates','GET',
-      '?select=business_name,website,location,capability_evidence,contact_email&business_name=ilike.'+filter+'&order=updated_at.desc&limit=1');
-    const row = local?.[0];
-    if (row) {
-      if (!seed.website) seed.website = clean(row.website,1000);
-      if (!seed.service_area) seed.service_area = clean(row.location,200);
-      if (emailOk(clean(row.contact_email,180)) && !seed.public_contact_email) seed.public_contact_email = clean(row.contact_email,180);
-      const ev = row.capability_evidence;
-      if (!seed.core_capabilities.length && Array.isArray(ev)) seed.core_capabilities = ev.map(x=>clean(typeof x==='string'?x:(x?.name||x?.capability||''),220)).filter(Boolean).slice(0,20);
-    }
-  } catch (e) { console.warn('state-local profile seed unavailable', e?.message); }
+  // NAT-CORP-project seed sources (natcorp_business_discovery_candidates,
+  // aoie_business_profiles) removed 2026-09-23 when this site's Supabase
+  // dependency moved to pwvstaigtdrccirdvqka (the AI4/BDMS/FCP project) --
+  // NAT-CORP work is deferred, out of scope here. FCP and BCP now live in
+  // the SAME project as boda_vendor_profiles, so these are direct queries
+  // instead of the old cross-site vendor-seed-lookup proxy call.
 
   try {
-    const aoie = await db('aoie_business_profiles','GET',
-      '?select=legal_business_name,business_description,website,primary_location,service_territory&legal_business_name=ilike.'+filter+'&order=updated_at.desc&limit=1');
-    const row = aoie?.[0];
-    if (row) {
-      if (!seed.about) seed.about = clean(row.business_description,4000);
-      if (!seed.website) seed.website = clean(row.website,1000);
-      if (row.primary_location && typeof row.primary_location==='object') {
-        if (!seed.city) seed.city = clean(row.primary_location.city,120);
-        if (!seed.state) seed.state = clean(row.primary_location.state,80);
-      }
-      if (!seed.service_area && row.service_territory) seed.service_area = clean(
-        typeof row.service_territory==='string' ? row.service_territory : JSON.stringify(row.service_territory),200);
+    const contacts = await db('fcp_contractor_contacts','GET',
+      '?select=uei,business_name,contact_email&business_name=ilike.'+filter+'&limit=1');
+    const row = contacts?.[0];
+    if (row && emailOk(clean(row.contact_email,180)) && !seed.public_contact_email) {
+      seed.public_contact_email = clean(row.contact_email,180);
     }
-  } catch (e) { console.warn('business profile seed unavailable', e?.message); }
+  } catch (e) { console.warn('fcp_contractor_contacts seed unavailable', e?.message); }
 
-  // FCP (fcp_contractor_contacts) and BCP (cbrief_match_completed) both live
-  // in a different Supabase project than boda_vendor_profiles, so this calls
-  // a small read-only endpoint FCP already exposes with its own service_role
-  // credentials for that project, rather than minting new credentials here.
   try {
-    const seedKey = Netlify.env.get('VENDOR_SEED_SHARED_SECRET');
-    if (seedKey) {
-      const r = await fetch(
-        'https://fcp.aproposgroupllc.com/.netlify/functions/vendor-seed-lookup?business=' + encodeURIComponent(businessName),
-        { headers: { 'x-aboa-seed-key': seedKey } }
-      );
-      if (r.ok) {
-        const d = await r.json().catch(() => null);
-        const row = d?.found ? d.seed : null;
-        if (row) {
-          if (!seed.state) seed.state = clean(row.state,80);
-          if (!seed.naics.length && Array.isArray(row.naics)) seed.naics = row.naics.map(x=>clean(x,120)).filter(Boolean).slice(0,20);
-          if (!seed.core_capabilities.length && Array.isArray(row.core_capabilities)) seed.core_capabilities = row.core_capabilities.map(x=>clean(x,220)).filter(Boolean).slice(0,20);
-          if (!seed.public_contact_email && emailOk(clean(row.public_contact_email,180))) seed.public_contact_email = clean(row.public_contact_email,180);
-        }
-      }
+    const matches = await db('cbrief_match_completed','GET',
+      '?select=contractor_name,contractor_state,contractor_email,contractor_naics_details&contractor_name=ilike.'+filter+'&order=matched_at.desc&limit=1');
+    const row = matches?.[0];
+    if (row) {
+      if (!seed.state) seed.state = clean(row.contractor_state,80);
+      if (emailOk(clean(row.contractor_email,180)) && !seed.public_contact_email) seed.public_contact_email = clean(row.contractor_email,180);
+      const details = Array.isArray(row.contractor_naics_details) ? [...row.contractor_naics_details].sort((a,b)=>(b?.primary?1:0)-(a?.primary?1:0)) : [];
+      if (!seed.naics.length) seed.naics = details.map(x=>[clean(x?.code),clean(x?.description)].filter(Boolean).join(' — ')).filter(Boolean).slice(0,20);
+      if (!seed.core_capabilities.length) seed.core_capabilities = details.map(x=>clean(x?.description)).filter(Boolean).slice(0,20);
     }
-  } catch (e) { console.warn('FCP/BCP vendor seed lookup unavailable', e?.message); }
+  } catch (e) { console.warn('cbrief_match_completed seed unavailable', e?.message); }
+
+  try {
+    const outreach = await db('fcp_outreach','GET',
+      '?select=business_name,contact_name,contact_email&business_name=ilike.'+filter+'&order=created_at.desc&limit=1');
+    const row = outreach?.[0];
+    if (row && emailOk(clean(row.contact_email,180)) && !seed.public_contact_email) {
+      seed.public_contact_email = clean(row.contact_email,180);
+    }
+  } catch (e) { console.warn('fcp_outreach seed unavailable', e?.message); }
 
   return seed;
 }
