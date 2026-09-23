@@ -1,4 +1,4 @@
-// Redeploy trigger: SUPABASE_URL env var was corrected 2026-09-22.
+// Redeploy trigger: SUPABASE_URL and SUPABASE_SERVICE_KEY env vars were corrected 2026-09-22.
 import { createHash, randomBytes } from 'node:crypto';
 
 const json = (body, status = 200, headers = {}) =>
