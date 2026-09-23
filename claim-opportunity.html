@@ -71,7 +71,16 @@ form.addEventListener('submit',async e=>{
    sessionStorage.setItem('aboaOpportunityClaim',JSON.stringify({business_name:d.business_name||payload.business_name,contact_name:payload.name,contact_email:payload.email,opportunity_reference:ref,expires_at:d.expires_at}));
    let vendorSlug='';
    let opportunitySnapshot=null;
-   if(type==='state-local'){
+   if(type==='federal'&&d.opportunity){
+     // Federal claim responses already include the opportunity snapshot --
+     // no extra fetch needed.
+     const o=d.opportunity,pop=o.place_of_performance||{};
+     opportunitySnapshot={
+       title:o.title,agency_name:o.agency,solicitation_number:o.solicitation_number,
+       response_deadline:o.response_deadline,authoritative_url:o.sam_url,
+       place_of_performance:[pop.city,pop.state,pop.country].filter(Boolean).join(', ')
+     };
+   }else if(type==='state-local'){
      try{
        const wr=await Promise.race([
          fetch('/api/opportunity-gateway?action=workspace&type=state-local&t='+encodeURIComponent(d.workspace_token),{cache:'no-store'}),
