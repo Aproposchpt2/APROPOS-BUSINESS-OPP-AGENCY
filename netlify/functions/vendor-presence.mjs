@@ -32,6 +32,39 @@ function cleanOpportunity(o) {
   return Object.values(out).some(Boolean) ? out : null;
 }
 
+// Licensed Business (state/local) complimentary-contract fallback. The real
+// complimentary opportunity normally arrives from claim-opportunity.html's
+// best-effort fetch against the external marketplace
+// (marketplace.aproposgroupllc.com, proxied via opportunity-gateway.mjs) --
+// that call is wrapped in a try/catch there and deliberately never blocks
+// the claim, so it can legitimately come back empty. Rather than leaving a
+// Licensed Business claim with no complimentary contract at all, wire the
+// fallback directly to BDMS's own live repository (cbrief_contract_
+// opportunities, same Supabase project as boda_vendor_profiles -- no new
+// credentials needed). Deterministic per business (hash of name+email picks
+// the index), not random, so a re-claim doesn't hand a different business
+// a different complimentary contract on every attempt.
+async function fallbackComplimentaryFromRepository(businessName, email) {
+  const rows = await db('cbrief_distribution_ready_opportunities', 'GET',
+    '?select=title,agency_name,solicitation_number,closes_at,scope_summary,description,authoritative_detail_url,city,state'
+    + '&status=eq.open&scope_summary=not.is.null'
+    + `&closes_at=gte.${encodeURIComponent(new Date().toISOString())}`
+    + '&order=closes_at.asc.nullslast&limit=50');
+  if (!rows?.length) return null;
+  const idx = parseInt(hash(businessName.toLowerCase() + '|' + email), 16) % rows.length;
+  const row = rows[idx];
+  return {
+    title: row.title,
+    agency_name: row.agency_name,
+    solicitation_number: row.solicitation_number,
+    response_deadline: row.closes_at,
+    scope_summary: row.scope_summary || row.description,
+    authoritative_url: row.authoritative_detail_url,
+    place_of_performance: [row.city, row.state].filter(Boolean).join(', '),
+    state: row.state
+  };
+}
+
 // Cloned from RFCP-V2 (rfcp.aproposgroupllc.com) netlify/functions/demo-pipeline.js --
 // same live SAM.gov Opportunities API search per NAICS code. Repointed to read NAICS
 // from boda_vendor_profiles instead of RFCP's demo_snapshots table.
@@ -518,7 +551,7 @@ export default async (req) => {
       const email = clean(input.claimant_email,180).toLowerCase();
       const source = clean(input.source,80);
       const opportunityRef = clean(input.opportunity_ref,120);
-      const opportunity = cleanOpportunity(input.opportunity);
+      let opportunity = cleanOpportunity(input.opportunity);
       // source is 'contract_claim:federal' or 'contract_claim:state-local'
       // (set client-side in claim-opportunity.html from the claim reference
       // prefix: NG- federal, AP- state-local). Federal contractors get the
@@ -528,6 +561,11 @@ export default async (req) => {
       const contractorType = /state-local/.test(source) ? 'licensed' : (/federal/.test(source) ? 'federal' : null);
       if (businessName.length < 2 || claimantName.length < 2 || !emailOk(email))
         return json({ok:false,error:'Business name, claimant name, and a valid email are required.'},400);
+
+      if (!opportunity && contractorType === 'licensed') {
+        try { opportunity = await fallbackComplimentaryFromRepository(businessName, email); }
+        catch (e) { console.error('[vendor-presence auto-claim] repository fallback failed', e?.message); }
+      }
 
       const claimRows = await db('boda_vendor_claims','POST','',[{
         business_name:businessName,
