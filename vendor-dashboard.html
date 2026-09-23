@@ -7,107 +7,158 @@
 <title>Vendor Dashboard | Business Opportunity Development Agency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital@0;1&family=Cormorant+Garamond:ital@1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --navy:#071a33;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;
-  --ice:#edf5fa;--paper:#fbfdff;--ink:#17283d;--muted:#66778a;--line:#cad9e4;
-  --green:#2ecc8a;--red:#e05555;
-  --serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif;
-}
-*{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#f7fafc,#eaf1f5);color:var(--ink);font-family:var(--sans)}
+:root{--bg:#0A1A3A;--surface:#0f2244;--panel:#132954;--line:rgba(199,167,90,.18);--line2:rgba(199,167,90,.32);
+  --text:#f0f6ff;--muted:#8facd0;--soft:#5a7899;--gold:#c7a75a;--gold2:#ead9a5;--green:#2ecc8a;--amber:#f0a500;--red:#e05555}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6;font-family:'Manrope',Arial,sans-serif}
 a{text-decoration:none;color:inherit}
-.top{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-bottom:3px solid var(--gold)}
-.topin{max-width:980px;margin:auto;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.brand small{display:block;color:var(--gold2);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase}
-.brand strong{display:block;font:600 1.15rem var(--serif)}
-.signout{font-size:.68rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.28);padding:8px 12px;border-radius:8px;background:none;cursor:pointer}
-.wrap{max-width:980px;margin:auto;padding:28px 20px 80px}
-.intro{margin-bottom:22px}
-.eyebrow{font-size:.62rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#8b6e2b}
-h1{font:500 clamp(1.9rem,4vw,2.6rem)/1.1 var(--serif);color:var(--navy);margin:6px 0 8px}
-.sub{color:var(--muted);font-size:.86rem}
+
+header{background:var(--surface);border-bottom:1px solid var(--line);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:40px;height:40px;border-radius:10px;background:var(--bg);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--gold)}
+.brand-name{font-size:1rem;font-weight:700}
+.brand-sub{font-size:.7rem;color:var(--muted)}
+.signout-btn{background:transparent;border:1px solid var(--line);border-radius:7px;color:var(--soft);padding:6px 13px;cursor:pointer;font-size:.74rem}
+.signout-btn:hover{border-color:var(--red);color:var(--red)}
+
+.page{max-width:1160px;margin:0 auto;padding:24px 20px 70px}
+.entity-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:22px;align-items:center}
+.ef-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--soft);margin-bottom:3px}
+.ef-value{font-size:.9rem;font-weight:700}
+.ef-value.active{color:var(--green)}
+
+.stat-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:100px}
+.stat-val{font-size:1.5rem;font-weight:900;line-height:1}
+.stat-val.red{color:var(--red)}.stat-val.amber{color:var(--amber)}.stat-val.green{color:var(--green)}
+.stat-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--soft);margin-top:4px}
+
+.section-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);margin-bottom:8px}
+.comp-row{background:linear-gradient(135deg,rgba(199,167,90,.1),rgba(199,167,90,.03));border:1px solid var(--line2);border-radius:12px;padding:18px 22px;margin-bottom:26px;cursor:pointer;transition:.15s}
+.comp-row:hover{border-color:var(--gold);background:rgba(199,167,90,.13)}
+.comp-title{font-family:'Bodoni Moda',serif;font-size:1.2rem;margin-bottom:5px}
+.comp-agency{font-size:.78rem;color:var(--muted);margin-bottom:10px}
+.comp-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.pill{padding:4px 11px;border-radius:999px;font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.pill-unlocked{background:var(--gold);color:var(--bg)}
+.view-link{font-size:.72rem;font-weight:700;color:var(--gold2);letter-spacing:.04em}
+
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;min-width:820px;border-collapse:collapse;background:var(--surface)}
+th{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--soft);padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid rgba(199,167,90,.08);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(199,167,90,.04)}
+.row-title{font-weight:600;font-size:.86rem;color:var(--text)}
+.chip{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.66rem;font-weight:700}
+.chip-naics{background:rgba(199,167,90,.12);border:1px solid rgba(199,167,90,.28);color:var(--gold2)}
+.badge{display:inline-block;padding:4px 9px;border-radius:6px;font-size:.7rem;font-weight:700}
+.badge-hot{background:rgba(224,85,85,.2);color:#ff9999;border:1px solid rgba(224,85,85,.35)}
+.badge-warm{background:rgba(240,165,0,.15);color:#ffc96b;border:1px solid rgba(240,165,0,.3)}
+.badge-ok{background:rgba(46,204,138,.12);color:#7eedc0;border:1px solid rgba(46,204,138,.28)}
+.badge-none{background:rgba(255,255,255,.05);color:var(--soft);border:1px solid var(--line)}
+.unlock-btn{background:#fff;color:#0F2A6A;border:none;padding:6px 12px;border-radius:7px;font-size:.7rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.unlock-btn:hover{background:var(--gold2)}
+.empty-row{text-align:center;padding:52px;color:var(--soft)}
 .loading{text-align:center;padding:60px 20px;color:var(--muted)}
 
-.comp-card{border:1px solid var(--gold);border-radius:16px;overflow:hidden;background:var(--paper);box-shadow:0 20px 50px rgba(7,26,51,.12);margin-bottom:34px}
-.comp-head{padding:16px 22px;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.comp-head .eyebrow{color:var(--gold2);margin:0}
-.comp-pill{background:var(--gold);color:var(--navy);padding:5px 11px;border-radius:999px;font-size:.62rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
-.comp-body{padding:22px}
-.comp-title{font:500 1.5rem/1.3 var(--serif);color:var(--navy);margin:0 0 10px}
-.comp-facts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.fact small{display:block;color:#7c8997;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-.fact strong{display:block;margin-top:3px;color:#263d57;font-size:.86rem}
-.comp-scope{border-top:1px solid #dfe8ee;padding-top:14px;margin-top:4px;color:#3a4d64;font-size:.86rem;line-height:1.7}
-.score-row{display:flex;align-items:center;gap:14px;background:var(--ice);border-radius:10px;padding:12px 16px;margin-bottom:16px}
-.score-num{font-size:2rem;font-weight:900;line-height:1;color:var(--green);flex:none}
-.score-label{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.criteria-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-.crit{padding:4px 9px;border-radius:5px;font-size:.66rem;font-weight:700;white-space:nowrap}
-.crit-good{background:rgba(46,204,138,.13);color:#1e8f5f;border:1px solid rgba(46,204,138,.3)}
-.crit-warn{background:rgba(199,167,90,.15);color:#8b6e2b;border:1px solid rgba(199,167,90,.35)}
-.crit-bad{background:rgba(224,85,85,.12);color:#b23a3a;border:1px solid rgba(224,85,85,.28)}
-.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;margin-top:16px}
-.btn-gold{background:var(--gold);color:var(--navy)}
-.btn-outline{background:none;border:1px solid var(--line);color:var(--navy)}
+/* Drawer */
+#cd-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:800}
+#cd-overlay.open{display:block}
+#cd-drawer{position:fixed;top:0;right:0;width:min(520px,100vw);height:100vh;background:#071e38;color:#fff;z-index:801;transform:translateX(110%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:-6px 0 40px rgba(0,0,0,.5)}
+#cd-drawer.open{transform:translateX(0)}
+.cd-inner{padding:22px 26px 50px}
+.cd-close{position:fixed;top:14px;right:14px;z-index:802;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);border-radius:8px;color:#fff;font-size:1.1rem;cursor:pointer;padding:5px 11px}
+.cd-eye{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);margin-bottom:8px}
+.cd-title{font-family:'Bodoni Moda',serif;font-size:1.2rem;font-weight:600;line-height:1.3;margin-bottom:6px;padding-right:52px}
+.cd-agency{font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:16px}
+.cd-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.cd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.cd-item{background:rgba(255,255,255,.06);border-radius:10px;padding:12px 14px;border:1px solid rgba(255,255,255,.08)}
+.cd-item-lbl{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:4px}
+.cd-item-val{font-size:.88rem;font-weight:600}
+.cd-desc-lbl{font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:8px}
+.cd-desc{font-size:.86rem;color:rgba(255,255,255,.65);line-height:1.75;margin-bottom:28px;border-left:2px solid rgba(199,167,90,.35);padding-left:14px}
+.cd-actions{display:flex;gap:10px;flex-wrap:wrap}
+.cd-btn{flex:1;min-width:110px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:10px;padding:12px 14px;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;text-align:center}
+.cd-btn:hover{background:rgba(255,255,255,.14)}
+.cd-btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0F2A6A;border:none}
+.cd-btn.primary:hover{filter:brightness(1.06)}
 
-.section-label{font:500 1.2rem var(--serif);color:var(--navy);margin:0 0 4px}
-.section-note{color:var(--muted);font-size:.8rem;margin-bottom:16px}
-
-.locked-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden}
-.locked-card::after{content:'';position:absolute;inset:0;pointer-events:none}
-.locked-title{font:500 1.05rem var(--serif);color:var(--navy);margin:0 0 8px}
-.locked-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
-.locked-facts .fact strong{filter:none}
-.unlock-btn{display:inline-flex;align-items:center;gap:6px;background:var(--ice);border:1px solid var(--gold);color:#8b6e2b;font-size:.72rem;font-weight:800;padding:9px 14px;border-radius:8px;cursor:pointer}
-.unlock-btn:hover{background:#fdf3de}
-@media(max-width:640px){.locked-facts{grid-template-columns:1fr 1fr}.comp-facts{grid-template-columns:1fr}}
-
-.empty{text-align:center;padding:40px 20px;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+@media(max-width:640px){.entity-card{gap:14px}}
 </style>
 </head>
 <body>
-<header class="top"><div class="topin">
-  <div class="brand"><small>Business Opportunity Development Agency</small><strong>Vendor Dashboard</strong></div>
-  <button class="signout" onclick="signOut()">Sign Out</button>
-</div></header>
+<header>
+  <div class="brand"><div class="brand-mark">BA</div><div><div class="brand-name">Business Opportunity Development Agency</div><div class="brand-sub">Vendor Dashboard</div></div></div>
+  <button class="signout-btn" onclick="signOut()">Sign Out</button>
+</header>
 
-<main class="wrap">
-  <div class="intro">
-    <div class="eyebrow">Your Federal Opportunity Dashboard</div>
-    <h1 id="heroTitle">Loading your dashboard…</h1>
-    <p class="sub" id="heroSub"></p>
-  </div>
-
+<main class="page">
   <div class="loading" id="loadingEl">Finding your matched opportunities…</div>
   <div id="content" style="display:none">
+    <div class="entity-card" id="entityCard"></div>
+    <div class="stat-bar" id="statBar"></div>
     <div id="compArea"></div>
-    <div id="lockedArea"></div>
+    <div class="section-eyebrow">Additional Opportunities Matching Your Business</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Opportunity</th><th>Agency</th><th>NAICS</th><th>Deadline</th><th></th></tr></thead>
+      <tbody id="lockedBody"></tbody>
+    </table></div>
   </div>
 </main>
+
+<!-- Complimentary contract drawer -->
+<div id="cd-overlay"></div>
+<div id="cd-drawer">
+  <div class="cd-inner">
+    <button class="cd-close" id="cdCloseBtn">✕</button>
+    <div class="cd-eye">Your Complimentary Contract Opportunity</div>
+    <div class="cd-title" id="cdTitle"></div>
+    <div class="cd-agency" id="cdAgency"></div>
+    <div class="cd-chips" id="cdChips"></div>
+    <div class="cd-grid" id="cdGrid"></div>
+    <div class="cd-desc-lbl" id="cdDescLbl" style="display:none">Scope Of Work</div>
+    <div class="cd-desc" id="cdDesc" style="display:none"></div>
+    <div class="cd-actions">
+      <button class="cd-btn" id="cdSaveBtn">💾 Save</button>
+      <button class="cd-btn" id="cdDownloadBtn">⬇ Download</button>
+      <button class="cd-btn" id="cdPrintBtn">🖨 Print</button>
+    </div>
+    <div class="cd-actions" style="margin-top:10px">
+      <a class="cd-btn primary" style="display:block" id="cdViewLink" target="_blank" rel="noopener noreferrer" href="#">View Full Opportunity →</a>
+    </div>
+  </div>
+</div>
 
 <script>
 'use strict';
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmtDate = iso => { if (!iso) return '—'; const d = new Date(iso); return isNaN(d.getTime()) ? String(iso) : d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); };
-const fact = (label, value) => '<div class="fact"><small>' + esc(label) + '</small><strong>' + esc(value || '—') + '</strong></div>';
+const daysLeft = iso => { if (!iso) return null; const d=new Date(iso); return isNaN(d.getTime())?null:Math.ceil((d-new Date())/864e5); };
 
 function signOut() {
   fetch('/api/vendor-presence?action=logout', { method: 'POST' }).finally(() => location.assign('/vendor-claim'));
 }
 
-// ---- 7-criteria scoring, cloned from RFCP-V2 opportunity.html scoreOpp() ----
-// Simplified: BODA's NAICS list has no primary/secondary distinction, so any
-// list match scores as "aligned" rather than splitting primary(30)/secondary(20).
-function scoreOpp(opp, naicsCodes, setAsides, companyState) {
-  let score = 0; const c = {};
-  if (naicsCodes.includes(opp.naics)) { score += 30; c.naics = 'aligned'; }
-  else { c.naics = 'none'; }
+function urgencyBadge(iso) {
+  const d = daysLeft(iso);
+  if (d === null) return '<span class="badge badge-none">—</span>';
+  if (d < 0) return '<span class="badge badge-none">Closed</span>';
+  if (d <= 7) return '<span class="badge badge-hot">🔥 ' + d + 'd · ' + fmtDate(iso) + '</span>';
+  if (d <= 30) return '<span class="badge badge-warm">⚡ ' + d + 'd · ' + fmtDate(iso) + '</span>';
+  return '<span class="badge badge-ok">' + d + 'd · ' + fmtDate(iso) + '</span>';
+}
 
+// ---- 7-criteria scoring, cloned from RFCP-V2 opportunity.html scoreOpp() ----
+function scoreOpp(opp, naicsCodes, setAsides, companyState) {
+  let score = 0;
+  if (naicsCodes.includes(opp.naics)) score += 30;
   const sa = (opp.set_aside || '').toLowerCase().trim();
   const saOpen = !sa || ['none','unrestricted','full and open','no set aside','n/a'].some(p => sa.includes(p));
-  if (saOpen) { score += 15; c.setaside = 'open'; }
+  if (saOpen) score += 15;
   else {
     let ok = false;
     if (/8\(a\)|8a set/.test(sa)) ok = setAsides.some(x => /8.?a/i.test(x));
@@ -117,94 +168,127 @@ function scoreOpp(opp, naicsCodes, setAsides, companyState) {
     else if (/hubzone/.test(sa)) ok = setAsides.some(x => /hubzone/i.test(x));
     else if (/small business/.test(sa)) ok = setAsides.some(x => /small business/i.test(x));
     else ok = true;
-    if (ok) { score += 25; c.setaside = 'eligible'; } else { c.setaside = 'ineligible'; }
+    if (ok) score += 25;
   }
-
   const dl = opp.days_left;
-  if (dl === null || dl === undefined) { score += 12; c.risk = 'no_deadline'; }
-  else if (dl >= 30) { score += 20; c.risk = 'low'; }
-  else if (dl >= 14) { score += 13; c.risk = 'medium'; }
-  else if (dl >= 7)  { score += 6;  c.risk = 'high'; }
-  else               { score += 2;  c.risk = 'critical'; }
-
-  if (naicsCodes.includes(opp.naics)) { score += 15; c.capability = 'aligned'; } else { score += 5; c.capability = 'partial'; }
-  c.past_performance = naicsCodes.includes(opp.naics) ? 'relevant' : 'adjacent';
+  if (dl === null || dl === undefined) score += 12;
+  else if (dl >= 30) score += 20; else if (dl >= 14) score += 13; else if (dl >= 7) score += 6; else score += 2;
+  score += naicsCodes.includes(opp.naics) ? 15 : 5;
   score += naicsCodes.includes(opp.naics) ? 5 : 2;
-
-  if (!opp.state) { score += 3; c.location = 'national'; }
-  else if (companyState && opp.state === companyState) { score += 5; c.location = 'home_state'; }
-  else { score += 1; c.location = 'out_of_state'; }
-
-  c.certifications = setAsides.length > 0 ? 'verified' : 'basic';
+  if (!opp.state) score += 3; else if (companyState && opp.state === companyState) score += 5; else score += 1;
   score += setAsides.length > 0 ? 2 : 1;
-
-  return { score: Math.min(score, 100), criteria: c };
+  return Math.min(score, 100);
 }
 
-// 7-criteria evidence chips, cloned from RFCP-V2 opportunity.html criteriaHtml().
-// Shown only on the unlocked complimentary card -- locked cards stay minimal
-// by design (the funnel spec reserves the full analysis for after unlock).
-function criteriaHtml(c) {
-  function chip(label, val, goodVals, badVals) {
-    var cls = goodVals.includes(val) ? 'crit-good' : badVals.includes(val) ? 'crit-bad' : 'crit-warn';
-    var icon = goodVals.includes(val) ? '✓ ' : badVals.includes(val) ? '✗ ' : '~ ';
-    return '<span class="crit ' + cls + '">' + icon + label + '</span>';
-  }
-  return '<div class="criteria-row">'
-    + chip('NAICS', c.naics || '—', ['aligned'], ['none'])
-    + chip('Set-Aside', c.setaside || '—', ['eligible', 'open'], ['ineligible'])
-    + chip('Capability', c.capability || '—', ['aligned'], [])
-    + chip('Risk', c.risk || '—', ['low', 'no_deadline'], ['high', 'critical'])
-    + chip('Past Perf.', c.past_performance || '—', ['relevant'], [])
-    + chip('Location', c.location || '—', ['national', 'home_state'], ['out_of_state'])
-    + chip('Certifications', c.certifications || '—', ['verified'], [])
+let currentComplimentary = null;
+
+function renderEntityCard(p) {
+  document.getElementById('entityCard').innerHTML =
+    '<div><div class="ef-label">SAM Status</div><div class="ef-value active">● ' + esc(p.sam_registration_status || 'Registered') + '</div></div>'
+    + '<div><div class="ef-label">Business</div><div class="ef-value">' + esc(p.business_name || '—') + '</div></div>'
+    + (p.uei ? '<div><div class="ef-label">UEI</div><div class="ef-value">' + esc(p.uei) + '</div></div>' : '')
+    + '<div><div class="ef-label">NAICS Codes</div><div class="ef-value">' + (p.naics || []).length + ' codes</div></div>'
+    + '<div><div class="ef-label">Last Refresh</div><div class="ef-value">' + fmtDate(new Date().toISOString()) + '</div></div>';
+}
+
+function renderStatBar(all) {
+  let hot=0, warm=0, ok=0;
+  all.forEach(o => { const d = daysLeft(o.deadline || o.response_deadline); if (d===null||d<0) return; if (d<=7) hot++; else if (d<=30) warm++; else ok++; });
+  document.getElementById('statBar').innerHTML =
+    '<div class="stat"><div class="stat-val red">' + hot + '</div><div class="stat-label">Due &lt; 7 days</div></div>'
+    + '<div class="stat"><div class="stat-val amber">' + warm + '</div><div class="stat-label">Due 7–30 days</div></div>'
+    + '<div class="stat"><div class="stat-val green">' + ok + '</div><div class="stat-label">Due 30+ days</div></div>'
+    + '<div class="stat"><div class="stat-val">' + all.length + '</div><div class="stat-label">Total Opps</div></div>';
+}
+
+function renderComplimentary(opp) {
+  const area = document.getElementById('compArea');
+  if (!opp) { area.innerHTML = ''; return; }
+  currentComplimentary = opp;
+  area.innerHTML = '<div class="section-eyebrow">Your Complimentary Contract Opportunity</div>'
+    + '<div class="comp-row" onclick="openCompliment()">'
+    + '<div class="comp-title">' + esc(opp.title || 'Government Contract Opportunity') + '</div>'
+    + '<div class="comp-agency">' + esc(opp.agency_name || '') + '</div>'
+    + '<div class="comp-foot"><span class="pill pill-unlocked">Unlocked</span><span class="view-link">View Details →</span></div>'
     + '</div>';
 }
 
-function renderComplimentary(opp, naicsCodes, setAsides, companyState) {
-  const area = document.getElementById('compArea');
-  if (!opp) { area.innerHTML = ''; return; }
-  let scoreHtml = '';
-  if (opp.naics) {
-    const dl = opp.response_deadline ? Math.floor((new Date(opp.response_deadline) - new Date()) / 86400000) : null;
-    const s = scoreOpp({ naics: opp.naics, set_aside: opp.set_aside, days_left: dl, state: opp.state }, naicsCodes, setAsides, companyState);
-    scoreHtml = '<div class="score-row"><div class="score-num">' + s.score + '</div><div class="score-label">Match<br>Score</div></div>'
-      + criteriaHtml(s.criteria);
-  }
-  area.innerHTML = '<div class="comp-card">'
-    + '<div class="comp-head"><div class="eyebrow">Your Complimentary Contract Opportunity</div><div class="comp-pill">Unlocked</div></div>'
-    + '<div class="comp-body">'
-    + '<div class="comp-title">' + esc(opp.title || 'Government Contract Opportunity') + '</div>'
-    + '<div class="comp-facts">'
-    + fact('Agency', opp.agency_name) + fact('Solicitation #', opp.solicitation_number)
-    + fact('Response Deadline', fmtDate(opp.response_deadline)) + fact('Location', opp.place_of_performance)
-    + '</div>'
-    + scoreHtml
-    + (opp.scope_summary ? '<div class="comp-scope">' + esc(opp.scope_summary) + '</div>' : '')
-    + (opp.authoritative_url ? '<a class="btn btn-gold" target="_blank" rel="noopener noreferrer" href="' + esc(opp.authoritative_url) + '">View Full Opportunity →</a>' : '')
-    + '</div></div>';
-}
-
 function renderLocked(matches) {
-  const area = document.getElementById('lockedArea');
+  const tbody = document.getElementById('lockedBody');
   if (!matches.length) {
-    area.innerHTML = '<div class="section-label">Additional Opportunities Matching Your Business</div>'
-      + '<div class="empty">No additional current federal opportunities found for your registered NAICS codes right now — check back as new solicitations post.</div>';
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No additional current federal opportunities found for your registered NAICS codes right now — check back as new solicitations post.</td></tr>';
     return;
   }
-  area.innerHTML = '<div class="section-label">Additional Opportunities Matching Your Business</div>'
-    + '<div class="section-note">' + matches.length + ' more current federal opportunit' + (matches.length === 1 ? 'y matches' : 'ies match') + ' your registered capabilities. Unlock Vendor Access to view full details.</div>'
-    + matches.map(function(opp) {
-      return '<div class="locked-card">'
-        + '<div class="locked-title">' + esc(opp.title || 'Federal Contract Opportunity') + '</div>'
-        + '<div class="locked-facts">'
-        + fact('Federal Agency', opp.agency) + fact('NAICS Match', opp.naics)
-        + fact('Status', 'Open') + fact('Deadline', fmtDate(opp.deadline))
-        + '</div>'
-        + '<button class="unlock-btn" onclick="location.assign(\'/vendor-access\')">🔒 Unlock Opportunity Details →</button>'
-        + '</div>';
-    }).join('');
+  tbody.innerHTML = matches.map(function(o) {
+    return '<tr onclick="location.assign(\'/vendor-access\')" style="cursor:pointer">'
+      + '<td class="row-title">' + esc(o.title || 'Federal Contract Opportunity') + '</td>'
+      + '<td style="font-size:.76rem;color:var(--muted)">' + esc(o.agency || '—') + '</td>'
+      + '<td><span class="chip chip-naics">' + esc(o.naics || '—') + '</span></td>'
+      + '<td>' + urgencyBadge(o.deadline) + '</td>'
+      + '<td><button class="unlock-btn" onclick="event.stopPropagation();location.assign(\'/vendor-access\')">🔒 Unlock</button></td>'
+      + '</tr>';
+  }).join('');
 }
+
+function openCompliment() {
+  const o = currentComplimentary;
+  if (!o) return;
+  document.getElementById('cdTitle').textContent = o.title || 'Government Contract Opportunity';
+  document.getElementById('cdAgency').textContent = o.agency_name || '';
+  const chips = [];
+  if (o.naics) chips.push('<span class="chip chip-naics">NAICS ' + esc(o.naics) + '</span>');
+  document.getElementById('cdChips').innerHTML = chips.join(' ');
+  document.getElementById('cdGrid').innerHTML =
+    '<div class="cd-item"><div class="cd-item-lbl">Response Deadline</div><div class="cd-item-val">' + fmtDate(o.response_deadline) + '</div></div>'
+    + '<div class="cd-item"><div class="cd-item-lbl">Solicitation #</div><div class="cd-item-val" style="font-size:.76rem">' + esc(o.solicitation_number || '—') + '</div></div>'
+    + '<div class="cd-item"><div class="cd-item-lbl">Location</div><div class="cd-item-val">' + esc(o.place_of_performance || '—') + '</div></div>'
+    + '<div class="cd-item"><div class="cd-item-lbl">Set-Aside</div><div class="cd-item-val" style="font-size:.8rem">' + esc(o.set_aside || 'Unrestricted') + '</div></div>';
+  const descLbl = document.getElementById('cdDescLbl'), desc = document.getElementById('cdDesc');
+  if (o.scope_summary) { descLbl.style.display = 'block'; desc.style.display = 'block'; desc.textContent = o.scope_summary; }
+  else { descLbl.style.display = 'none'; desc.style.display = 'none'; }
+  const viewLink = document.getElementById('cdViewLink');
+  if (o.authoritative_url) { viewLink.style.display = 'block'; viewLink.href = o.authoritative_url; }
+  else { viewLink.style.display = 'none'; }
+  document.getElementById('cd-overlay').classList.add('open');
+  document.getElementById('cd-drawer').classList.add('open');
+}
+
+function closeCompliment() {
+  document.getElementById('cd-overlay').classList.remove('open');
+  document.getElementById('cd-drawer').classList.remove('open');
+}
+document.getElementById('cdCloseBtn').addEventListener('click', closeCompliment);
+document.getElementById('cd-overlay').addEventListener('click', closeCompliment);
+
+function downloadSummary() {
+  const o = currentComplimentary; if (!o) return;
+  const text = [
+    o.title || 'Government Contract Opportunity', '',
+    'Agency: ' + (o.agency_name || '—'),
+    'Solicitation #: ' + (o.solicitation_number || '—'),
+    'Response Deadline: ' + fmtDate(o.response_deadline),
+    'Location: ' + (o.place_of_performance || '—'),
+    o.scope_summary ? ('\nScope Of Work:\n' + o.scope_summary) : '',
+    o.authoritative_url ? ('\nFull Opportunity: ' + o.authoritative_url) : ''
+  ].join('\n');
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = (o.title || 'contract-opportunity').slice(0,80).replace(/[^\w\- ]+/g,'') + '.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function afterAction(action) {
+  fetch('/api/vendor-presence?action=survey', {
+    method: 'POST', headers: {'content-type':'application/json'},
+    body: JSON.stringify({ action })
+  }).catch(() => {}).finally(() => { location.assign('/vendor-survey'); });
+}
+
+document.getElementById('cdSaveBtn').addEventListener('click', () => afterAction('save'));
+document.getElementById('cdDownloadBtn').addEventListener('click', () => { downloadSummary(); afterAction('download'); });
+document.getElementById('cdPrintBtn').addEventListener('click', () => { window.print(); afterAction('print'); });
 
 async function load() {
   try {
@@ -214,25 +298,23 @@ async function load() {
     if (!r.ok || !d.ok) throw new Error(d.error || 'Dashboard unavailable.');
 
     document.title = d.profile.business_name + ' | Vendor Dashboard';
-    document.getElementById('heroTitle').textContent = esc(d.profile.business_name || 'Your Dashboard');
-    const matchCount = (d.opportunities || []).length + (d.complimentary ? 1 : 0);
-    document.getElementById('heroSub').textContent = matchCount
-      ? matchCount + ' current federal opportunit' + (matchCount === 1 ? 'y matches' : 'ies match') + ' your registered capabilities.'
-      : 'Building your matched opportunity profile.';
 
     const naicsCodes = d.profile.naics || [];
     const setAsides  = d.profile.certifications || [];
     const companyState = d.profile.state || null;
 
     const scored = (d.opportunities || []).map(function(o) {
-      const s = scoreOpp(o, naicsCodes, setAsides, companyState);
-      return Object.assign({}, o, { match_score: s.score });
+      return Object.assign({}, o, { match_score: scoreOpp(o, naicsCodes, setAsides, companyState) });
     }).sort(function(a, b) { return (b.match_score || 0) - (a.match_score || 0); });
 
     document.getElementById('loadingEl').style.display = 'none';
     document.getElementById('content').style.display = 'block';
 
-    renderComplimentary(d.complimentary, naicsCodes, setAsides, companyState);
+    renderEntityCard(d.profile);
+    const allForStats = scored.slice();
+    if (d.complimentary) allForStats.push({ deadline: d.complimentary.response_deadline });
+    renderStatBar(allForStats);
+    renderComplimentary(d.complimentary);
     renderLocked(scored);
   } catch (e) {
     document.getElementById('loadingEl').textContent = 'Error: ' + e.message;

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vendor Survey Review | Internal</title>
+<style>
+body{margin:0;background:#0A1A3A;color:#f0f6ff;font-family:Arial,Helvetica,sans-serif;font-size:14px}
+.wrap{max-width:900px;margin:auto;padding:30px 20px 70px}
+h1{font-size:1.4rem;margin:0 0 18px}
+.gate{max-width:380px;margin:80px auto;background:#0f2244;border:1px solid rgba(199,167,90,.25);border-radius:12px;padding:26px}
+.gate input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;margin-bottom:12px;font-size:.9rem}
+.gate button{width:100%;padding:11px;border:none;border-radius:8px;background:#c7a75a;color:#0A1A3A;font-weight:700;cursor:pointer}
+.row{background:#0f2244;border:1px solid rgba(199,167,90,.15);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.row-top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.biz{font-weight:700}
+.meta{font-size:.72rem;color:#8facd0}
+.stars{color:#c7a75a}
+.comment{color:rgba(255,255,255,.8);margin-top:6px;line-height:1.5}
+.toggle{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;padding:5px 11px;font-size:.72rem;cursor:pointer}
+.toggle.public{background:#2ecc8a;color:#0A1A3A;border-color:#2ecc8a}
+.empty{text-align:center;padding:40px;color:#8facd0}
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <input id="keyInput" type="password" placeholder="Admin key">
+  <button onclick="loadSurveys()">View Submissions</button>
+</div>
+<div class="wrap" id="wrap" style="display:none">
+  <h1>Vendor Survey Submissions</h1>
+  <p style="color:#8facd0;font-size:.8rem;margin-bottom:18px">Internal review only. Mark a submission Public to feature it on a future testimonials page (not yet built).</p>
+  <div id="list"></div>
+</div>
+<script>
+'use strict';
+let ADMIN_KEY = '';
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmtDate(iso){const d=new Date(iso);return isNaN(d.getTime())?iso:d.toLocaleString()}
+
+async function loadSurveys() {
+  ADMIN_KEY = document.getElementById('keyInput').value.trim();
+  if (!ADMIN_KEY) return;
+  const r = await fetch('/api/vendor-presence?action=survey-list&key=' + encodeURIComponent(ADMIN_KEY));
+  const d = await r.json();
+  if (!r.ok || !d.ok) { alert(d.error || 'Not authorized.'); return; }
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('wrap').style.display = 'block';
+  render(d.surveys || []);
+}
+
+function render(rows) {
+  const list = document.getElementById('list');
+  if (!rows.length) { list.innerHTML = '<div class="empty">No survey submissions yet.</div>'; return; }
+  list.innerHTML = rows.map(r => {
+    const stars = r.rating ? '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) : '—';
+    return '<div class="row">'
+      + '<div class="row-top"><span class="biz">' + esc(r.business_name) + '</span>'
+      + '<button class="toggle' + (r.is_public ? ' public' : '') + '" onclick="togglePublic(\'' + r.id + '\',' + !r.is_public + ')">'
+      + (r.is_public ? 'Public ✓' : 'Mark Public') + '</button></div>'
+      + '<div class="meta">' + fmtDate(r.created_at) + ' · action: ' + esc(r.action || '—') + '</div>'
+      + '<div class="stars">' + stars + '</div>'
+      + (r.comment ? '<div class="comment">' + esc(r.comment) + '</div>' : '')
+      + '</div>';
+  }).join('');
+}
+
+async function togglePublic(id, makePublic) {
+  await fetch('/api/vendor-presence?action=survey-mark-public&key=' + encodeURIComponent(ADMIN_KEY), {
+    method: 'POST', headers: {'content-type':'application/json'},
+    body: JSON.stringify({ id, is_public: makePublic })
+  });
+  loadSurveys();
+}
+</script>
+</body>
+</html>

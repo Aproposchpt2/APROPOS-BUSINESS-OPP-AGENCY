@@ -103,7 +103,9 @@ form.addEventListener('submit',async e=>{
    // Vendor Dashboard (complimentary opportunity + additional NAICS-matched
    // opportunities). Falls back to opportunity-workspace only if Vendor Page
    // provisioning itself failed, so the claim is never a dead end.
-   location.assign(vendorSlug?'/vendor-dashboard':'/opportunity-workspace');
+   // Claim -> personalized Vendor Card first (where the contractor confirms
+   // "Claim Your Business" registry consent) -> Vendor Dashboard from there.
+   location.assign(vendorSlug?'/vendor/'+encodeURIComponent(vendorSlug):'/opportunity-workspace');
  }catch(err){
    statusEl.textContent=err.message||'Claim could not be completed.';
    statusEl.className='status error';

@@ -77,6 +77,28 @@ h2{font:400 29px/1.15 var(--serif);color:var(--navy);margin:7px 0 13px}
   font-size:10px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;
   text-decoration:none;display:inline-block;border:none;cursor:pointer
 }
+.button-outline{
+  flex:none;background:none;color:var(--navy);padding:13px 16px;border-radius:8px;
+  font-size:10px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--line);cursor:pointer;margin-top:10px;width:100%
+}
+.claim-cta{
+  margin-top:20px;padding:20px 24px;border-radius:14px;border:1px solid var(--gold);
+  background:linear-gradient(180deg,#fffdf7,var(--ice));
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap
+}
+.claim-cta strong{display:block;font:600 15px var(--sans);color:var(--navy)}
+.claim-cta span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(7,26,51,.55);align-items:center;justify-content:center;padding:20px;z-index:50
+}
+.modal-overlay.open{display:flex}
+.modal{width:min(100%,440px);background:var(--paper);border-radius:16px;padding:28px;box-shadow:0 30px 70px rgba(7,26,51,.35)}
+.modal h2{font:500 1.6rem var(--serif);color:var(--navy);margin:6px 0 16px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#3a4d64;line-height:1.6;margin-bottom:14px}
+.consent input{margin-top:3px}
+.modal-status{font-size:13px;margin-bottom:10px;min-height:0}
+.modal-status.error{color:#8b1e1e}
 .opportunity{
   margin-top:26px;border-radius:16px;overflow:hidden;
   border:1px solid var(--gold);
@@ -173,12 +195,51 @@ async function load(){
       +(certs.length?'<div class="snapshot-block"><small>Certifications &amp; Designations</small><div class="snapshot-tags">'+certs.map(x=>'<span class="tag cert">'+esc(x)+'</span>').join('')+'</div></div>':'')
       +(p.sam_registration_status||p.uei?'<div class="snapshot-block"><small>Registration</small><div class="snapshot-facts" style="flex-direction:row;gap:24px;flex-wrap:wrap">'+fact2('SAM Status',p.sam_registration_status)+fact2('UEI',p.uei)+'</div></div>':'')
       +'</div>'
+      +'<div class="claim-cta"><div><strong>Claim Your Business</strong><span>Confirm your Vendor Page and continue to your personalized Opportunity Dashboard.</span></div>'
+      +'<button class="button" id="claimBizBtn">Claim Your Business →</button></div>'
       +'<div class="engage"><div><strong>Connect with '+esc(p.business_name)+'.</strong><span>Customers, buyers, primes and teaming partners can engage directly with this business.</span></div>'
       +(mail?'<a class="button" href="'+mail+'">'+esc(p.customer_cta_label||'Contact This Business')+'</a>':(p.website?'<a class="button" href="'+esc(p.website)+'">Visit Business Website</a>':''))
       +'</div>'
       +'</section>'
       +'<footer class="footer"><strong>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</strong><br>A property of Apropos Group LLC</footer>'
-      +'</article>';
+      +'</article>'
+      +'<div class="modal-overlay" id="claimModalOverlay"><div class="modal">'
+      +'<div class="eyebrow">Claim This Business — Free</div><h2>Claim Your Business</h2>'
+      +'<label class="consent"><input type="checkbox" id="registryConsent"> Authorize Business Opportunity Development Agency to add '+esc(p.business_name)+' to our Vendor Registry for public search view.</label>'
+      +'<div id="claimModalStatus" class="modal-status"></div>'
+      +'<button class="button" id="confirmClaimBtn">Confirm &amp; Continue →</button>'
+      +'<button class="button-outline" id="cancelClaimBtn">Cancel</button>'
+      +'</div></div>';
+
+    const overlay=document.getElementById('claimModalOverlay');
+    document.getElementById('claimBizBtn').addEventListener('click',()=>overlay.classList.add('open'));
+    document.getElementById('cancelClaimBtn').addEventListener('click',()=>overlay.classList.remove('open'));
+    document.getElementById('confirmClaimBtn').addEventListener('click',async()=>{
+      const statusEl=document.getElementById('claimModalStatus');
+      if(!document.getElementById('registryConsent').checked){
+        statusEl.textContent='Please check the box to authorize your listing.';
+        statusEl.className='modal-status error';
+        return;
+      }
+      const btn=document.getElementById('confirmClaimBtn');
+      btn.disabled=true;btn.textContent='CONFIRMING…';
+      try{
+        const r=await fetch('/api/vendor-presence?action=authorize-registry',{method:'POST'});
+        if(r.status===401){
+          statusEl.textContent='Your claim session has expired. Please claim this business again from your original link.';
+          statusEl.className='modal-status error';
+          btn.disabled=false;btn.textContent='Confirm & Continue →';
+          return;
+        }
+        const d=await r.json().catch(()=>null);
+        if(!r.ok||!d?.ok)throw new Error('Could not confirm. Please try again.');
+        location.assign('/vendor-dashboard');
+      }catch(e){
+        statusEl.textContent=e.message||'Could not confirm. Please try again.';
+        statusEl.className='modal-status error';
+        btn.disabled=false;btn.textContent='Confirm & Continue →';
+      }
+    });
   }catch(e){
     app.innerHTML='<div class="missing"><h1>Vendor Page</h1><p>'+esc(e.message)+'</p></div>';
   }

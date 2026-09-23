@@ -388,12 +388,62 @@ export default async (req) => {
           slug: profile.slug,
           city: profile.city,
           state: profile.state,
+          uei: profile.uei,
+          sam_registration_status: profile.sam_registration_status,
           naics: naicsCodes,
           certifications: Array.isArray(profile.certifications) ? profile.certifications : []
         },
         complimentary: profile.claimed_opportunity || null,
         opportunities
       });
+    }
+
+    if (req.method === 'POST' && action === 'survey') {
+      const profile = await sessionProfile(req);
+      if (!profile) return json({ok:false,error:'Session required.'},401);
+      const input = await req.json().catch(()=>({}));
+      const rating = Number(input.rating);
+      const comment = clean(input.comment, 2000);
+      const surveyAction = clean(input.action, 40);
+      await db('boda_vendor_surveys','POST','',[{
+        profile_id: profile.id,
+        business_name: profile.business_name,
+        rating: Number.isInteger(rating) && rating >= 1 && rating <= 5 ? rating : null,
+        comment,
+        action: surveyAction || null
+      }], 'return=minimal');
+      return json({ok:true});
+    }
+
+    if (req.method === 'POST' && action === 'authorize-registry') {
+      const profile = await sessionProfile(req);
+      if (!profile) return json({ok:false,error:'Session required.'},401);
+      await db('boda_vendor_profiles','PATCH',`?id=eq.${encodeURIComponent(profile.id)}`,{
+        registry_consent_at: new Date().toISOString(), updated_at: new Date().toISOString()
+      },'return=minimal');
+      return json({ok:true});
+    }
+
+    if (req.method === 'GET' && action === 'survey-list') {
+      const key = clean(url.searchParams.get('key'), 100);
+      const adminKey = Netlify.env.get('VENDOR_SURVEY_ADMIN_KEY');
+      if (!adminKey || key !== adminKey) return json({ok:false,error:'Not authorized.'},401);
+      const rows = await db('boda_vendor_surveys','GET',
+        '?select=id,business_name,rating,comment,action,is_public,created_at&order=created_at.desc&limit=200');
+      return json({ok:true,surveys:rows||[]});
+    }
+
+    if (req.method === 'POST' && action === 'survey-mark-public') {
+      const key = clean(url.searchParams.get('key'), 100);
+      const adminKey = Netlify.env.get('VENDOR_SURVEY_ADMIN_KEY');
+      if (!adminKey || key !== adminKey) return json({ok:false,error:'Not authorized.'},401);
+      const input = await req.json().catch(()=>({}));
+      const id = clean(input.id, 60);
+      if (!id) return json({ok:false,error:'id required.'},400);
+      await db('boda_vendor_surveys','PATCH',`?id=eq.${encodeURIComponent(id)}`,{
+        is_public: input.is_public === true, reviewed_at: new Date().toISOString()
+      },'return=minimal');
+      return json({ok:true});
     }
 
     if (req.method === 'GET' && action === 'public') {
