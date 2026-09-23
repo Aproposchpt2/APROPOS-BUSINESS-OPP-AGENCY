@@ -29,6 +29,72 @@ function cleanOpportunity(o) {
   return Object.values(out).some(Boolean) ? out : null;
 }
 
+// Cloned from RFCP-V2 (rfcp.aproposgroupllc.com) netlify/functions/demo-pipeline.js --
+// same live SAM.gov Opportunities API search per NAICS code. Repointed to read NAICS
+// from boda_vendor_profiles instead of RFCP's demo_snapshots table.
+const SAM_OPP_URL = 'https://api.sam.gov/opportunities/v2/search';
+const SAM_PAGE_LIMIT = 50;
+
+function mmddyyyy(d) {
+  return String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0') + '/' + d.getFullYear();
+}
+function daysUntil(deadline) {
+  if (!deadline) return null;
+  return Math.floor((new Date(deadline) - new Date()) / 86400000);
+}
+function naicsCode(entry) {
+  return clean(String(entry ?? '').split(' — ')[0], 20);
+}
+
+async function fetchNaicsOpportunities(samKey, naicsCodes, days = 90) {
+  const now = new Date();
+  const from = new Date(now); from.setDate(from.getDate() - days);
+  const seen = new Map();
+
+  for (const naics of naicsCodes.slice(0, 8)) {
+    if (!/^\d{6}$/.test(naics)) continue;
+    try {
+      const u = new URL(SAM_OPP_URL);
+      u.searchParams.set('api_key', samKey);
+      u.searchParams.set('postedFrom', mmddyyyy(from));
+      u.searchParams.set('postedTo', mmddyyyy(now));
+      u.searchParams.set('ncode', naics);
+      u.searchParams.set('limit', String(SAM_PAGE_LIMIT));
+      u.searchParams.set('offset', '0');
+      const r = await fetch(u, { headers: { accept: 'application/json' } });
+      if (!r.ok) continue;
+      const data = await r.json();
+      for (const o of (data.opportunitiesData || [])) {
+        if (!o.noticeId || seen.has(o.noticeId)) continue;
+        const dl = daysUntil(o.responseDeadLine);
+        if (dl !== null && dl < 1) continue;
+        seen.set(o.noticeId, {
+          notice_id: o.noticeId,
+          title: clean(o.title, 300),
+          agency: clean(o.fullParentPathName, 300),
+          naics: clean(o.naicsCode, 20),
+          set_aside: clean(o.typeOfSetAsideDescription || o.setAside || 'None', 120),
+          posted_date: o.postedDate || null,
+          deadline: o.responseDeadLine || null,
+          days_left: dl,
+          url: o.uiLink || ('https://sam.gov/opp/' + o.noticeId + '/view'),
+          state: (o.placeOfPerformance?.state?.code) || null,
+          city: (o.placeOfPerformance?.city?.name) || null
+        });
+      }
+    } catch (e) { console.warn('[vendor-presence dashboard] SAM fetch', naics, e?.message); }
+  }
+
+  return [...seen.values()]
+    .filter(o => o.days_left === null || o.days_left >= 1)
+    .sort((a, b) => {
+      if (!a.deadline && !b.deadline) return 0;
+      if (!a.deadline) return 1;
+      if (!b.deadline) return -1;
+      return new Date(a.deadline) - new Date(b.deadline);
+    });
+}
+
 function dbConfig() {
   const url = Netlify.env.get('SUPABASE_URL');
   const key = Netlify.env.get('SUPABASE_SERVICE_KEY');
@@ -295,6 +361,36 @@ export default async (req) => {
     if (req.method === 'GET' && action === 'profile') {
       const profile = await sessionProfile(req);
       return profile ? json({ok:true,profile}) : json({ok:false,error:'Session required.'},401);
+    }
+
+    if (req.method === 'GET' && action === 'dashboard') {
+      const profile = await sessionProfile(req);
+      if (!profile) return json({ok:false,error:'Session required.'},401);
+
+      const samKey = Netlify.env.get('SAM_API_KEY');
+      const naicsCodes = Array.isArray(profile.naics)
+        ? [...new Set(profile.naics.map(naicsCode).filter(Boolean))]
+        : [];
+
+      let opportunities = [];
+      if (samKey && naicsCodes.length) {
+        try { opportunities = await fetchNaicsOpportunities(samKey, naicsCodes); }
+        catch (e) { console.error('[vendor-presence dashboard] opportunity fetch failed', e?.message); }
+      }
+
+      return json({
+        ok: true,
+        profile: {
+          business_name: profile.business_name,
+          slug: profile.slug,
+          city: profile.city,
+          state: profile.state,
+          naics: naicsCodes,
+          certifications: Array.isArray(profile.certifications) ? profile.certifications : []
+        },
+        complimentary: profile.claimed_opportunity || null,
+        opportunities
+      });
     }
 
     if (req.method === 'GET' && action === 'public') {

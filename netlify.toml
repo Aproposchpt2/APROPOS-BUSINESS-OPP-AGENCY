@@ -156,6 +156,28 @@
     Cache-Control = "private, no-store"
 
 [[redirects]]
+  from = "/vendor-dashboard"
+  to = "/vendor-dashboard.html"
+  status = 200
+
+[[headers]]
+  for = "/vendor-dashboard.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[redirects]]
+  from = "/vendor-access"
+  to = "/vendor-access.html"
+  status = 200
+
+[[headers]]
+  for = "/vendor-access.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[redirects]]
   from = "/vendor/:slug"
   to = "/vendor-public.html?slug=:slug"
   status = 200

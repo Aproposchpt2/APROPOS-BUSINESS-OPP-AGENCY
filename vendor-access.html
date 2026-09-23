@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vendor Access | Business Opportunity Development Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#071a33;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;--ice:#edf5fa;--paper:#fbfdff;--ink:#17283d;--muted:#66778a;--line:#cad9e4;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#f7fafc,#eaf1f5);color:var(--ink);font-family:var(--sans)}
+a{text-decoration:none;color:inherit}
+header{background:rgba(2,11,24,.96);border-bottom:1px solid rgba(229,207,154,.2);color:#fff}
+.head{max-width:1040px;margin:auto;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{display:flex;align-items:center;gap:13px}
+.brand strong{display:block;letter-spacing:.14em;font-size:.9rem}
+.brand span{display:block;margin-top:4px;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.back{color:var(--gold2);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase}
+.hero{background:radial-gradient(circle at 86% 12%,rgba(234,217,165,.19),transparent 28%),linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:52px 24px;border-bottom:4px solid var(--gold)}
+.hero-in{max-width:1040px;margin:auto}
+.eyebrow{font-size:.64rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);margin-bottom:14px}
+h1{font:500 clamp(2.2rem,5vw,3.4rem)/1.1 var(--serif);margin:0 0 14px;max-width:760px}
+.lead{color:rgba(255,255,255,.75);max-width:680px;line-height:1.7}
+.wrap{max-width:1040px;margin:auto;padding:40px 24px 70px;display:grid;grid-template-columns:1.1fr .9fr;gap:26px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:28px}
+.panel h2{font:500 1.5rem var(--serif);color:var(--navy);margin:0 0 14px}
+.benefits{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.benefits li{display:flex;gap:10px;align-items:flex-start;color:#3a4d64;font-size:.88rem;line-height:1.6}
+.benefits li::before{content:'✓';color:var(--gold);font-weight:800;flex:none;margin-top:2px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#566174;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;border:1px solid #ccd3dc;background:#fff;padding:11px 12px;font:inherit;font-size:.92rem;outline:none;border-radius:8px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+.field textarea{min-height:84px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.consent{display:flex;gap:8px;align-items:flex-start;font-size:.76rem;color:var(--muted);margin:14px 0 18px}
+.consent input{width:auto;margin-top:3px}
+button{width:100%;min-height:50px;border:1px solid var(--gold);background:var(--gold);color:var(--navy);font:inherit;font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:8px}
+button:disabled{opacity:.55;cursor:wait}
+.status{margin-top:14px;padding:12px 14px;border-radius:8px;display:none;font-size:.82rem}
+.status.error{display:block;background:#fff0f0;color:#8b1e1e}
+.status.success{display:block;background:#eefcf4;color:#166b4b}
+.hp{position:absolute;left:-9999px}
+@media(max-width:800px){.wrap{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="head">
+  <a class="brand" href="/"><span><strong>APROPOS</strong><span>Business Opportunity Development Agency</span></span></a>
+  <a class="back" href="/">Agency Home</a>
+</div></header>
+
+<section class="hero"><div class="hero-in">
+  <div class="eyebrow">Vendor Access</div>
+  <h1>See every opportunity, not just the first one.</h1>
+  <p class="lead">Your Vendor Dashboard already found current federal opportunities matching your registered capabilities. Vendor Access unlocks full details on every match — solicitation numbers, complete scope, procurement links, and contact information — for as long as they're open.</p>
+</div></section>
+
+<main class="wrap">
+  <div class="panel">
+    <h2>What Vendor Access includes</h2>
+    <ul class="benefits">
+      <li>Full detail on every matched federal opportunity, not just your complimentary one</li>
+      <li>Solicitation numbers, complete scope of work, and direct procurement links</li>
+      <li>New matches surfaced automatically as opportunities post</li>
+      <li>Your Vendor Page kept current and published to prospective customers and teaming partners</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2>Request Vendor Access</h2>
+    <form id="accessForm">
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off">
+      <div class="field"><label for="name">Your Name</label><input id="name" name="name" required></div>
+      <div class="grid2">
+        <div class="field"><label for="organization">Business Name</label><input id="organization" name="organization" required></div>
+        <div class="field"><label for="state">State</label><input id="state" name="state" maxlength="2" placeholder="CA" required></div>
+      </div>
+      <div class="field"><label for="email">Business Email</label><input id="email" name="email" type="email" required></div>
+      <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone"></div>
+      <div class="field"><label for="message">Message</label><textarea id="message" name="message" required>I'd like to unlock full Vendor Access for my matched federal opportunities.</textarea></div>
+      <label class="consent"><input type="checkbox" id="consent" required> I consent to be contacted by the Business Opportunity Development Agency regarding this request.</label>
+      <button type="submit">Request Vendor Access</button>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</main>
+
+<script>
+'use strict';
+const form = document.getElementById('accessForm'), statusEl = document.getElementById('status');
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  statusEl.className = 'status'; statusEl.textContent = '';
+  const payload = Object.fromEntries(new FormData(form));
+  payload.inquiryType = 'Business Opportunity';
+  payload.consent = document.getElementById('consent').checked;
+  const btn = form.querySelector('button'); btn.disabled = true; btn.textContent = 'SENDING…';
+  try {
+    const r = await fetch('/api/inquiry', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
+    const d = await r.json();
+    if (!r.ok || !d.ok) throw new Error(d.message || 'Request could not be sent.');
+    statusEl.textContent = 'Thank you — the Agency will reach out about Vendor Access shortly.';
+    statusEl.className = 'status success';
+    form.reset();
+    btn.textContent = 'REQUEST SENT';
+  } catch (err) {
+    statusEl.textContent = err.message || 'Request could not be sent.';
+    statusEl.className = 'status error';
+    btn.disabled = false; btn.textContent = 'Request Vendor Access';
+  }
+});
+</script>
+</body>
+</html>

@@ -89,9 +89,11 @@ form.addEventListener('submit',async e=>{
      const vd=await vp.json().catch(()=>null);
      if(vp.ok&&vd?.ok){vendorSlug=vd.profile.slug;sessionStorage.setItem('aboaVendorSlug',vendorSlug)}
    }catch(e){ /* Vendor Page provisioning is best-effort; the contract claim above already succeeded and must not be blocked by this. */ }
-   // State-local claims land on their own Vendor Page (shows the claimed
-   // contract inline); federal keeps the richer opportunity-workspace view.
-   location.assign(type==='state-local'&&vendorSlug?'/vendor/'+encodeURIComponent(vendorSlug):'/opportunity-workspace');
+   // Claiming a complimentary opportunity routes straight to the contractor's
+   // Vendor Dashboard (complimentary opportunity + additional NAICS-matched
+   // opportunities). Falls back to opportunity-workspace only if Vendor Page
+   // provisioning itself failed, so the claim is never a dead end.
+   location.assign(vendorSlug?'/vendor-dashboard':'/opportunity-workspace');
  }catch(err){
    statusEl.textContent=err.message||'Claim could not be completed.';
    statusEl.className='status error';

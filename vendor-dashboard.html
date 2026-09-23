@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vendor Dashboard | Business Opportunity Development Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#071a33;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;
+  --ice:#edf5fa;--paper:#fbfdff;--ink:#17283d;--muted:#66778a;--line:#cad9e4;
+  --green:#2ecc8a;--red:#e05555;
+  --serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#f7fafc,#eaf1f5);color:var(--ink);font-family:var(--sans)}
+a{text-decoration:none;color:inherit}
+.top{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-bottom:3px solid var(--gold)}
+.topin{max-width:980px;margin:auto;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand small{display:block;color:var(--gold2);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase}
+.brand strong{display:block;font:600 1.15rem var(--serif)}
+.signout{font-size:.68rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.28);padding:8px 12px;border-radius:8px;background:none;cursor:pointer}
+.wrap{max-width:980px;margin:auto;padding:28px 20px 80px}
+.intro{margin-bottom:22px}
+.eyebrow{font-size:.62rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#8b6e2b}
+h1{font:500 clamp(1.9rem,4vw,2.6rem)/1.1 var(--serif);color:var(--navy);margin:6px 0 8px}
+.sub{color:var(--muted);font-size:.86rem}
+.loading{text-align:center;padding:60px 20px;color:var(--muted)}
+
+.comp-card{border:1px solid var(--gold);border-radius:16px;overflow:hidden;background:var(--paper);box-shadow:0 20px 50px rgba(7,26,51,.12);margin-bottom:34px}
+.comp-head{padding:16px 22px;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.comp-head .eyebrow{color:var(--gold2);margin:0}
+.comp-pill{background:var(--gold);color:var(--navy);padding:5px 11px;border-radius:999px;font-size:.62rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
+.comp-body{padding:22px}
+.comp-title{font:500 1.5rem/1.3 var(--serif);color:var(--navy);margin:0 0 10px}
+.comp-facts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.fact small{display:block;color:#7c8997;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.fact strong{display:block;margin-top:3px;color:#263d57;font-size:.86rem}
+.comp-scope{border-top:1px solid #dfe8ee;padding-top:14px;margin-top:4px;color:#3a4d64;font-size:.86rem;line-height:1.7}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;margin-top:16px}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-outline{background:none;border:1px solid var(--line);color:var(--navy)}
+
+.section-label{font:500 1.2rem var(--serif);color:var(--navy);margin:0 0 4px}
+.section-note{color:var(--muted);font-size:.8rem;margin-bottom:16px}
+
+.locked-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden}
+.locked-card::after{content:'';position:absolute;inset:0;pointer-events:none}
+.locked-title{font:500 1.05rem var(--serif);color:var(--navy);margin:0 0 8px}
+.locked-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.locked-facts .fact strong{filter:none}
+.unlock-btn{display:inline-flex;align-items:center;gap:6px;background:var(--ice);border:1px solid var(--gold);color:#8b6e2b;font-size:.72rem;font-weight:800;padding:9px 14px;border-radius:8px;cursor:pointer}
+.unlock-btn:hover{background:#fdf3de}
+@media(max-width:640px){.locked-facts{grid-template-columns:1fr 1fr}.comp-facts{grid-template-columns:1fr}}
+
+.empty{text-align:center;padding:40px 20px;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+</style>
+</head>
+<body>
+<header class="top"><div class="topin">
+  <div class="brand"><small>Business Opportunity Development Agency</small><strong>Vendor Dashboard</strong></div>
+  <button class="signout" onclick="signOut()">Sign Out</button>
+</div></header>
+
+<main class="wrap">
+  <div class="intro">
+    <div class="eyebrow">Your Federal Opportunity Dashboard</div>
+    <h1 id="heroTitle">Loading your dashboard…</h1>
+    <p class="sub" id="heroSub"></p>
+  </div>
+
+  <div class="loading" id="loadingEl">Finding your matched opportunities…</div>
+  <div id="content" style="display:none">
+    <div id="compArea"></div>
+    <div id="lockedArea"></div>
+  </div>
+</main>
+
+<script>
+'use strict';
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtDate = iso => { if (!iso) return '—'; const d = new Date(iso); return isNaN(d.getTime()) ? String(iso) : d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); };
+const fact = (label, value) => '<div class="fact"><small>' + esc(label) + '</small><strong>' + esc(value || '—') + '</strong></div>';
+
+function signOut() {
+  fetch('/api/vendor-presence?action=logout', { method: 'POST' }).finally(() => location.assign('/vendor-claim'));
+}
+
+// ---- 7-criteria scoring, cloned from RFCP-V2 opportunity.html scoreOpp() ----
+// Simplified: BODA's NAICS list has no primary/secondary distinction, so any
+// list match scores as "aligned" rather than splitting primary(30)/secondary(20).
+function scoreOpp(opp, naicsCodes, setAsides, companyState) {
+  let score = 0; const c = {};
+  if (naicsCodes.includes(opp.naics)) { score += 30; c.naics = 'aligned'; }
+  else { c.naics = 'none'; }
+
+  const sa = (opp.set_aside || '').toLowerCase().trim();
+  const saOpen = !sa || ['none','unrestricted','full and open','no set aside','n/a'].some(p => sa.includes(p));
+  if (saOpen) { score += 15; c.setaside = 'open'; }
+  else {
+    let ok = false;
+    if (/8\(a\)|8a set/.test(sa)) ok = setAsides.some(x => /8.?a/i.test(x));
+    else if (/wosb|edwosb|woman.owned/.test(sa)) ok = setAsides.some(x => /wosb|woman/i.test(x));
+    else if (/sdvosb|service.disabled veteran/.test(sa)) ok = setAsides.some(x => /sdvosb|service.disabled/i.test(x));
+    else if (/vosb|veteran.owned/.test(sa)) ok = setAsides.some(x => /vosb|veteran/i.test(x));
+    else if (/hubzone/.test(sa)) ok = setAsides.some(x => /hubzone/i.test(x));
+    else if (/small business/.test(sa)) ok = setAsides.some(x => /small business/i.test(x));
+    else ok = true;
+    if (ok) { score += 25; c.setaside = 'eligible'; } else { c.setaside = 'ineligible'; }
+  }
+
+  const dl = opp.days_left;
+  if (dl === null || dl === undefined) { score += 12; c.risk = 'no_deadline'; }
+  else if (dl >= 30) { score += 20; c.risk = 'low'; }
+  else if (dl >= 14) { score += 13; c.risk = 'medium'; }
+  else if (dl >= 7)  { score += 6;  c.risk = 'high'; }
+  else               { score += 2;  c.risk = 'critical'; }
+
+  if (naicsCodes.includes(opp.naics)) { score += 15; c.capability = 'aligned'; } else { score += 5; c.capability = 'partial'; }
+  c.past_performance = naicsCodes.includes(opp.naics) ? 'relevant' : 'adjacent';
+  score += naicsCodes.includes(opp.naics) ? 5 : 2;
+
+  if (!opp.state) { score += 3; c.location = 'national'; }
+  else if (companyState && opp.state === companyState) { score += 5; c.location = 'home_state'; }
+  else { score += 1; c.location = 'out_of_state'; }
+
+  c.certifications = setAsides.length > 0 ? 'verified' : 'basic';
+  score += setAsides.length > 0 ? 2 : 1;
+
+  return { score: Math.min(score, 100), criteria: c };
+}
+
+function renderComplimentary(opp) {
+  const area = document.getElementById('compArea');
+  if (!opp) { area.innerHTML = ''; return; }
+  area.innerHTML = '<div class="comp-card">'
+    + '<div class="comp-head"><div class="eyebrow">Your Complimentary Contract Opportunity</div><div class="comp-pill">Unlocked</div></div>'
+    + '<div class="comp-body">'
+    + '<div class="comp-title">' + esc(opp.title || 'Government Contract Opportunity') + '</div>'
+    + '<div class="comp-facts">'
+    + fact('Agency', opp.agency_name) + fact('Solicitation #', opp.solicitation_number)
+    + fact('Response Deadline', fmtDate(opp.response_deadline)) + fact('Location', opp.place_of_performance)
+    + '</div>'
+    + (opp.scope_summary ? '<div class="comp-scope">' + esc(opp.scope_summary) + '</div>' : '')
+    + (opp.authoritative_url ? '<a class="btn btn-gold" target="_blank" rel="noopener noreferrer" href="' + esc(opp.authoritative_url) + '">View Full Opportunity →</a>' : '')
+    + '</div></div>';
+}
+
+function renderLocked(matches) {
+  const area = document.getElementById('lockedArea');
+  if (!matches.length) {
+    area.innerHTML = '<div class="section-label">Additional Opportunities Matching Your Business</div>'
+      + '<div class="empty">No additional current federal opportunities found for your registered NAICS codes right now — check back as new solicitations post.</div>';
+    return;
+  }
+  area.innerHTML = '<div class="section-label">Additional Opportunities Matching Your Business</div>'
+    + '<div class="section-note">' + matches.length + ' more current federal opportunit' + (matches.length === 1 ? 'y matches' : 'ies match') + ' your registered capabilities. Unlock Vendor Access to view full details.</div>'
+    + matches.map(function(opp) {
+      return '<div class="locked-card">'
+        + '<div class="locked-title">' + esc(opp.title || 'Federal Contract Opportunity') + '</div>'
+        + '<div class="locked-facts">'
+        + fact('Federal Agency', opp.agency) + fact('NAICS Match', opp.naics)
+        + fact('Status', 'Open') + fact('Deadline', fmtDate(opp.deadline))
+        + '</div>'
+        + '<button class="unlock-btn" onclick="location.assign(\'/vendor-access\')">🔒 Unlock Opportunity Details →</button>'
+        + '</div>';
+    }).join('');
+}
+
+async function load() {
+  try {
+    const r = await fetch('/api/vendor-presence?action=dashboard', { cache: 'no-store' });
+    if (r.status === 401) { location.assign('/vendor-claim'); return; }
+    const d = await r.json();
+    if (!r.ok || !d.ok) throw new Error(d.error || 'Dashboard unavailable.');
+
+    document.title = d.profile.business_name + ' | Vendor Dashboard';
+    document.getElementById('heroTitle').textContent = esc(d.profile.business_name || 'Your Dashboard');
+    const matchCount = (d.opportunities || []).length + (d.complimentary ? 1 : 0);
+    document.getElementById('heroSub').textContent = matchCount
+      ? matchCount + ' current federal opportunit' + (matchCount === 1 ? 'y matches' : 'ies match') + ' your registered capabilities.'
+      : 'Building your matched opportunity profile.';
+
+    const naicsCodes = d.profile.naics || [];
+    const setAsides  = d.profile.certifications || [];
+    const companyState = d.profile.state || null;
+
+    const scored = (d.opportunities || []).map(function(o) {
+      const s = scoreOpp(o, naicsCodes, setAsides, companyState);
+      return Object.assign({}, o, { match_score: s.score });
+    }).sort(function(a, b) { return (b.match_score || 0) - (a.match_score || 0); });
+
+    document.getElementById('loadingEl').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    renderComplimentary(d.complimentary);
+    renderLocked(scored);
+  } catch (e) {
+    document.getElementById('loadingEl').textContent = 'Error: ' + e.message;
+  }
+}
+load();
+</script>
+</body>
+</html>
