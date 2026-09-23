@@ -1,10 +1,10 @@
 const seoHead = `
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-<meta name="application-name" content="Apropos Business Opportunity Agency">
-<meta property="og:site_name" content="Apropos Business Opportunity Agency">
+<meta name="application-name" content="BUSINESS OPPORTUNITY DEVELOPMENT AGENCY">
+<meta property="og:site_name" content="BUSINESS OPPORTUNITY DEVELOPMENT AGENCY">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Apropos Business Opportunity Agency | Procurement Intelligence">
+<meta name="twitter:title" content="BUSINESS OPPORTUNITY DEVELOPMENT AGENCY | Procurement Intelligence">
 <meta name="twitter:description" content="Creating business success through procurement intelligence, government contracting opportunities, and business opportunity development.">
 <meta name="twitter:image" content="https://aproposopportunity.org/headquarters.webp">
 <link rel="sitemap" type="application/xml" href="https://aproposopportunity.org/sitemap.xml">
@@ -16,7 +16,7 @@ const seoHead = `
     {
       "@type": "Organization",
       "@id": "https://aproposopportunity.org/#organization",
-      "name": "Apropos Business Opportunity Agency",
+      "name": "BUSINESS OPPORTUNITY DEVELOPMENT AGENCY",
       "alternateName": "ABOA",
       "url": "https://aproposopportunity.org/",
       "description": "A business-opportunity and contract-opportunity service platform expanding economic opportunity through procurement intelligence and business development.",
@@ -42,7 +42,7 @@ const seoHead = `
       "@type": "WebSite",
       "@id": "https://aproposopportunity.org/#website",
       "url": "https://aproposopportunity.org/",
-      "name": "Apropos Business Opportunity Agency",
+      "name": "BUSINESS OPPORTUNITY DEVELOPMENT AGENCY",
       "alternateName": "ABOA",
       "publisher": {
         "@id": "https://aproposopportunity.org/#organization"
@@ -53,8 +53,8 @@ const seoHead = `
       "@type": "WebPage",
       "@id": "https://aproposopportunity.org/#webpage",
       "url": "https://aproposopportunity.org/",
-      "name": "Apropos Business Opportunity Agency | Procurement Intelligence",
-      "description": "Apropos Business Opportunity Agency helps businesses identify, pursue, and participate in procurement and business opportunities that can contribute to growth.",
+      "name": "BUSINESS OPPORTUNITY DEVELOPMENT AGENCY | Procurement Intelligence",
+      "description": "BUSINESS OPPORTUNITY DEVELOPMENT AGENCY helps businesses identify, pursue, and participate in procurement and business opportunities that can contribute to growth.",
       "isPartOf": {
         "@id": "https://aproposopportunity.org/#website"
       },
@@ -177,7 +177,7 @@ const contactSection = `
 
       <div class="consent-row">
         <input id="inq-consent" name="consent" type="checkbox" required>
-        <label for="inq-consent">I agree to be contacted by APROPOS BUSINESS OPPORTUNITY AGENCY regarding this inquiry.</label>
+        <label for="inq-consent">I agree to be contacted by BUSINESS OPPORTUNITY DEVELOPMENT AGENCY regarding this inquiry.</label>
       </div>
 
       <div class="form-actions">
