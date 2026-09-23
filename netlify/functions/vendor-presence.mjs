@@ -73,7 +73,7 @@ async function sessionProfile(req) {
 
 async function profileSeed(businessName, claimantEmail) {
   const seed = {
-    website:'', city:'', state:'', service_area:'', about:'',
+    website:'', city:'', state:'', service_area:'', about:'', uei:'', sam_registration_status:'',
     naics:[], certifications:[], core_capabilities:[], public_contact_email:claimantEmail
   };
   const filter = encodeURIComponent('*' + businessName.replace(/[%*]/g,'') + '*');
@@ -108,6 +108,24 @@ async function profileSeed(businessName, claimantEmail) {
   } catch (e) { console.warn('cbrief_match_completed seed unavailable', e?.message); }
 
   try {
+    const sam = await db('sam_active_contractors','GET',
+      '?select=uei,legal_name,city,registration_status,business_types,naics_details&legal_name=ilike.'+filter+'&limit=1');
+    const row = sam?.[0];
+    if (row) {
+      if (!seed.city) seed.city = clean(row.city,120);
+      if (!seed.uei) seed.uei = clean(row.uei,32);
+      if (!seed.sam_registration_status) seed.sam_registration_status = clean(row.registration_status,60);
+      const types = Array.isArray(row.business_types) ? row.business_types.map(x=>clean(x,80)).filter(Boolean) : [];
+      if (!seed.certifications.length && types.length) seed.certifications = types.slice(0,20);
+      if (!seed.core_capabilities.length) {
+        const details = Array.isArray(row.naics_details) ? row.naics_details : [];
+        const descs = details.map(x=>clean(x?.description)).filter(Boolean).slice(0,20);
+        if (descs.length) seed.core_capabilities = descs;
+      }
+    }
+  } catch (e) { console.warn('sam_active_contractors seed unavailable', e?.message); }
+
+  try {
     const outreach = await db('fcp_outreach','GET',
       '?select=business_name,contact_name,contact_email&business_name=ilike.'+filter+'&order=created_at.desc&limit=1');
     const row = outreach?.[0];
@@ -119,7 +137,7 @@ async function profileSeed(businessName, claimantEmail) {
   return seed;
 }
 
-async function findOrCreateProfile({ businessName, claimId, claimantEmail }) {
+async function findOrCreateProfile({ businessName, claimId, claimantEmail, publishOnCreate = false }) {
   const nameFilter = encodeURIComponent(businessName.replace(/[%*]/g, ''));
   const existing = await db('boda_vendor_profiles', 'GET',
     `?select=*&or=(business_name.ilike.${nameFilter},owner_email.eq.${encodeURIComponent(claimantEmail)})&limit=1`);
@@ -138,6 +156,9 @@ async function findOrCreateProfile({ businessName, claimId, claimantEmail }) {
     website: seed.website || '',
     city: seed.city || '',
     state: seed.state || '',
+    is_published: publishOnCreate,
+    uei: seed.uei || '',
+    sam_registration_status: seed.sam_registration_status || '',
     service_area: seed.service_area || '',
     core_capabilities: seed.core_capabilities || [],
     products_services: [],
@@ -247,7 +268,7 @@ export default async (req) => {
       const slug = clean(url.searchParams.get('slug'),100);
       if (!slug) return json({ok:false,error:'Profile not found.'},404);
       const rows = await db('boda_vendor_profiles','GET',
-        `?select=business_name,slug,headline,about,logo_url,website,phone,city,state,service_area,naics,certifications,core_capabilities,products_services,past_performance,teaming_interests,social_links,capability_statement_url,public_contact_email,customer_cta_label,customer_cta_url,is_published&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true&limit=1`);
+        `?select=business_name,slug,headline,about,logo_url,website,phone,city,state,uei,sam_registration_status,service_area,naics,certifications,core_capabilities,products_services,past_performance,teaming_interests,social_links,capability_statement_url,public_contact_email,customer_cta_label,customer_cta_url,is_published&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true&limit=1`);
       return rows?.length ? json({ok:true,profile:rows[0]}) : json({ok:false,error:'Profile not found.'},404);
     }
 
@@ -309,7 +330,7 @@ export default async (req) => {
       const claim = claimRows?.[0];
 
       const { profile, created } = await findOrCreateProfile({
-        businessName, claimId: claim?.id || null, claimantEmail: email
+        businessName, claimId: claim?.id || null, claimantEmail: email, publishOnCreate: true
       });
       if (!profile) return json({ok:false,error:'Vendor Page could not be provisioned.'},500);
 

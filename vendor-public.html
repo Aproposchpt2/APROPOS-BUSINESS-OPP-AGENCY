@@ -1,28 +1,206 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Vendor Profile | Business Opportunity Development Agency</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#081a31;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;--ice:#eaf4fb;--paper:#f7fafc;--ink:#14233a;--muted:#657489;--line:#c9d9e5;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif}*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#f8fbfd,#edf4f8);color:var(--ink);font-family:var(--sans)}a{text-decoration:none;color:inherit}.top{background:#06162d;color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}.topin,.shell{max-width:1180px;margin:auto;padding-left:22px;padding-right:22px}.topin{padding-top:15px;padding-bottom:15px;display:flex;justify-content:space-between;gap:20px;align-items:center}.brand small{display:block;color:var(--gold2);font-size:.53rem;letter-spacing:.2em;text-transform:uppercase}.brand strong{font:500 1.2rem var(--serif)}.claim{font-size:.64rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.22);padding:9px 12px;border-radius:8px}.hero{background:radial-gradient(circle at 86% 18%,rgba(234,217,165,.17),transparent 27%),linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-bottom:4px solid var(--gold)}.hero .shell{padding-top:66px;padding-bottom:68px}.verified{display:inline-flex;padding:6px 10px;border:1px solid rgba(234,217,165,.34);border-radius:999px;color:var(--gold2);font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase}.logo{width:102px;height:102px;border-radius:22px;background:#f8fbfd;color:var(--navy);display:grid;place-items:center;font:500 2.3rem var(--serif);margin:22px 0 18px;border:1px solid rgba(234,217,165,.7)}h1{font:500 clamp(3.4rem,7vw,5.8rem)/.92 var(--serif);margin:0;max-width:880px}.headline{font:500 1.6rem/1.35 var(--serif);color:#dce8f1;max-width:800px;margin-top:14px}.section{padding:54px 0}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px}.panel{background:linear-gradient(180deg,#fbfdff,var(--ice));border:1px solid var(--line);border-radius:18px;padding:25px;box-shadow:0 12px 34px rgba(8,26,49,.06)}.eyebrow{font-size:.56rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#8c6e2a}.panel h2{font:500 2rem var(--serif);color:var(--navy);margin:7px 0 12px}.about{color:#53657a;line-height:1.8}.caps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:18px}.cap{padding:14px;border-radius:11px;border:1px solid rgba(8,26,49,.08);background:rgba(255,255,255,.55);color:#334860}.facts{display:grid;gap:0}.fact{padding:11px 0;border-bottom:1px solid rgba(8,26,49,.08)}.fact:last-child{border:0}.fact small{display:block;font-size:.52rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7a899a}.fact strong{display:block;margin-top:4px;color:#273b54}.cta{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:18px;padding:28px;margin-top:22px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}.cta h2{font:500 2rem var(--serif);margin:0}.cta p{color:#d3dfeb;line-height:1.6;margin:7px 0 0}.cta a{display:inline-flex;min-height:48px;align-items:center;padding:0 16px;border-radius:8px;background:var(--gold);color:var(--navy);font-weight:700}.available{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px}.available h2{font:500 1.8rem var(--serif);color:var(--navy);margin:7px 0 16px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{padding:15px;border:1px solid #d9e4eb;border-radius:12px;background:#fbfdff}.card strong{display:block;color:var(--navy);font:500 1rem var(--serif)}.card span{display:block;margin-top:5px;color:var(--muted);font-size:.68rem;line-height:1.5}.footer{text-align:center;padding:28px 20px 40px;color:#7b8999;font-size:.67rem}.missing{max-width:700px;margin:90px auto;padding:30px;text-align:center}.missing h1{font-size:3rem;color:var(--navy)}@media(max-width:850px){.grid,.cta{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.caps{grid-template-columns:1fr}}@media(max-width:600px){.topin{align-items:flex-start;flex-direction:column}.hero .shell{padding-top:44px;padding-bottom:48px}}
-</style></head>
+:root{
+  --navy:#071a33;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;
+  --ice:#edf5fa;--paper:#fbfdff;--ink:#17283d;--muted:#66778a;--line:#cad9e4;
+  --serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;display:grid;place-items:start center;padding:38px 18px 60px;
+  background:linear-gradient(180deg,#f7fafc,#eaf1f5);
+  color:var(--ink);font-family:var(--sans)
+}
+a{text-decoration:none;color:inherit}
+.wrap{width:min(100%,920px)}
+.card{
+  overflow:hidden;border-radius:22px;background:var(--paper);
+  border:1px solid var(--line);box-shadow:0 24px 65px rgba(7,26,51,.15)
+}
+.hero{
+  position:relative;padding:42px 44px 38px;color:#fff;
+  background:
+    radial-gradient(circle at 86% 12%,rgba(234,217,165,.19),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--navy2));
+  border-bottom:4px solid var(--gold)
+}
+.agency{
+  color:var(--gold2);font-size:9px;font-weight:800;letter-spacing:.17em;
+  text-transform:uppercase;margin-bottom:26px
+}
+.profile-head{display:grid;grid-template-columns:92px 1fr;gap:22px;align-items:center}
+.logo{
+  width:92px;height:92px;border-radius:20px;display:grid;place-items:center;
+  background:#f9fbfd;color:var(--navy);border:1px solid rgba(234,217,165,.75);
+  font-family:var(--serif);font-size:34px
+}
+.verified{
+  display:inline-block;margin-bottom:9px;padding:6px 9px;border-radius:999px;
+  border:1px solid rgba(234,217,165,.4);color:var(--gold2);
+  font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase
+}
+h1{font:400 47px/1 var(--serif);margin:0 0 9px}
+.sub{color:#d8e4ed;font-size:14px}
+.status{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.pill{
+  padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.18);
+  color:#e6edf4;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase
+}
+.body{padding:34px 44px 38px}
+.eyebrow{font-size:9px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:#8b6e2b}
+h2{font:400 29px/1.15 var(--serif);color:var(--navy);margin:7px 0 13px}
+.about{color:#53667b;font-size:14px;line-height:1.75;max-width:760px}
+.panel{
+  border:1px solid #d7e2ea;border-radius:15px;padding:21px;
+  background:linear-gradient(180deg,#fff,var(--ice))
+}
+.fact{padding:10px 0;border-bottom:1px solid #dce5ec}
+.fact:last-child{border-bottom:0}
+.fact small{display:block;color:#7c8997;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.fact strong{display:block;margin-top:4px;color:#263d57;font-size:12px}
+.engage{
+  margin-top:20px;padding:22px 24px;border-radius:14px;
+  background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;
+  display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap
+}
+.engage strong{display:block;font:400 22px var(--serif)}
+.engage span{display:block;color:#cbd9e5;font-size:11px;margin-top:5px}
+.button{
+  flex:none;background:var(--gold);color:var(--navy);padding:13px 16px;border-radius:8px;
+  font-size:10px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;
+  text-decoration:none;display:inline-block;border:none;cursor:pointer
+}
+.opportunity{
+  margin-top:26px;border-radius:16px;overflow:hidden;
+  border:1px solid var(--gold);
+  background:linear-gradient(180deg,#fff,var(--ice))
+}
+.opportunity-head{
+  padding:18px 24px;background:linear-gradient(135deg,var(--navy),var(--navy2));
+  display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap
+}
+.opportunity-head .eyebrow{color:var(--gold2);margin:0}
+.opportunity-head .live{
+  padding:6px 10px;border-radius:999px;background:var(--gold);color:var(--navy);
+  font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase
+}
+.opportunity-body{padding:22px 24px}
+.opportunity-body h2{margin:2px 0 16px}
+.opp-facts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.opp-facts .fact{border-bottom:0;padding:0}
+@media(max-width:700px){.opp-facts{grid-template-columns:1fr}}
+.opp-title{font:400 22px/1.25 var(--serif);color:var(--navy);margin:4px 0 18px}
+.opp-scope{margin:4px 0 20px;padding-top:16px;border-top:1px solid #dfe8ee}
+.opp-scope small{display:block;color:#7c8997;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+.opp-scope p{margin:0;color:#3a4d64;font-size:13px;line-height:1.75}
+.opp-link{margin-top:6px}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-top:26px}
+.capabilities{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}
+.cap{padding:12px;border-radius:9px;background:#fff;border:1px solid #dce5ec;font-size:12px;color:#334a63}
+.snapshot-row{display:flex;gap:24px;margin-top:15px;flex-wrap:wrap}
+.snapshot-block{margin-top:18px}
+.snapshot-block:first-child{margin-top:0}
+.snapshot-block>small{display:block;color:#7c8997;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}
+.snapshot-tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{padding:8px 12px;border-radius:999px;background:#fff;border:1px solid #dce5ec;font-size:11px;color:#334a63;white-space:nowrap}
+.tag.cert{background:#fdf8ee;border-color:var(--gold);color:#8b6e2b;font-weight:700}
+.footer{
+  text-align:center;padding:18px;background:#f3f6f8;color:#748294;
+  font-size:9px;letter-spacing:.04em;border-top:1px solid #dce4ea
+}
+.footer strong{color:var(--navy)}
+.missing{max-width:640px;margin:90px auto;padding:30px;text-align:center;color:var(--navy)}
+.missing h1{font:400 3rem var(--serif)}
+@media(max-width:700px){
+  .hero,.body{padding-left:24px;padding-right:24px}
+  .profile-head,.grid{grid-template-columns:1fr}
+  .capabilities{grid-template-columns:1fr}
+  .engage{align-items:flex-start;flex-direction:column}
+  h1{font-size:39px}
+}
+</style>
+</head>
 <body>
-<header class="top"><div class="topin"><div class="brand"><small>Business Opportunity Development Agency</small><strong>Vendor Presence</strong></div><a class="claim" href="/vendor-claim">Is this your business? Claim this Business</a></div></header>
-<div id="app"></div>
+<div class="wrap" id="app"></div>
 <script>
 (()=>{'use strict';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const slug=decodeURIComponent(location.pathname.split('/').filter(Boolean).pop()||new URLSearchParams(location.search).get('slug')||'');
+const app=document.getElementById('app');
 function initials(name){return String(name||'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'BV'}
 function fact(label,value){return value?'<div class="fact"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong></div>':''}
-async function load(){const app=document.getElementById('app');try{const r=await fetch('/api/vendor-presence?action=public&slug='+encodeURIComponent(slug),{cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw new Error('This Vendor Page is not currently published.');const p=d.profile;document.title=p.business_name+' | Business Opportunity Development Agency';const caps=(p.core_capabilities||[]);const naics=(p.naics||[]).join(' · ');const certs=(p.certifications||[]).join(' · ');const loc=[p.city,p.state].filter(Boolean).join(', ');const mail=p.public_contact_email?'mailto:'+encodeURIComponent(p.public_contact_email):'';app.innerHTML=
-'<section class="hero"><div class="shell"><span class="verified">Verified Agency Vendor</span><div class="logo"'+(p.logo_url?' style="background-image:url('+encodeURI(p.logo_url)+');background-size:cover;background-position:center;color:transparent"':'')+'>'+esc(initials(p.business_name))+'</div><h1>'+esc(p.business_name)+'</h1><div class="headline">'+esc(p.headline||'Business capability profile')+'</div></div></section>'+
-'<main class="shell section"><div class="grid"><section class="panel"><div class="eyebrow">About This Business</div><h2>'+esc(p.headline||'Business Overview')+'</h2><div class="about">'+esc(p.about||'This verified Vendor Page is being prepared by the business owner.')+'</div><div class="caps">'+(caps.length?caps.map(x=>'<div class="cap">'+esc(x)+'</div>').join(''):'<div class="cap">Capabilities will be added by the business owner.</div>')+'</div></section><aside class="panel"><div class="eyebrow">Business Capability Profile</div><h2>Vendor Information</h2><div class="facts">'+fact('NAICS',naics)+fact('Certifications',certs)+fact('Location',loc)+fact('Service Area',p.service_area)+fact('Website',p.website)+fact('Phone',p.phone)+'</div></aside></div>'+
-'<section class="cta"><div><div class="eyebrow" style="color:#ead9a5">Customer Engagement</div><h2>Start a conversation with '+esc(p.business_name)+'.</h2><p>Customers, buyers, prime contractors, and teaming partners can connect directly with this business.</p></div>'+(mail?'<a href="'+mail+'">'+esc(p.customer_cta_label||'Contact This Business')+'</a>':(p.website?'<a href="'+esc(p.website)+'">Visit Business Website</a>':''))+'</section>'+
-'<section class="available"><div class="eyebrow">Available to Business Opportunity Development Agency Vendors</div><h2>Business-development resources beyond the Vendor Page.</h2><div class="cards"><div class="card"><strong>RFCP — Federal Contract Access</strong><span>Complimentary 14-day access to federal contract opportunities with Capability Profile-centered search and review tools.</span></div><div class="card"><strong>NAT-CORP — State & Local Contract Access</strong><span>Complimentary 14-day access to state and local public-sector opportunities across agencies, counties, cities, schools, authorities, and more.</span></div><div class="card"><strong>Contractor Preparedness</strong><span>Resources for bonding, licensing, certification qualification, insurance, and contract proposal development.</span></div></div></section></main>'+
-'<footer class="footer"><strong>Business Opportunity Development Agency</strong><br>A property of <strong>Apropos Group LLC</strong></footer>';
-}catch(e){app.innerHTML='<div class="missing"><h1>Vendor Page</h1><p>'+esc(e.message)+'</p><p><a href="/vendor-claim">Claim this Business</a></p></div>'}}
+function date(v){if(!v)return'';const d=new Date(v);return isNaN(d.getTime())?String(v):d.toLocaleDateString('en-US',{dateStyle:'long'})}
+
+async function loadOpportunity(){
+  try{
+    if(sessionStorage.getItem('aboaVendorSlug')!==slug)return'';
+    const type=sessionStorage.getItem('aboaOpportunityType');
+    const tok=sessionStorage.getItem('aboaOpportunityToken');
+    if(type!=='state-local'||!tok)return'';
+    const r=await fetch('/api/opportunity-gateway?action=workspace&type=state-local&t='+encodeURIComponent(tok),{cache:'no-store'});
+    const d=await r.json();
+    if(!r.ok||!d.ok)return'';
+    const o=d.opportunity||{};
+    const loc=o.place_of_performance||[o.city,o.state].filter(Boolean).join(', ')||'';
+    return '<div class="opportunity"><div class="opportunity-head"><div class="eyebrow">Current Contract Opportunity</div><div class="live">Open For Bid</div></div>'
+      +'<div class="opportunity-body"><div class="opp-title">'+esc(o.title||'Government Contract Opportunity')+'</div>'
+      +'<div class="opp-facts">'+fact('Agency',o.agency_name)+fact('Solicitation #',o.solicitation_number)+fact('Response Deadline',date(o.response_deadline))+fact('Location',loc)+'</div>'
+      +(o.scope_summary||o.description?'<div class="opp-scope"><small>Scope Of Work</small><p>'+esc(o.scope_summary||o.description)+'</p></div>':'')
+      +(o.authoritative_url?'<a class="button opp-link" target="_blank" rel="noopener noreferrer" href="'+esc(o.authoritative_url)+'">Open Authoritative Procurement Site</a>':'')
+      +'</div></div>';
+  }catch(e){return''}
+}
+
+async function load(){
+  try{
+    const r=await fetch('/api/vendor-presence?action=public&slug='+encodeURIComponent(slug),{cache:'no-store'});
+    const d=await r.json();
+    if(!r.ok||!d.ok)throw new Error('This Vendor Page is not currently published.');
+    const p=d.profile;
+    document.title=p.business_name+' | Business Opportunity Development Agency';
+    const loc=[p.city,p.state].filter(Boolean).join(', ');
+    const caps=(p.core_capabilities||[]).slice(0,6);
+    const certs=(p.certifications||[]).slice(0,10);
+    const mail=p.public_contact_email?'mailto:'+encodeURIComponent(p.public_contact_email):'';
+
+    const opportunityHtml=await loadOpportunity();
+
+    app.innerHTML='<article class="card">'
+      +'<section class="hero"><div class="agency">Business Opportunity Development Agency &middot; Vendor Presence</div>'
+      +'<div class="profile-head"><div class="logo"'+(p.logo_url?' style="background-image:url('+encodeURI(p.logo_url)+');background-size:cover;background-position:center;color:transparent"':'')+'>'+esc(initials(p.business_name))+'</div>'
+      +'<div><div class="verified">Verified Agency Vendor</div><h1>'+esc(p.business_name)+'</h1>'+(loc?'<div class="sub">'+esc(loc)+'</div>':'')+'</div></div>'
+      +'<div class="status">'+(p.sam_registration_status?'<div class="pill">SAM '+esc(p.sam_registration_status)+'</div>':'')+(caps.length?'<div class="pill">Capability Profile Active</div>':'')+'</div>'
+      +'</section>'
+      +'<section class="body">'
+      +opportunityHtml
+      +'<div class="grid"><section class="panel"><div class="eyebrow">About This Business</div><h2>'+esc(p.headline||'Business Overview')+'</h2>'
+      +'<div class="about">'+esc(p.about||'This verified Vendor Page is being prepared by the business owner.')+'</div>'
+      +'<div class="capabilities">'+(caps.length?caps.map(x=>'<div class="cap">'+esc(x)+'</div>').join(''):'<div class="cap">Capabilities will be added by the business owner.</div>')+'</div>'
+      +'</section>'
+      +'<aside class="panel"><div class="eyebrow">Business Snapshot</div>'
+      +(certs.length?'<div class="snapshot-block"><small>Certifications &amp; Designations</small><div class="snapshot-tags">'+certs.map(x=>'<span class="tag cert">'+esc(x)+'</span>').join('')+'</div></div>':'')
+      +'<div class="snapshot-block"><small>Registration</small><div>'+fact('SAM UEI',p.uei)+fact('Service Area',p.service_area)+fact('Website',p.website)+fact('Phone',p.phone)+'</div></div>'
+      +'</aside></div>'
+      +'<div class="engage"><div><strong>Connect with '+esc(p.business_name)+'.</strong><span>Customers, buyers, primes and teaming partners can engage directly with this business.</span></div>'
+      +(mail?'<a class="button" href="'+mail+'">'+esc(p.customer_cta_label||'Contact This Business')+'</a>':(p.website?'<a class="button" href="'+esc(p.website)+'">Visit Business Website</a>':''))
+      +'</div>'
+      +'</section>'
+      +'<footer class="footer"><strong>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</strong><br>A property of Apropos Group LLC</footer>'
+      +'</article>';
+  }catch(e){
+    app.innerHTML='<div class="missing"><h1>Vendor Page</h1><p>'+esc(e.message)+'</p></div>';
+  }
+}
 load();
 })();
-</script></body></html>
+</script>
+</body>
+</html>
