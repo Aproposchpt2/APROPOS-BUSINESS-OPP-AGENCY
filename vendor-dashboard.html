@@ -38,6 +38,10 @@ header{background:var(--surface);border-bottom:1px solid var(--line);padding:14p
 .section-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);margin-bottom:8px}
 .comp-row{background:linear-gradient(135deg,rgba(199,167,90,.1),rgba(199,167,90,.03));border:1px solid var(--line2);border-radius:12px;padding:18px 22px;margin-bottom:26px;cursor:pointer;transition:.15s}
 .comp-row:hover{border-color:var(--gold);background:rgba(199,167,90,.13)}
+.search-cta{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px 26px}
+.search-cta p{margin:0 0 18px;color:var(--muted);font-size:.86rem;line-height:1.65;max-width:640px}
+.search-cta-btn{display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0F2A6A;font-weight:800;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;padding:13px 22px;border-radius:8px}
+.search-cta-btn:hover{filter:brightness(1.06)}
 .comp-title{font-family:'Bodoni Moda',serif;font-size:1.2rem;margin-bottom:5px}
 .comp-agency{font-size:.78rem;color:var(--muted);margin-bottom:10px}
 .comp-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
@@ -102,11 +106,20 @@ tr:hover td{background:rgba(199,167,90,.04)}
     <div class="entity-card" id="entityCard"></div>
     <div class="stat-bar" id="statBar"></div>
     <div id="compArea"></div>
-    <div class="section-eyebrow">Additional Opportunities Matching Your Business</div>
-    <div class="tbl-wrap"><table>
-      <thead><tr><th>Opportunity</th><th>Agency</th><th>NAICS</th><th>Deadline</th><th></th></tr></thead>
-      <tbody id="lockedBody"></tbody>
-    </table></div>
+    <div id="federalMatches" style="display:none">
+      <div class="section-eyebrow">Additional Opportunities Matching Your Business</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Opportunity</th><th>Agency</th><th>NAICS</th><th>Deadline</th><th></th></tr></thead>
+        <tbody id="lockedBody"></tbody>
+      </table></div>
+    </div>
+    <div id="licensedSearchCta" style="display:none">
+      <div class="section-eyebrow">Find Additional State &amp; Local Opportunities</div>
+      <div class="search-cta">
+        <p>There's no single live feed for state and local contracts the way there is for federal. Search the Agency's full contract repository yourself — browse by Industry, Service Category, and Work Type, the same way our advisors search on behalf of clients.</p>
+        <a class="search-cta-btn" href="/vendor-licensed-search">Search Contracts by Category →</a>
+      </div>
+    </div>
   </div>
 </main>
 
@@ -183,11 +196,14 @@ function scoreOpp(opp, naicsCodes, setAsides, companyState) {
 let currentComplimentary = null;
 
 function renderEntityCard(p) {
+  const isLicensed = p.contractor_type === 'licensed';
   document.getElementById('entityCard').innerHTML =
-    '<div><div class="ef-label">SAM Status</div><div class="ef-value active">● ' + esc(p.sam_registration_status || 'Registered') + '</div></div>'
+    '<div><div class="ef-label">' + (isLicensed ? 'Status' : 'SAM Status') + '</div><div class="ef-value active">● ' + esc(isLicensed ? 'Licensed Business' : (p.sam_registration_status || 'Registered')) + '</div></div>'
     + '<div><div class="ef-label">Business</div><div class="ef-value">' + esc(p.business_name || '—') + '</div></div>'
-    + (p.uei ? '<div><div class="ef-label">UEI</div><div class="ef-value">' + esc(p.uei) + '</div></div>' : '')
-    + '<div><div class="ef-label">NAICS Codes</div><div class="ef-value">' + (p.naics || []).length + ' codes</div></div>'
+    + (!isLicensed && p.uei ? '<div><div class="ef-label">UEI</div><div class="ef-value">' + esc(p.uei) + '</div></div>' : '')
+    + (isLicensed
+        ? (p.state ? '<div><div class="ef-label">State</div><div class="ef-value">' + esc(p.state) + '</div></div>' : '')
+        : '<div><div class="ef-label">NAICS Codes</div><div class="ef-value">' + (p.naics || []).length + ' codes</div></div>')
     + '<div><div class="ef-label">Last Refresh</div><div class="ef-value">' + fmtDate(new Date().toISOString()) + '</div></div>';
 }
 
@@ -319,6 +335,7 @@ async function load() {
     const naicsCodes = d.profile.naics || [];
     const setAsides  = d.profile.certifications || [];
     const companyState = d.profile.state || null;
+    const isLicensed = d.profile.contractor_type === 'licensed';
 
     const scored = (d.opportunities || []).map(function(o) {
       return Object.assign({}, o, { match_score: scoreOpp(o, naicsCodes, setAsides, companyState) });
@@ -332,7 +349,12 @@ async function load() {
     if (d.complimentary) allForStats.push({ deadline: d.complimentary.response_deadline });
     renderStatBar(allForStats);
     renderComplimentary(d.complimentary);
-    renderLocked(scored);
+    if (isLicensed) {
+      document.getElementById('licensedSearchCta').style.display = 'block';
+    } else {
+      document.getElementById('federalMatches').style.display = 'block';
+      renderLocked(scored);
+    }
   } catch (e) {
     document.getElementById('loadingEl').textContent = 'Error: ' + e.message;
   }

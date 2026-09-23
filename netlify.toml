@@ -178,6 +178,17 @@
     Cache-Control = "private, no-store"
 
 [[redirects]]
+  from = "/vendor-licensed-search"
+  to = "/vendor-licensed-search.html"
+  status = 200
+
+[[headers]]
+  for = "/vendor-licensed-search.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[redirects]]
   from = "/vendor-survey"
   to = "/vendor-survey.html"
   status = 200

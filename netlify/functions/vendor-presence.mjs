@@ -228,7 +228,7 @@ async function profileSeed(businessName, claimantEmail) {
   return seed;
 }
 
-async function findOrCreateProfile({ businessName, claimId, claimantEmail, publishOnCreate = false, opportunity = null }) {
+async function findOrCreateProfile({ businessName, claimId, claimantEmail, publishOnCreate = false, opportunity = null, contractorType = null }) {
   // PostgREST's or=() combinator can't handle a raw comma inside a filter
   // value (common in real business names, e.g. "Precision Grade, Inc."),
   // so this is two plain queries instead of one or=(...) query.
@@ -241,10 +241,13 @@ async function findOrCreateProfile({ businessName, claimId, claimantEmail, publi
   }
   if (existing?.length) {
     let profile = existing[0];
-    if (opportunity) {
+    if (opportunity || contractorType) {
+      const patch = { updated_at: new Date().toISOString() };
+      if (opportunity) patch.claimed_opportunity = opportunity;
+      if (contractorType) patch.contractor_type = contractorType;
       const rows = await db('boda_vendor_profiles', 'PATCH',
         `?id=eq.${encodeURIComponent(profile.id)}`,
-        { claimed_opportunity: opportunity, updated_at: new Date().toISOString() },
+        patch,
         'return=representation');
       if (rows?.[0]) profile = rows[0];
     }
@@ -273,7 +276,8 @@ async function findOrCreateProfile({ businessName, claimId, claimantEmail, publi
     past_performance: [],
     certifications: seed.certifications || [],
     naics: seed.naics || [],
-    claimed_opportunity: opportunity
+    claimed_opportunity: opportunity,
+    contractor_type: contractorType
   }], 'return=representation');
   return { profile: rows?.[0], created: true };
 }
@@ -377,16 +381,27 @@ export default async (req) => {
       const profile = await sessionProfile(req);
       if (!profile) return json({ok:false,error:'Session required.'},401);
 
-      const samKey = Netlify.env.get('SAM_API_KEY');
+      // Null contractor_type predates this column (all federal test data
+      // from earlier tonight) -- default to federal so nothing that already
+      // worked changes behavior.
+      const contractorType = profile.contractor_type === 'licensed' ? 'licensed' : 'federal';
       const naicsCodes = Array.isArray(profile.naics)
         ? [...new Set(profile.naics.map(naicsCode).filter(Boolean))]
         : [];
 
       let opportunities = [];
-      if (samKey && naicsCodes.length) {
-        try { opportunities = await fetchNaicsOpportunities(samKey, naicsCodes); }
-        catch (e) { console.error('[vendor-presence dashboard] opportunity fetch failed', e?.message); }
+      if (contractorType === 'federal') {
+        const samKey = Netlify.env.get('SAM_API_KEY');
+        if (samKey && naicsCodes.length) {
+          try { opportunities = await fetchNaicsOpportunities(samKey, naicsCodes); }
+          catch (e) { console.error('[vendor-presence dashboard] opportunity fetch failed', e?.message); }
+        }
       }
+      // Licensed Business contractors get no auto-populated list here --
+      // there is no unified state/local API to match against. They search
+      // for their own additional matches on /vendor-licensed-search
+      // (Industry -> Service Category -> Work Type, same pattern as BDMS's
+      // Advisor Contract Search Portal).
 
       return json({
         ok: true,
@@ -398,7 +413,8 @@ export default async (req) => {
           uei: profile.uei,
           sam_registration_status: profile.sam_registration_status,
           naics: naicsCodes,
-          certifications: Array.isArray(profile.certifications) ? profile.certifications : []
+          certifications: Array.isArray(profile.certifications) ? profile.certifications : [],
+          contractor_type: contractorType
         },
         complimentary: profile.claimed_opportunity || null,
         opportunities
@@ -503,6 +519,13 @@ export default async (req) => {
       const source = clean(input.source,80);
       const opportunityRef = clean(input.opportunity_ref,120);
       const opportunity = cleanOpportunity(input.opportunity);
+      // source is 'contract_claim:federal' or 'contract_claim:state-local'
+      // (set client-side in claim-opportunity.html from the claim reference
+      // prefix: NG- federal, AP- state-local). Federal contractors get the
+      // live SAM.gov dashboard feed; state-local ("Licensed Business")
+      // contractors get the self-serve taxonomy search instead -- there is
+      // no unified API to auto-match them against.
+      const contractorType = /state-local/.test(source) ? 'licensed' : (/federal/.test(source) ? 'federal' : null);
       if (businessName.length < 2 || claimantName.length < 2 || !emailOk(email))
         return json({ok:false,error:'Business name, claimant name, and a valid email are required.'},400);
 
@@ -520,7 +543,7 @@ export default async (req) => {
       const claim = claimRows?.[0];
 
       const { profile, created } = await findOrCreateProfile({
-        businessName, claimId: claim?.id || null, claimantEmail: email, publishOnCreate: true, opportunity
+        businessName, claimId: claim?.id || null, claimantEmail: email, publishOnCreate: true, opportunity, contractorType
       });
       if (!profile) return json({ok:false,error:'Vendor Page could not be provisioned.'},500);
 
