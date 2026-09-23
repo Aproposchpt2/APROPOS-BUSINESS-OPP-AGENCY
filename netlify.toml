@@ -29,7 +29,7 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
 # Reuse the exact National Enterprise Business Center hero image on the
-# Apropos Business Opportunity Agency homepage. Force the redirect so the
+# BUSINESS OPPORTUNITY DEVELOPMENT AGENCY homepage. Force the redirect so the
 # legacy local headquarters.webp asset does not override this route.
 [[redirects]]
   from = "/headquarters.webp"
@@ -38,7 +38,7 @@
   force = true
 
 # Retired application routes from the previous site now return visitors
-# to the Apropos Business Opportunity Agency homepage.
+# to the BUSINESS OPPORTUNITY DEVELOPMENT AGENCY homepage.
 [[redirects]]
   from = "/dashboard"
   to = "/"
