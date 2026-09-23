@@ -74,11 +74,11 @@ form.addEventListener('submit',async e=>{
    if(type==='federal'&&d.opportunity){
      // Federal claim responses already include the opportunity snapshot --
      // no extra fetch needed.
-     const o=d.opportunity,pop=o.place_of_performance||{};
+     const o=d.opportunity,pop=o.place_of_performance||{},popPart=v=>(v&&typeof v==='object')?(v.name||v.code||''):(v||'');
      opportunitySnapshot={
        title:o.title,agency_name:o.agency,solicitation_number:o.solicitation_number,
        response_deadline:o.response_deadline,authoritative_url:o.sam_url,
-       place_of_performance:[pop.city,pop.state,pop.country].filter(Boolean).join(', ')
+       place_of_performance:[popPart(pop.city),popPart(pop.state),popPart(pop.country)].filter(Boolean).join(', ')
      };
    }else if(type==='state-local'){
      try{
