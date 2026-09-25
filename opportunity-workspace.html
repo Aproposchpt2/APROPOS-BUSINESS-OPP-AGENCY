@@ -107,6 +107,10 @@ function renderFederal(d){
    +meta('Documents',String(docs.length))
    +meta('Package Status',pkg.download_available?'Contract package ready':'Package review required')
    +'</div>'
+   +(o.plain_language_summary?'<h2 style="font-size:1.7rem;margin-top:28px">Contract Details — Plain Language</h2><p class="scope">'+esc(o.plain_language_summary)+'</p>':'')
+   +'<h2 style="font-size:1.7rem;margin-top:28px">What You Need to Fulfill This Contract</h2>'
+   +(list(o.fulfillment_requirements).length?'<ul class="reqs">'+list(o.fulfillment_requirements).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<p class="note">No specific fulfillment requirements were stated in the available contract description.</p>')
+   +(list(o.missing_fulfillment_details).length?'<div class="notice"><strong>Details not stated in the available notice:</strong><ul class="reqs">'+list(o.missing_fulfillment_details).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>':'')
    +'<h2 style="font-size:1.7rem;margin-top:28px">Contract Documents</h2><ul class="docs">'
    +(docs.map((x,i)=>'<li><strong>'+String(i+1).padStart(2,'0')+' · '+esc(x.label||'Contract document')+'</strong></li>').join('')||'<li>No downloadable documents are currently listed for this opportunity.</li>')
    +'</ul><h2 style="font-size:1.7rem;margin-top:28px">Identified Requirements</h2>'
