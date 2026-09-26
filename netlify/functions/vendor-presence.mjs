@@ -452,9 +452,18 @@ export default async (req) => {
       // from earlier tonight) -- default to federal so nothing that already
       // worked changes behavior.
       const contractorType = profile.contractor_type === 'licensed' ? 'licensed' : 'federal';
-      const naicsCodes = Array.isArray(profile.naics)
-        ? [...new Set(profile.naics.map(naicsCode).filter(Boolean))]
+      // A federal FCP claim can arrive before the Vendor Profile has been
+      // enriched from the contractor registry (controlled E2E/manual outreach
+      // is one example). The claimed opportunity is already server-verified by
+      // FCP and carries its NAICS, so use that as a safe fallback instead of
+      // incorrectly rendering "no matches" from an empty profile.naics array.
+      const profileNaics = Array.isArray(profile.naics)
+        ? profile.naics.map(naicsCode).filter(Boolean)
         : [];
+      const claimedNaics = contractorType === 'federal'
+        ? naicsCode(profile.claimed_opportunity?.naics)
+        : '';
+      const naicsCodes = [...new Set([...profileNaics, claimedNaics].filter(Boolean))];
 
       let opportunities = [];
       if (contractorType === 'federal') {
