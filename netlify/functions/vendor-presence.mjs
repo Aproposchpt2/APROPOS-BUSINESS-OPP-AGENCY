@@ -595,6 +595,8 @@ export default async (req) => {
       const source = clean(input.source,80);
       const opportunityRef = clean(input.opportunity_ref,120);
       let opportunity = cleanOpportunity(input.opportunity);
+      const contractorProfile = input.contractor_profile && typeof input.contractor_profile === 'object'
+        ? input.contractor_profile : null;
       // source is 'contract_claim:federal' or 'contract_claim:state-local'
       // (set client-side in claim-opportunity.html from the claim reference
       // prefix: NG- federal, AP- state-local). Federal contractors get the
@@ -623,10 +625,32 @@ export default async (req) => {
       }], 'return=representation');
       const claim = claimRows?.[0];
 
-      const { profile, created } = await findOrCreateProfile({
+      let { profile, created } = await findOrCreateProfile({
         businessName, claimId: claim?.id || null, claimantEmail: email, publishOnCreate: true, opportunity, contractorType
       });
       if (!profile) return json({ok:false,error:'Vendor Page could not be provisioned.'},500);
+
+      // Preserve the FCP capability context on the Vendor Card. BODA still
+      // performs its own live SAM.gov search; FCP supplies only the verified
+      // contractor inputs required to reproduce that search independently.
+      if (contractorType === 'federal' && contractorProfile) {
+        const incomingNaics = Array.isArray(contractorProfile.naics_codes)
+          ? [...new Set(contractorProfile.naics_codes.map(naicsCode).filter(code => /^\d{6}$/.test(code)))].slice(0,20)
+          : [];
+        const patch = { updated_at: new Date().toISOString() };
+        if (incomingNaics.length) patch.naics = incomingNaics;
+        const incomingUei = clean(contractorProfile.uei,32);
+        const incomingState = clean(contractorProfile.state,80);
+        const incomingStatus = clean(contractorProfile.registration_status,60);
+        if (incomingUei) patch.uei = incomingUei;
+        if (incomingState) patch.state = incomingState;
+        if (incomingStatus) patch.sam_registration_status = incomingStatus;
+        if (Object.keys(patch).length > 1) {
+          const rows = await db('boda_vendor_profiles','PATCH',
+            `?id=eq.${encodeURIComponent(profile.id)}`, patch, 'return=representation');
+          if (rows?.[0]) profile = rows[0];
+        }
+      }
 
       if (claim && !profile.claim_id) {
         await db('boda_vendor_claims','PATCH',`?id=eq.${encodeURIComponent(claim.id)}`,
