@@ -93,7 +93,7 @@ form.addEventListener('submit',async e=>{
    }
    try{
      const vp=await Promise.race([
-       fetch('/api/vendor-presence?action=auto-claim',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({business_name:d.business_name||payload.business_name,claimant_name:payload.name,claimant_email:payload.email,source:'contract_claim:'+type,opportunity_ref:ref,opportunity:opportunitySnapshot})}),
+       fetch('/api/vendor-presence?action=auto-claim',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({business_name:d.business_name||payload.business_name,claimant_name:payload.name,claimant_email:payload.email,source:'contract_claim:'+type,opportunity_ref:ref,opportunity:opportunitySnapshot,contractor_profile:(type==='federal'&&d.contractor_profile)?d.contractor_profile:null})}),
        new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),4000))
      ]);
      const vd=await vp.json().catch(()=>null);
