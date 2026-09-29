@@ -350,7 +350,15 @@ async function load() {
     renderStatBar(allForStats);
     renderComplimentary(d.complimentary);
     if (isLicensed) {
-      document.getElementById('licensedSearchCta').style.display = 'block';
+      // A real BCP-matched complimentary contract (source:'bcp', see
+      // outreachOpportunitySnapshot() in vendor-presence.mjs) already IS the
+      // advisor-searched-for-you experience -- showing the generic "search
+      // yourself" CTA right next to it is redundant. Only show it when there's
+      // no complimentary contract, or it came from the older random-pick
+      // fallback rather than a real BCP match.
+      if (!(d.complimentary && d.complimentary.source === 'bcp')) {
+        document.getElementById('licensedSearchCta').style.display = 'block';
+      }
     } else {
       document.getElementById('federalMatches').style.display = 'block';
       renderLocked(scored);
