@@ -63,6 +63,17 @@ form.addEventListener('submit',async e=>{
  if(!type){statusEl.textContent='Enter the Opportunity Reference exactly as shown in your Apropos email.';statusEl.className='status error';return}
  const btn=form.querySelector('button');btn.disabled=true;btn.textContent='VERIFYING OPPORTUNITY…';
  try{
+   if(type==='state-local'){
+     // BCP-sourced complimentary opportunities are matched, staged, and stored
+     // directly in bcp_outreach_match_ready (same Supabase project as this
+     // site) -- a single direct lookup, no marketplace proxy hop needed.
+     const r=await fetch('/api/vendor-presence?action=claim-outreach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({opportunity_reference:ref,business_name:payload.business_name,name:payload.name,email:payload.email})});
+     const d=await r.json();
+     if(!r.ok||!d.ok)throw new Error(d.error||'Claim could not be completed.');
+     sessionStorage.setItem('aboaVendorSlug',d.profile.slug);
+     location.assign('/vendor/'+encodeURIComponent(d.profile.slug));
+     return;
+   }
    const r=await fetch('/api/opportunity-gateway?action=claim&type='+encodeURIComponent(type),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
    const d=await r.json();
    if(!r.ok||!d.ok)throw new Error(d.error||'Claim could not be completed.');
@@ -81,16 +92,9 @@ form.addEventListener('submit',async e=>{
        naics:o.naics,set_aside:o.set_aside,state:popPart(pop.state),
        place_of_performance:[popPart(pop.city),popPart(pop.state),popPart(pop.country)].filter(Boolean).join(', ')
      };
-   }else if(type==='state-local'){
-     try{
-       const wr=await Promise.race([
-         fetch('/api/opportunity-gateway?action=workspace&type=state-local&t='+encodeURIComponent(d.workspace_token),{cache:'no-store'}),
-         new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),4000))
-       ]);
-       const wd=await wr.json();
-       if(wr.ok&&wd.ok&&wd.opportunity)opportunitySnapshot=wd.opportunity;
-     }catch(e){ /* Contract details are attached to the Vendor Page best-effort; missing them must not block the claim. */ }
    }
+   // type is always 'federal' below this point -- the state-local branch
+   // returns early above via /api/vendor-presence?action=claim-outreach.
    try{
      const vp=await Promise.race([
        fetch('/api/vendor-presence?action=auto-claim',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({business_name:d.business_name||payload.business_name,claimant_name:payload.name,claimant_email:payload.email,source:'contract_claim:'+type,opportunity_ref:ref,opportunity:opportunitySnapshot,contractor_profile:(type==='federal'&&d.contractor_profile)?d.contractor_profile:null})}),
