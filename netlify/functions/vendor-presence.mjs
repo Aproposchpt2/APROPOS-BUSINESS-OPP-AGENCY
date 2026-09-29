@@ -8,6 +8,7 @@ const json = (body, status = 200, headers = {}) =>
   });
 
 const clean = (v, max = 5000) => String(v ?? '').trim().slice(0, max);
+const normalize = v => clean(v).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const hash = v => createHash('sha256').update(v).digest('hex');
 const token = () => randomBytes(32).toString('base64url');
@@ -63,6 +64,31 @@ async function fallbackComplimentaryFromRepository(businessName, email) {
     place_of_performance: [row.city, row.state].filter(Boolean).join(', '),
     state: row.state
   };
+}
+
+// Real complimentary-opportunity claim lookup for BCP-sourced (AP-) references.
+// BCP's outreach/matching now writes contractor+contract in one row to
+// public.bcp_outreach_match_ready (same Supabase project as this site) --
+// no more proxying through the retired marketplace.aproposgroupllc.com site
+// (that site is no longer claimed/maintained). The row already carries both
+// sides denormalized, so this is a single direct read, no separate contract
+// join needed.
+async function lookupOutreachMatch(reference) {
+  const rows = await db('bcp_outreach_match_ready', 'GET',
+    `?email_opportunity_reference=eq.${encodeURIComponent(reference)}&select=*&limit=1`);
+  return rows?.[0] || null;
+}
+
+function outreachOpportunitySnapshot(match) {
+  return cleanOpportunity({
+    title: match.contract_title,
+    agency_name: match.agency_name,
+    solicitation_number: match.solicitation_number,
+    response_deadline: match.contract_closes_at,
+    scope_summary: match.match_basis || '',
+    authoritative_url: match.contract_source_url,
+    state: match.contract_state
+  });
 }
 
 // Cloned from RFCP-V2 (rfcp.aproposgroupllc.com) netlify/functions/demo-pipeline.js --
@@ -243,6 +269,19 @@ async function profileSeed(businessName, claimantEmail) {
       seed.public_contact_email = clean(row.contact_email,180);
     }
   } catch (e) { console.warn('fcp_contractor_contacts seed unavailable', e?.message); }
+
+  try {
+    const outreachMatches = await db('bcp_outreach_match_ready','GET',
+      '?select=contractor_name,contractor_state,contractor_primary_naics,contractor_uei,representative_email&contractor_name=ilike.'+filter+'&order=matched_at.desc&limit=1');
+    const row = outreachMatches?.[0];
+    if (row) {
+      if (!seed.state) seed.state = clean(row.contractor_state,80);
+      if (!seed.uei) seed.uei = clean(row.contractor_uei,32);
+      if (emailOk(clean(row.representative_email,180)) && !seed.public_contact_email) seed.public_contact_email = clean(row.representative_email,180);
+      const primaryNaics = clean(row.contractor_primary_naics,20);
+      if (primaryNaics && !seed.naics.length) seed.naics = [primaryNaics];
+    }
+  } catch (e) { console.warn('bcp_outreach_match_ready seed unavailable', e?.message); }
 
   try {
     const matches = await db('cbrief_match_completed','GET',
@@ -579,6 +618,65 @@ export default async (req) => {
       }]);
       await sendVerification({businessName,claimantName,email,rawToken});
       return json({ok:true,message:'Check your business email to verify your claim.'});
+    }
+
+    // Called directly by claim-opportunity.html for state-local (AP-) claims.
+    // Replaces the old claim -> gateway workspace-fetch -> auto-claim three-hop
+    // dance that existed only because the opportunity snapshot had to be
+    // fetched from the (now retired) marketplace.aproposgroupllc.com site.
+    // This is one direct read against bcp_outreach_match_ready, which already
+    // carries the contractor identity and the contract in a single row.
+    if (req.method === 'POST' && action === 'claim-outreach') {
+      const input = await req.json().catch(()=>({}));
+      const reference = clean(input.opportunity_reference, 32).toUpperCase();
+      const businessName = clean(input.business_name, 180);
+      const claimantName = clean(input.name, 140);
+      const email = clean(input.email, 180).toLowerCase();
+      if (!/^AP-[A-Z0-9]{8}$/.test(reference))
+        return json({ok:false,error:'The Opportunity Reference format is invalid.'},400);
+      if (businessName.length < 2 || claimantName.length < 2 || !emailOk(email))
+        return json({ok:false,error:'Please complete your name, business name, and a valid business email.'},400);
+
+      const match = await lookupOutreachMatch(reference);
+      if (!match) return json({ok:false,error:'That Opportunity Reference could not be verified.'},404);
+
+      const releasedForClaim = match.email_status === 'SENT'
+        || (match.email_status === 'STAGED' && match.email_e2e_tested_at);
+      if (!releasedForClaim)
+        return json({ok:false,error:'That Opportunity Reference has not been released for claim.'},409);
+
+      if (normalize(businessName) !== normalize(match.contractor_name))
+        return json({ok:false,error:'The business name does not match the contract introduction.'},403);
+
+      const intendedEmail = clean(match.representative_email, 180).toLowerCase();
+      if (!intendedEmail || intendedEmail !== email)
+        return json({ok:false,error:'The business email does not match the contract introduction.'},403);
+
+      const opportunity = outreachOpportunitySnapshot(match);
+      let { profile, created } = await findOrCreateProfile({
+        businessName, claimId: null, claimantEmail: email,
+        publishOnCreate: true, opportunity, contractorType: 'licensed'
+      });
+      if (!profile) return json({ok:false,error:'Vendor Page could not be provisioned.'},500);
+
+      const patch = { updated_at: new Date().toISOString() };
+      if (!profile.uei && match.contractor_uei) patch.uei = clean(match.contractor_uei, 32);
+      if (!profile.state && match.contractor_state) patch.state = clean(match.contractor_state, 80);
+      if (Object.keys(patch).length > 1) {
+        const rows = await db('boda_vendor_profiles','PATCH',
+          `?id=eq.${encodeURIComponent(profile.id)}`, patch, 'return=representation');
+        if (rows?.[0]) profile = rows[0];
+      }
+
+      const rawSession = token();
+      await db('boda_vendor_sessions','POST','',[{
+        profile_id:profile.id,
+        token_hash:hash(rawSession),
+        expires_at:new Date(Date.now()+1000*60*60*24*30).toISOString()
+      }]);
+      return json({ok:true,profile:{business_name:profile.business_name,slug:profile.slug},created},200,{
+        'set-cookie':`boda_vendor_session=${encodeURIComponent(rawSession)}; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000; Path=/`
+      });
     }
 
     // Called by claim-opportunity.html immediately after a contract claim
