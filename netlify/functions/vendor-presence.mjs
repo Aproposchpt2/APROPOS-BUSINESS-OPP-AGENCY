@@ -67,26 +67,39 @@ async function fallbackComplimentaryFromRepository(businessName, email) {
 }
 
 // Real complimentary-opportunity claim lookup for BCP-sourced (AP-) references.
-// BCP's outreach/matching now writes contractor+contract in one row to
-// public.bcp_outreach_match_ready (same Supabase project as this site) --
-// no more proxying through the retired marketplace.aproposgroupllc.com site
-// (that site is no longer claimed/maintained). The row already carries both
-// sides denormalized, so this is a single direct read, no separate contract
-// join needed.
+// BCP's outreach/matching writes contractor+contract match rows to
+// public.bcp_outreach_match_ready (same Supabase project as this site), but
+// the real contract description/scope text was never denormalized onto that
+// row. Per Jeff: the original 392 contracts moved
+// cbrief_contract_opportunities -> bcp_naics_matched_contracts (NAICS-based
+// licensed-business matching) -> bcp_outreach_match_ready (outreach-ready
+// row) -- the scope text lives on bcp_naics_matched_contracts and must be
+// looked up separately via bcp_outreach_match_ready.opportunity_id, which is
+// that table's id (confirmed live 2026-09-29, NOT a cbrief_contract_
+// opportunities id -- a same-id join against that table returns nothing).
 async function lookupOutreachMatch(reference) {
   const rows = await db('bcp_outreach_match_ready', 'GET',
     `?email_opportunity_reference=eq.${encodeURIComponent(reference)}&select=*&limit=1`);
   return rows?.[0] || null;
 }
 
-function outreachOpportunitySnapshot(match) {
+async function lookupNaicsMatchedContract(opportunityId) {
+  if (!opportunityId) return null;
+  const rows = await db('bcp_naics_matched_contracts', 'GET',
+    `?id=eq.${encodeURIComponent(opportunityId)}&select=description,scope_summary,plain_language_summary&limit=1`);
+  return rows?.[0] || null;
+}
+
+function outreachOpportunitySnapshot(match, contract) {
+  const scopeSummary = clean(contract?.scope_summary || contract?.plain_language_summary || contract?.description, 4000);
   const cleaned = cleanOpportunity({
     title: match.contract_title,
     agency_name: match.agency_name,
     solicitation_number: match.solicitation_number,
     response_deadline: match.contract_closes_at,
-    scope_summary: match.match_basis || '',
+    scope_summary: scopeSummary,
     authoritative_url: match.contract_source_url,
+    naics: match.contract_naics,
     state: match.contract_state
   });
   // Tagged so the dashboard can tell a real BCP-matched complimentary
@@ -658,7 +671,8 @@ export default async (req) => {
       if (!intendedEmail || intendedEmail !== email)
         return json({ok:false,error:'The business email does not match the contract introduction.'},403);
 
-      const opportunity = outreachOpportunitySnapshot(match);
+      const contract = await lookupNaicsMatchedContract(match.opportunity_id);
+      const opportunity = outreachOpportunitySnapshot(match, contract);
       let { profile, created } = await findOrCreateProfile({
         businessName, claimId: null, claimantEmail: email,
         publishOnCreate: true, opportunity, contractorType: 'licensed'
