@@ -80,7 +80,7 @@ async function lookupOutreachMatch(reference) {
 }
 
 function outreachOpportunitySnapshot(match) {
-  return cleanOpportunity({
+  const cleaned = cleanOpportunity({
     title: match.contract_title,
     agency_name: match.agency_name,
     solicitation_number: match.solicitation_number,
@@ -89,6 +89,12 @@ function outreachOpportunitySnapshot(match) {
     authoritative_url: match.contract_source_url,
     state: match.contract_state
   });
+  // Tagged so the dashboard can tell a real BCP-matched complimentary
+  // contract apart from the Licensed Business random-pick fallback
+  // (fallbackComplimentaryFromRepository, below) -- lets it hide the
+  // generic "search yourself" CTA only when a real match was already
+  // delivered, per Jeff 2026-09-29.
+  return cleaned ? { ...cleaned, source: 'bcp' } : cleaned;
 }
 
 // Cloned from RFCP-V2 (rfcp.aproposgroupllc.com) netlify/functions/demo-pipeline.js --
