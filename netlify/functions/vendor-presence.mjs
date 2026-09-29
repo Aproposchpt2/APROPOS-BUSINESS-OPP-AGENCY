@@ -86,18 +86,25 @@ async function lookupOutreachMatch(reference) {
 async function lookupNaicsMatchedContract(opportunityId) {
   if (!opportunityId) return null;
   const rows = await db('bcp_naics_matched_contracts', 'GET',
-    `?id=eq.${encodeURIComponent(opportunityId)}&select=description,scope_summary,plain_language_summary&limit=1`);
+    `?id=eq.${encodeURIComponent(opportunityId)}&select=description,scope_summary,plain_language_summary,place_of_performance&limit=1`);
   return rows?.[0] || null;
 }
 
 function outreachOpportunitySnapshot(match, contract) {
-  const scopeSummary = clean(contract?.scope_summary || contract?.plain_language_summary || contract?.description, 4000);
+  // description (100% populated on real matched records, checked live 2026-09-29)
+  // is preferred over scope_summary -- it's sometimes richer, occasionally
+  // carrying the buyer's real contact name/email/phone and the estimated bid
+  // value as embedded text even where the structured columns for those are
+  // empty. scope_summary/plain_language_summary remain the fallback for the
+  // rare row where description itself is blank.
+  const scopeSummary = clean(contract?.description || contract?.scope_summary || contract?.plain_language_summary, 4000);
   const cleaned = cleanOpportunity({
     title: match.contract_title,
     agency_name: match.agency_name,
     solicitation_number: match.solicitation_number,
     response_deadline: match.contract_closes_at,
     scope_summary: scopeSummary,
+    place_of_performance: contract?.place_of_performance || '',
     authoritative_url: match.contract_source_url,
     naics: match.contract_naics,
     state: match.contract_state
