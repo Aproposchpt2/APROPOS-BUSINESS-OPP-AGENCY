@@ -90,6 +90,22 @@
   status = 200
 
 [[redirects]]
+  from = "/funding/start"
+  to = "/funding-workspace.html"
+  status = 200
+
+[[redirects]]
+  from = "/funding-workspace"
+  to = "/funding-workspace.html"
+  status = 200
+
+[[headers]]
+  for = "/funding-workspace.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[redirects]]
   from = "/contract-preparedness"
   to = "/contract-preparedness.html"
   status = 200
