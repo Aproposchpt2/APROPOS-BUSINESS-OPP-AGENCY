@@ -79,12 +79,20 @@
   to = "/#services"
   status = 301
 
+[[redirects]]
+  from = "/funding"
+  to = "/funding.html"
+  status = 200
+
+[[redirects]]
+  from = "/fdc"
+  to = "/funding.html"
+  status = 200
 
 [[redirects]]
   from = "/contract-preparedness"
   to = "/contract-preparedness.html"
   status = 200
-
 
 [[redirects]]
   from = "/claim"
@@ -108,7 +116,6 @@
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
 
-
 [[redirects]]
   from = "/opportunity-survey"
   to = "/opportunity-survey.html"
@@ -131,7 +138,6 @@
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
 
-
 [[redirects]]
   from = "/vendor-claim"
   to = "/vendor-claim.html"
@@ -142,7 +148,6 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
-
 
 [[redirects]]
   from = "/vendor-workspace"
