@@ -19,6 +19,50 @@ main{max-width:1120px;margin:auto;padding:64px 24px 90px}.intro{color:#fff;max-w
 button{margin-top:26px;min-height:54px;border:1px solid var(--gold);background:var(--gold);color:var(--navy-deep);padding:14px 24px;font:inherit;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.status{margin-top:18px;padding:14px 16px;display:none}.status.error{display:block;background:#fff0f0;color:#8b1e1e;border-left:3px solid #8b1e1e}.fine{font-size:.76rem;color:var(--muted);line-height:1.7;margin:18px 0 0}
 @media(max-width:680px){body{background:linear-gradient(180deg,#07182f 0,#0a2448 28%,var(--paper) 28%)}.head{padding:18px}.back{display:none}main{padding:46px 16px 70px}.card{padding:24px 20px}.grid{grid-template-columns:1fr}.intro h1{font-size:clamp(3rem,14vw,4.9rem)}button{width:100%}}
 </style>
+<!-- Google tag: Apropos Group LLC .ORG / Apropos Opportunity -->
+<script>
+(function () {
+  if (!['aproposopportunity.org', 'www.aproposopportunity.org'].includes(window.location.hostname)) return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  var campaign = new URLSearchParams(window.location.search);
+var sources = ['linkedin', 'google_business_profile', 'iss_outreach'];
+var media = ['social', 'organic', 'email'];
+var names = ['iss_sales', 'opportunity_services'];
+var attribution = {};
+if (sources.includes(campaign.get('utm_source'))) attribution.campaign_source = campaign.get('utm_source');
+if (media.includes(campaign.get('utm_medium'))) attribution.campaign_medium = campaign.get('utm_medium');
+if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = campaign.get('utm_campaign');
+  window.gtag('config', 'G-VXX1P92PHS', {
+    send_page_view: false,
+    page_referrer: '',
+    ...attribution,
+    page_location: window.location.origin + window.location.pathname
+  });
+  var tag = document.createElement('script');
+  tag.async = true;
+  tag.src = 'https://www.googletagmanager.com/gtag/js?id=G-VXX1P92PHS';
+  document.head.appendChild(tag);
+}());
+</script>
+<script>
+window.trackOpportunityEvent = function (name, service, done) {
+  var finish = function () { if (done) { var callback = done; done = null; callback(); } };
+  if (!['aproposopportunity.org', 'www.aproposopportunity.org'].includes(location.hostname)) { finish(); return; }
+  var timer;
+  try {
+    timer = setTimeout(finish, 800);
+    window.gtag('event', name, {
+      send_to: 'G-VXX1P92PHS',
+      service: service,
+      page_location: location.origin + location.pathname,
+      event_callback: function () { clearTimeout(timer); finish(); },
+      event_timeout: 800
+    });
+  } catch (_) { clearTimeout(timer); finish(); }
+};
+</script>
 </head>
 <body>
 <header><div class="head"><a class="brand" href="/"><span class="rule"></span><span><strong>APROPOS</strong><span>Business Opportunity Agency</span></span></a><a class="back" href="/">Agency Home</a></div></header>
@@ -71,7 +115,7 @@ form.addEventListener('submit',async e=>{
      const d=await r.json();
      if(!r.ok||!d.ok)throw new Error(d.error||'Claim could not be completed.');
      sessionStorage.setItem('aboaVendorSlug',d.profile.slug);
-     location.assign('/vendor/'+encodeURIComponent(d.profile.slug));
+     window.trackOpportunityEvent('generate_lead', 'contract_claim', function () { location.assign('/vendor/'+encodeURIComponent(d.profile.slug)); });
      return;
    }
    const r=await fetch('/api/opportunity-gateway?action=claim&type='+encodeURIComponent(type),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
@@ -109,7 +153,7 @@ form.addEventListener('submit',async e=>{
    // provisioning itself failed, so the claim is never a dead end.
    // Claim -> personalized Vendor Card first (where the contractor confirms
    // "Claim Your Business" registry consent) -> Vendor Dashboard from there.
-   location.assign(vendorSlug?'/vendor/'+encodeURIComponent(vendorSlug):'/opportunity-workspace');
+   window.trackOpportunityEvent('generate_lead', 'contract_claim', function () { location.assign(vendorSlug?'/vendor/'+encodeURIComponent(vendorSlug):'/opportunity-workspace'); });
  }catch(err){
    statusEl.textContent=err.message||'Claim could not be completed.';
    statusEl.className='status error';

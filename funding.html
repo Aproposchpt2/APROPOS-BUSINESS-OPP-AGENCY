@@ -46,7 +46,16 @@ section{padding:88px 0}.section-kicker{text-align:center;font-size:.64rem;font-w
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
   window.gtag('js', new Date());
+  var campaign = new URLSearchParams(window.location.search);
+var sources = ['linkedin', 'google_business_profile', 'iss_outreach'];
+var media = ['social', 'organic', 'email'];
+var names = ['iss_sales', 'opportunity_services'];
+var attribution = {};
+if (sources.includes(campaign.get('utm_source'))) attribution.campaign_source = campaign.get('utm_source');
+if (media.includes(campaign.get('utm_medium'))) attribution.campaign_medium = campaign.get('utm_medium');
+if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = campaign.get('utm_campaign');
   window.gtag('config', 'G-VXX1P92PHS', {
+    ...attribution,
     page_location: window.location.origin + window.location.pathname
   });
   var tag = document.createElement('script');
@@ -54,6 +63,23 @@ section{padding:88px 0}.section-kicker{text-align:center;font-size:.64rem;font-w
   tag.src = 'https://www.googletagmanager.com/gtag/js?id=G-VXX1P92PHS';
   document.head.appendChild(tag);
 }());
+</script>
+<script>
+window.trackOpportunityEvent = function (name, service, done) {
+  var finish = function () { if (done) { var callback = done; done = null; callback(); } };
+  if (!['aproposopportunity.org', 'www.aproposopportunity.org'].includes(location.hostname)) { finish(); return; }
+  var timer;
+  try {
+    timer = setTimeout(finish, 800);
+    window.gtag('event', name, {
+      send_to: 'G-VXX1P92PHS',
+      service: service,
+      page_location: location.origin + location.pathname,
+      event_callback: function () { clearTimeout(timer); finish(); },
+      event_timeout: 800
+    });
+  } catch (_) { clearTimeout(timer); finish(); }
+};
 </script>
 </head>
 <body>
@@ -201,6 +227,7 @@ form.addEventListener('submit',async(e)=>{
     const r=await fetch('/api/inquiry',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
     const d=await r.json();
     if(!r.ok||!d.ok)throw new Error(d.message||'Your request could not be submitted.');
+    window.trackOpportunityEvent('generate_lead', 'funding_inquiry');
     statusEl.textContent='Your Funding Development Center request has been received. The next step is the Funding Development Interview.';
     statusEl.className='status success';form.reset();btn.textContent='REQUEST RECEIVED';
   }catch(err){statusEl.textContent=err.message||'Your request could not be submitted.';statusEl.className='status error';btn.disabled=false;btn.textContent='Start Funding Development Interview';}
