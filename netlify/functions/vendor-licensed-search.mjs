@@ -12,14 +12,11 @@
 // curates: both live in the same Supabase project
 // (pwvstaigtdrccirdvqka), so this is a direct read, not a sync/mirror.
 //
-// Security posture: every row returned here is, by definition, an
-// ADDITIONAL match beyond the contractor's one complimentary opportunity
-// (which lives on their Vendor Dashboard, sourced separately). Per the
-// acquisition-to-subscription funnel spec, additional matches only ever
-// show Agency / Category / Status / Deadline -- never solicitation number,
-// scope, or official links -- until Vendor Access is unlocked. That
-// reduction happens server-side in teaserOpportunity() below, not just in
-// the frontend, so there is nothing to unlock by reading the network tab.
+// Access posture, revised 2026-10-05 (Jeff, free-access pivot): full
+// contract detail is part of claiming a free Vendor Card now, same as
+// NAT-CORP's own self-serve search -- there is no further paywall on
+// contract data itself. The revenue product is Funding Preparation, not
+// contract access. See fullOpportunity() below.
 
 import { createHash } from 'node:crypto';
 
@@ -169,10 +166,12 @@ function buildTree(triples) {
   }));
 }
 
-// Teaser-only mapping -- Agency / Category path / Status / Deadline. Never
-// includes solicitation_number, description, scope_summary, or the
-// authoritative source links; those stay server-side only.
-function teaserOpportunity(row, assignment) {
+// Full detail, same shape as NAT-CORP's self-serve search (natcorp-contract-
+// search.mjs's fullOpportunity()). Was teaser-only (agency/category/status/
+// deadline, with a per-row "Unlock" paywall button) until 2026-10-05, when
+// the free-access pivot (Jeff) made full contract detail part of claiming a
+// free Vendor Card -- the paid product is Funding Preparation, not this.
+function fullOpportunity(row, assignment) {
   const t = assignment || {};
   const daysLeft = (() => {
     const v = filterDateValue(row.closes_at);
@@ -180,12 +179,19 @@ function teaserOpportunity(row, assignment) {
   })();
   return {
     id: row.id,
+    title: row.title || 'Untitled opportunity',
+    description: row.description || null,
+    scope_summary: row.scope_summary || null,
     agency: row.agency_name || 'Public Agency',
     category_path: [t.industry, t.service_category, t.work_type].filter(Boolean).join(' › ') || 'Not yet categorized',
     status: row.status === 'open' ? 'Open' : (row.status || 'Open'),
+    solicitation_number: row.solicitation_number || null,
     location: [row.city, normalizeState(row.state)].filter(Boolean).join(', ') || null,
+    posted_at: row.posted_at || null,
     closes_at: row.closes_at || null,
-    days_left: daysLeft
+    days_left: daysLeft,
+    authoritative_detail_url: row.authoritative_detail_url || null,
+    authoritative_response_url: row.authoritative_response_url || null
   };
 }
 
@@ -251,7 +257,7 @@ export default async function handler(req) {
       sortRows(rows, sort);
 
       const total = rows.length, start = (page - 1) * pageSize;
-      const selected = rows.slice(start, start + pageSize).map(row => teaserOpportunity(row, assignmentMap.get(clean(row.id))));
+      const selected = rows.slice(start, start + pageSize).map(row => fullOpportunity(row, assignmentMap.get(clean(row.id))));
       const agencies = [...new Set(rows.map(row => clean(row.agency_name)).filter(Boolean))].sort((a, b) => a.localeCompare(b));
       const states = [...new Set(rows.map(row => normalizeState(row.state)).filter(Boolean))].sort();
 

@@ -190,6 +190,8 @@ async function load(){
       +'</section>'
       +'<section class="body">'
       +opportunityHtml
+      +'<div class="claim-cta"><div><strong>Search All Open Contracts</strong><span>Full access to every open government contract in the repository, free with your claimed Vendor Card.</span></div>'
+      +'<a class="button" href="/vendor-licensed-search">Search Contracts →</a></div>'
       +'<div class="panel"><div class="eyebrow">Business Snapshot</div>'
       +(caps.length?'<div class="snapshot-block"><small>Capabilities</small><div class="snapshot-tags">'+caps.map(x=>'<span class="tag">'+esc(x)+'</span>').join('')+'</div></div>':'')
       +(certs.length?'<div class="snapshot-block"><small>Certifications &amp; Designations</small><div class="snapshot-tags">'+certs.map(x=>'<span class="tag cert">'+esc(x)+'</span>').join('')+'</div></div>':'')

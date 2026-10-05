@@ -69,7 +69,7 @@ th{color:var(--soft);font-size:.62rem;text-transform:uppercase;letter-spacing:.0
 .chip{display:inline-block;background:rgba(46,204,138,.12);border:1px solid rgba(46,204,138,.3);color:var(--green);border-radius:999px;padding:3px 10px;font-size:.7rem;font-weight:700}
 .days{font-weight:800}
 .hot{color:var(--red)}.warm{color:var(--amber)}.ok{color:var(--green)}
-.unlock-btn{background:transparent;border:1px solid var(--line2);color:var(--gold2);border-radius:7px;padding:8px 12px;font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.unlock-btn{display:inline-block;background:transparent;border:1px solid var(--line2);color:var(--gold2);border-radius:7px;padding:8px 12px;font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;white-space:nowrap;text-decoration:none}
 .unlock-btn:hover{border-color:var(--gold);background:rgba(199,167,90,.08)}
 .empty-row{padding:40px;text-align:center;color:var(--soft)}
 .pager{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line)}
@@ -195,12 +195,12 @@ function render(){
   if(!state.rows.length){box.innerHTML='<tr><td colspan="5" class="empty-row">No open contracts match this search.</td></tr>';return}
   box.innerHTML=state.rows.map(r=>{
     const d=r.days_left,cls=d==null?'':d<7?'hot':d<30?'warm':'ok';
-    return `<tr onclick="location.assign('/vendor-access')" style="cursor:pointer">`
+    return `<tr>`
       +`<td><div class="row-agency">${esc(r.agency)}</div></td>`
       +`<td><span class="chip">${esc(r.category_path)}</span></td>`
       +`<td class="row-loc">${esc(r.location||'Not listed')}</td>`
       +`<td class="days ${cls}">${d==null?'Not listed':d<0?'Closed':d+' days'}<div class="sub">${esc(fmt(r.closes_at))}</div></td>`
-      +`<td><button class="unlock-btn" onclick="event.stopPropagation();location.assign('/vendor-access')">🔒 Unlock</button></td>`
+      +`<td>${r.authoritative_detail_url?`<a class="unlock-btn" href="${esc(r.authoritative_detail_url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Details →</a>`:'<span class="sub">No link listed</span>'}</td>`
       +`</tr>`;
   }).join('');
 }
