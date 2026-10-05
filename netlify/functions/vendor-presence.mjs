@@ -365,10 +365,31 @@ async function findOrCreateProfile({ businessName, claimId, claimantEmail, publi
   }
   if (existing?.length) {
     let profile = existing[0];
-    if (opportunity || contractorType) {
-      const patch = { updated_at: new Date().toISOString() };
-      if (opportunity) patch.claimed_opportunity = opportunity;
-      if (contractorType) patch.contractor_type = contractorType;
+    // A profile can exist here with no enrichment yet when BCP/FCP
+    // pre-built it at outreach-send time (thin insert: name/slug/email
+    // only, per the 2026-10-05 pre-build-vendor-cards change) and this is
+    // the first real claim against it. Backfill the same seed a brand-new
+    // profile would get, without clobbering anything the business already
+    // filled in themselves via Edit Vendor Card.
+    const needsSeed = !clean(profile.about) && !clean(profile.city) && !clean(profile.uei);
+    const patch = { updated_at: new Date().toISOString() };
+    if (opportunity) patch.claimed_opportunity = opportunity;
+    if (contractorType) patch.contractor_type = contractorType;
+    if (needsSeed) {
+      const seed = await profileSeed(businessName, claimantEmail);
+      if (seed.about) patch.about = seed.about;
+      if (seed.website) patch.website = seed.website;
+      if (seed.city) patch.city = seed.city;
+      if (seed.state) patch.state = seed.state;
+      if (seed.uei) patch.uei = seed.uei;
+      if (seed.sam_registration_status) patch.sam_registration_status = seed.sam_registration_status;
+      if (seed.service_area) patch.service_area = seed.service_area;
+      if (seed.certifications?.length) patch.certifications = seed.certifications;
+      if (seed.core_capabilities?.length) patch.core_capabilities = seed.core_capabilities;
+      if (seed.naics?.length) patch.naics = seed.naics;
+      if (seed.public_contact_email && !clean(profile.public_contact_email)) patch.public_contact_email = seed.public_contact_email;
+    }
+    if (opportunity || contractorType || needsSeed) {
       const rows = await db('boda_vendor_profiles', 'PATCH',
         `?id=eq.${encodeURIComponent(profile.id)}`,
         patch,
