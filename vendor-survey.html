@@ -36,11 +36,6 @@ button{min-height:48px;padding:0 22px;border:1px solid var(--gold);background:li
 button:disabled{opacity:.55;cursor:wait}
 .status{margin-top:14px;padding:12px 14px;border-radius:8px;display:none;font-size:.84rem}
 .status.success{display:block;background:rgba(46,204,138,.12);color:#2ecc8a;border:1px solid rgba(46,204,138,.3)}
-.offer{background:linear-gradient(135deg,var(--bg),var(--panel));border:1px solid var(--line2);border-radius:12px;padding:28px}
-.offer .eyebrow{color:var(--gold2)}
-.offer h2{font:400 1.6rem var(--disp);margin:8px 0 10px;color:#fff}
-.offer p{color:var(--muted);line-height:1.7;margin-bottom:18px;font-size:.9rem}
-.offer a{display:inline-flex;min-height:48px;align-items:center;padding:0 22px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -63,12 +58,6 @@ button:disabled{opacity:.55;cursor:wait}
     <div id="status" class="status" role="status" aria-live="polite"></div>
   </div>
 
-  <div class="offer">
-    <div class="eyebrow">Vendor Access</div>
-    <h2>Ready to see every matched opportunity?</h2>
-    <p>Your complimentary contract was just the first match. Vendor Access unlocks full details on every current opportunity matching your registered capabilities, for as long as they're open.</p>
-    <a href="/vendor-access">Explore Vendor Access →</a>
-  </div>
 </main>
 
 <script>
@@ -89,9 +78,10 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
       body: JSON.stringify({ rating: rating || null, comment: document.getElementById('comment').value, action: 'survey_submit' })
     });
   } catch (e) { /* best-effort */ }
-  statusEl.textContent = 'Thank you for your feedback.';
+  statusEl.textContent = 'Thank you for your feedback. Taking you to your Vendor Card…';
   statusEl.className = 'status success';
   btn.textContent = 'SUBMITTED';
+  setTimeout(() => { location.assign('/vendor-workspace'); }, 1100);
 });
 </script>
 </body>
