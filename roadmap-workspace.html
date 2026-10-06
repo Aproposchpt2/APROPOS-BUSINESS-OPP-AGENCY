@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Your Business Development Roadmap | Business Opportunity Development Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#081a31;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;--ink:#14233a;--muted:#657489;--line:#c9d9e5;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif;--green:#217a57}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#f8fbfd,#edf4f8);color:var(--ink);font-family:var(--sans)}
+a{text-decoration:none;color:inherit}.shell{width:min(900px,calc(100% - 32px));margin:auto;padding:40px 0 70px}
+h1,h2,h3{font-family:var(--serif);font-weight:500}
+.eyebrow{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#8c6e2a}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);color:var(--navy);margin:8px 0 10px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:20px;box-shadow:0 12px 34px rgba(8,26,49,.06)}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.step{border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:.74rem;font-weight:700;color:var(--muted);background:#fbfdfe}
+.step.done{color:var(--green);border-color:rgba(33,122,87,.35);background:rgba(33,122,87,.06)}
+.step.active{color:#8c6e2a;border-color:var(--gold);background:rgba(199,167,90,.1)}
+.section-title{font-family:var(--serif);font-size:1.3rem;color:var(--navy);margin:0 0 12px}
+.msg{color:var(--muted);line-height:1.7}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:.85rem}
+th{color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.65rem}
+.phase-tag{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8c6e2a;background:rgba(199,167,90,.14);padding:3px 8px;border-radius:999px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;background:#fbfdfe}
+.kpi b{display:block;font-family:var(--serif);font-size:1.5rem;color:var(--navy)}
+.kpi span{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.btn{display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:0 20px;border-radius:9px;background:var(--navy);color:#fff;font-weight:700;font-size:.72rem;margin-top:14px}
+@media(max-width:700px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+</style></head>
+<body>
+<main class="shell">
+<div class="eyebrow">Business Opportunity Development Agency</div>
+<h1 id="pageTitle">Your Business Development Roadmap</h1>
+<div class="panel" id="statusPanel"><p class="msg">Loading your Roadmap status…</p></div>
+<div id="deliverableArea"></div>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const qs=new URLSearchParams(location.search);
+const orderId=qs.get('order_id')||sessionStorage.getItem('roadmapOrderId')||'';
+if(orderId) sessionStorage.setItem('roadmapOrderId', orderId);
+
+const STEPS=[
+  ['PURCHASED','Purchased'],['INTAKE_PENDING','Intake'],['INTAKE_COMPLETE','Intake Complete'],
+  ['RESEARCH','Research'],['ANALYSIS','Analysis'],['QA_REVIEW','QA Review'],
+  ['APPROVED','Approved'],['DELIVERED','Delivered']
+];
+function stepIndex(status){
+  if(status==='REVISION_REQUIRED') return STEPS.findIndex(s=>s[0]==='QA_REVIEW');
+  if(status==='CLOSED') return STEPS.length-1;
+  const i=STEPS.findIndex(s=>s[0]===status);
+  return i<0?0:i;
+}
+
+function renderSteps(status){
+  const idx=stepIndex(status);
+  return STEPS.map(([code,label],i)=>{
+    const cls = i<idx ? 'done' : i===idx ? 'active' : '';
+    return `<div class="step ${cls}">${esc(label)}</div>`;
+  }).join('');
+}
+
+function renderDeliverable(d){
+  if(!d) return '';
+  const priorities=(d.priorities||[]).map(p=>`<tr><td>${p.priority_rank??'—'}</td><td><strong>${esc(p.opportunity_type||p.market_segment||'—')}</strong><br><span style="color:var(--muted)">${esc(p.target_buyer_type||'')}</span></td><td>${esc(p.rationale||'')}</td></tr>`).join('');
+  const phases=['DO_NOW','DAYS_1_30','DAYS_31_60','DAYS_61_90'];
+  const phaseLabel={DO_NOW:'Do Now',DAYS_1_30:'Days 1–30',DAYS_31_60:'Days 31–60',DAYS_61_90:'Days 61–90'};
+  const actionsByPhase=phases.map(ph=>{
+    const rows=(d.actions||[]).filter(a=>a.phase===ph);
+    if(!rows.length) return '';
+    return `<h3 style="font-size:1rem;color:var(--navy);margin:16px 0 6px"><span class="phase-tag">${esc(phaseLabel[ph])}</span></h3>`
+      + rows.map(a=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><strong>${esc(a.action)}</strong>${a.expected_result?`<br><span style="color:var(--muted);font-size:.82rem">${esc(a.expected_result)}</span>`:''}</div>`).join('');
+  }).join('');
+  const k=d.kpis||{};
+  const kpis=`<div class="kpi-row">
+    <div class="kpi"><b>${k.target_accounts??'—'}</b><span>Target Accounts</span></div>
+    <div class="kpi"><b>${k.contacts_reached??'—'}</b><span>Contacts Reached</span></div>
+    <div class="kpi"><b>${k.qualified_opportunities??'—'}</b><span>Qualified Opps</span></div>
+    <div class="kpi"><b>${k.proposals_quotes??'—'}</b><span>Proposals/Quotes</span></div>
+  </div>`;
+  return `
+  <div class="panel"><div class="section-title">Growth Opportunity Map</div>
+    <table><thead><tr><th>#</th><th>Opportunity</th><th>Rationale</th></tr></thead><tbody>${priorities||'<tr><td colspan="3">—</td></tr>'}</tbody></table>
+  </div>
+  <div class="panel"><div class="section-title">90-Day Action Plan</div>${actionsByPhase||'<p class="msg">—</p>'}</div>
+  <div class="panel"><div class="section-title">KPI Scorecard</div>${kpis}</div>
+  `;
+}
+
+async function load(){
+  if(!orderId){
+    $('statusPanel').innerHTML='<p class="msg">No Roadmap order found. If you just purchased, start from the <a href="/business-development-roadmap">Business Development Roadmap</a> page.</p>';
+    return;
+  }
+  try{
+    const r=await fetch('/api/roadmap?action=status&order_id='+encodeURIComponent(orderId),{cache:'no-store'});
+    const d=await r.json();
+    if(!r.ok||!d.ok) throw new Error(d.error||'Could not load your Roadmap.');
+    $('pageTitle').textContent=d.order.business_name?`${d.order.business_name}'s Business Development Roadmap`:'Your Business Development Roadmap';
+    let note='';
+    if(d.order.roadmap_status==='INTAKE_PENDING') note=`<p class="msg">Your purchase is confirmed. <a href="/roadmap-intake">Complete your intake</a> to begin.</p>`;
+    else if(['DELIVERED','APPROVED'].includes(d.order.roadmap_status)) note=`<p class="msg">Your Roadmap is ready below. <a href="/opportunity-next-steps">See implementation options</a> when you're ready.</p>`;
+    else note=`<p class="msg">Your Roadmap is in progress. BODA will notify you at ${esc(d.order.business_name?'':'')} when it's ready for review.</p>`;
+    $('statusPanel').innerHTML=`<div class="steps">${renderSteps(d.order.roadmap_status)}</div>${note}`;
+    $('deliverableArea').innerHTML=renderDeliverable(d.deliverable);
+  }catch(e){
+    $('statusPanel').innerHTML=`<p class="msg">${esc(e.message||'Could not load your Roadmap status.')}</p>`;
+  }
+}
+load();
+})();
+</script>
+</body></html>

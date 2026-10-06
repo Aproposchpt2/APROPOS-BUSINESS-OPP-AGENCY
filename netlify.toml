@@ -240,3 +240,46 @@
   for = "/vendor-public.html"
   [headers.values]
     Cache-Control = "public, max-age=60"
+
+[[redirects]]
+  from = "/business-development-roadmap"
+  to = "/business-development-roadmap.html"
+  status = 200
+
+[[headers]]
+  for = "/business-development-roadmap.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+[[redirects]]
+  from = "/roadmap-intake"
+  to = "/roadmap-intake.html"
+  status = 200
+
+[[headers]]
+  for = "/roadmap-intake.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[redirects]]
+  from = "/roadmap-workspace"
+  to = "/roadmap-workspace.html"
+  status = 200
+
+[[headers]]
+  for = "/roadmap-workspace.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[redirects]]
+  from = "/roadmap-admin"
+  to = "/roadmap-admin.html"
+  status = 200
+
+[[headers]]
+  for = "/roadmap-admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"

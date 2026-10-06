@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Business Development Roadmap Intake | Business Opportunity Development Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#081a31;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;--ink:#14233a;--muted:#657489;--line:#c9d9e5;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#f8fbfd,#edf4f8);color:var(--ink);font-family:var(--sans)}
+a{text-decoration:none;color:inherit}.shell{width:min(820px,calc(100% - 32px));margin:auto;padding:40px 0 70px}
+h1,h2{font-family:var(--serif);font-weight:500}
+.eyebrow{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#8c6e2a}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);color:var(--navy);margin:8px 0 10px}
+p.lead{color:var(--muted);line-height:1.7;max-width:640px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;margin-top:22px;box-shadow:0 12px 34px rgba(8,26,49,.06)}
+.field{margin-bottom:16px}.field label{display:block;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#52647a;margin-bottom:6px}
+.field .hint{font-size:.72rem;color:var(--muted);margin-top:4px}
+input[type=text],input[type=email],textarea,select{width:100%;border:1px solid var(--line);background:#fbfdfe;color:var(--ink);padding:11px 12px;font:inherit;font-size:.9rem;border-radius:8px;outline:none}
+textarea{min-height:80px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--gold)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.checks label{display:flex;gap:8px;align-items:flex-start;font-size:.84rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)}
+.section-title{font-family:var(--serif);font-size:1.3rem;color:var(--navy);margin:26px 0 14px;border-top:1px solid var(--line);padding-top:22px}
+.section-title:first-of-type{border-top:0;margin-top:0;padding-top:0}
+button{min-height:50px;padding:0 26px;border:1px solid var(--gold);background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);font:inherit;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:9px;margin-top:10px}
+button:disabled{opacity:.5;cursor:wait}
+.msg{margin-top:14px;padding:12px 14px;border-radius:8px;display:none;font-size:.86rem}
+.msg.show{display:block}
+.msg.err{background:rgba(214,69,69,.1);color:#b23c3c;border:1px solid rgba(214,69,69,.3)}
+.msg.ok{background:rgba(46,152,113,.1);color:#217a57;border:1px solid rgba(46,152,113,.3)}
+.hidden{display:none!important}
+</style></head>
+<body>
+<main class="shell">
+<div class="eyebrow">Business Opportunity Development Agency</div>
+
+<div id="claimStep">
+<h1>Confirm your purchase</h1>
+<p class="lead">Enter the email you used at checkout to start your Business Development Roadmap intake.</p>
+<div class="panel">
+<div class="field"><label for="claimEmail">Email used at checkout</label><input type="email" id="claimEmail" placeholder="you@yourbusiness.com"></div>
+<button id="claimBtn">Continue</button>
+<div id="claimMsg" class="msg"></div>
+</div>
+</div>
+
+<div id="intakeStep" class="hidden">
+<h1>Business Development Roadmap Intake</h1>
+<p class="lead">The more complete this is, the more useful your Roadmap will be. Required fields are marked.</p>
+<div class="panel">
+<form id="intakeForm">
+
+<div class="section-title">Business Profile</div>
+<div class="row2"><div class="field"><label for="business_name">Business / legal name</label><input type="text" id="business_name"></div>
+<div class="field"><label for="website">Website</label><input type="text" id="website" placeholder="https://"></div></div>
+<div class="row2"><div class="field"><label for="headquarters">Headquarters</label><input type="text" id="headquarters"></div>
+<div class="field"><label for="service_area">Service area *</label><input type="text" id="service_area" placeholder="Cities, counties, states, or radius" required></div></div>
+<div class="row2"><div class="field"><label for="years_in_operation">Years in operation</label><input type="text" id="years_in_operation"></div>
+<div class="field"><label for="team_size">Team / operating capacity</label><input type="text" id="team_size"></div></div>
+<div class="field"><label for="primary_services">Primary services *</label><textarea id="primary_services" required></textarea></div>
+<div class="field"><label for="secondary_services">Secondary services</label><textarea id="secondary_services"></textarea></div>
+<div class="row2"><div class="field"><label for="naics_codes">Current NAICS codes (comma-separated)</label><input type="text" id="naics_codes"></div>
+<div class="field"><label for="certifications">Certifications / set-asides (comma-separated)</label><input type="text" id="certifications"></div></div>
+<div class="row2"><div class="field"><label for="typical_customer_types">Typical customer types</label><input type="text" id="typical_customer_types"></div>
+<div class="field"><label for="typical_job_value">Typical job/contract value (optional)</label><input type="text" id="typical_job_value"></div></div>
+
+<div class="section-title">Growth Objective *</div>
+<div class="field"><div class="checks">
+<label><input type="checkbox" class="growth-obj" value="Federal government"> Federal government</label>
+<label><input type="checkbox" class="growth-obj" value="State/local government"> State/local government</label>
+<label><input type="checkbox" class="growth-obj" value="Commercial accounts"> Commercial accounts</label>
+<label><input type="checkbox" class="growth-obj" value="Property management"> Property management</label>
+<label><input type="checkbox" class="growth-obj" value="General contractor / subcontracting"> GC / subcontracting</label>
+<label><input type="checkbox" class="growth-obj" value="Institutional buyers"> Institutional buyers</label>
+<label><input type="checkbox" class="growth-obj" value="Recurring maintenance agreements"> Recurring maintenance</label>
+<label><input type="checkbox" class="growth-obj" value="Consumer growth"> Consumer growth</label>
+<label><input type="checkbox" class="growth-obj" value="Geographic expansion"> Geographic expansion</label>
+</div></div>
+<div class="field"><label for="growth_objective_other">Other / additional detail</label><textarea id="growth_objective_other"></textarea></div>
+
+<div class="section-title">Current Sales &amp; Marketing</div>
+<div class="row2"><div class="field"><label for="current_lead_sources">Current lead sources</label><textarea id="current_lead_sources"></textarea></div>
+<div class="field"><label for="current_marketing_channels">Current marketing channels</label><textarea id="current_marketing_channels"></textarea></div></div>
+<div class="row2"><div class="field"><label for="current_outreach_activity">Current outreach activity</label><textarea id="current_outreach_activity"></textarea></div>
+<div class="field"><label for="current_sales_process">Current sales process</label><textarea id="current_sales_process"></textarea></div></div>
+<div class="row2"><div class="field"><label for="crm_tracking_method">CRM / tracking method</label><input type="text" id="crm_tracking_method"></div>
+<div class="field"><label for="sales_response_process">Sales-response process</label><input type="text" id="sales_response_process"></div></div>
+<div class="field"><label for="known_competitors">Known competitors</label><input type="text" id="known_competitors"></div>
+
+<div class="section-title">Constraints / Goals</div>
+<div class="row2"><div class="field"><label for="main_growth_obstacle">Main growth obstacle</label><textarea id="main_growth_obstacle"></textarea></div>
+<div class="field"><label for="capacity_limitations">Capacity limitations</label><textarea id="capacity_limitations"></textarea></div></div>
+<div class="row2"><div class="field"><label for="geographic_limitations">Geographic limitations</label><textarea id="geographic_limitations"></textarea></div>
+<div class="field"><label for="desired_90_day_result">Desired 90-day result</label><textarea id="desired_90_day_result"></textarea></div></div>
+<div class="field"><label for="additional_context">Additional context</label><textarea id="additional_context"></textarea></div>
+
+<button id="submitBtn" type="submit">Submit Intake</button>
+<div id="intakeMsg" class="msg"></div>
+</form>
+</div>
+</div>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const qs=new URLSearchParams(location.search);
+const sessionId=qs.get('session_id')||'';
+let orderId=sessionStorage.getItem('roadmapOrderId')||'';
+
+async function api(action,body){
+  const r=await fetch('/api/roadmap?action='+encodeURIComponent(action),{
+    method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)
+  });
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok||!d.ok) throw new Error(d.error||('HTTP '+r.status));
+  return d;
+}
+
+function showIntake(){
+  $('claimStep').classList.add('hidden');
+  $('intakeStep').classList.remove('hidden');
+}
+
+if(orderId){
+  showIntake();
+}else if(!sessionId){
+  $('claimMsg').className='msg show err';
+  $('claimMsg').textContent='No checkout session found. Please purchase from the Business Development Roadmap page first.';
+  $('claimBtn').disabled=true;
+}
+
+$('claimBtn').addEventListener('click', async ()=>{
+  const email=$('claimEmail').value.trim();
+  if(!email){ $('claimMsg').className='msg show err'; $('claimMsg').textContent='Enter the email you used at checkout.'; return; }
+  $('claimBtn').disabled=true; $('claimBtn').textContent='CHECKING…';
+  $('claimMsg').className='msg show'; $('claimMsg').textContent='Confirming your payment…';
+  try{
+    const d=await api('claim-order',{email, session_id:sessionId});
+    orderId=d.order_id;
+    sessionStorage.setItem('roadmapOrderId', orderId);
+    showIntake();
+  }catch(e){
+    $('claimMsg').className='msg show err';
+    $('claimMsg').textContent=e.message||'Could not confirm payment. If you just completed checkout, wait a moment and try again.';
+    $('claimBtn').disabled=false; $('claimBtn').textContent='Continue';
+  }
+});
+$('claimEmail').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); $('claimBtn').click(); } });
+
+$('intakeForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const btn=$('submitBtn'), msg=$('intakeMsg');
+  const growthObjectives=[...document.querySelectorAll('.growth-obj:checked')].map(x=>x.value);
+  const payload={
+    order_id: orderId,
+    business_name: $('business_name').value.trim(),
+    website: $('website').value.trim(),
+    headquarters: $('headquarters').value.trim(),
+    service_area: $('service_area').value.trim(),
+    years_in_operation: $('years_in_operation').value.trim(),
+    team_size: $('team_size').value.trim(),
+    primary_services: $('primary_services').value.trim(),
+    secondary_services: $('secondary_services').value.trim(),
+    naics_codes: $('naics_codes').value.split(',').map(s=>s.trim()).filter(Boolean),
+    certifications: $('certifications').value.split(',').map(s=>s.trim()).filter(Boolean),
+    typical_customer_types: $('typical_customer_types').value.trim(),
+    typical_job_value: $('typical_job_value').value.trim(),
+    growth_objectives: growthObjectives,
+    growth_objective_other: $('growth_objective_other').value.trim(),
+    current_lead_sources: $('current_lead_sources').value.trim(),
+    current_marketing_channels: $('current_marketing_channels').value.trim(),
+    current_outreach_activity: $('current_outreach_activity').value.trim(),
+    current_sales_process: $('current_sales_process').value.trim(),
+    crm_tracking_method: $('crm_tracking_method').value.trim(),
+    sales_response_process: $('sales_response_process').value.trim(),
+    known_competitors: $('known_competitors').value.trim(),
+    main_growth_obstacle: $('main_growth_obstacle').value.trim(),
+    capacity_limitations: $('capacity_limitations').value.trim(),
+    geographic_limitations: $('geographic_limitations').value.trim(),
+    desired_90_day_result: $('desired_90_day_result').value.trim(),
+    additional_context: $('additional_context').value.trim()
+  };
+  if(!payload.primary_services||!payload.service_area||!growthObjectives.length){
+    msg.className='msg show err';
+    msg.textContent='Please complete primary services, service area, and at least one growth objective.';
+    return;
+  }
+  btn.disabled=true; btn.textContent='SUBMITTING…';
+  msg.className='msg show'; msg.textContent='Submitting…';
+  try{
+    await api('intake', payload);
+    msg.className='msg show ok';
+    msg.textContent='Intake received. Taking you to your Roadmap workspace…';
+    setTimeout(()=>{ location.assign('/roadmap-workspace?order_id='+encodeURIComponent(orderId)); }, 900);
+  }catch(e){
+    msg.className='msg show err';
+    msg.textContent=e.message||'Could not submit intake.';
+    btn.disabled=false; btn.textContent='Submit Intake';
+  }
+});
+})();
+</script>
+</body></html>

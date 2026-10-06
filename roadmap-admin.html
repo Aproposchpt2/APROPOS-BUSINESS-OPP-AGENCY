@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Roadmap Operator | Internal</title>
+<style>
+body{margin:0;background:#0A1A3A;color:#f0f6ff;font-family:Arial,Helvetica,sans-serif;font-size:14px}
+.wrap{max-width:1100px;margin:auto;padding:26px 20px 80px}
+h1{font-size:1.4rem;margin:0 0 4px}h2{font-size:1.15rem;margin:22px 0 10px;color:#ead9a5}
+.gate{max-width:380px;margin:80px auto;background:#0f2244;border:1px solid rgba(199,167,90,.25);border-radius:12px;padding:26px}
+.gate input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;margin-bottom:12px;font-size:.9rem}
+button,.gate button{padding:9px 16px;border:1px solid #c7a75a;border-radius:8px;background:linear-gradient(135deg,#c7a75a,#ead9a5);color:#0A1A3A;font-weight:700;cursor:pointer;font-size:.78rem}
+button.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.25)}
+button.danger{background:#d64545;border-color:#d64545;color:#fff}
+button:disabled{opacity:.5;cursor:wait}
+.row{background:#0f2244;border:1px solid rgba(199,167,90,.15);border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer}
+.row:hover{border-color:rgba(199,167,90,.4)}
+.row-top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.biz{font-weight:700}.meta{font-size:.72rem;color:#8facd0}
+.badge{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgba(199,167,90,.18);color:#ead9a5}
+.badge.APPROVED,.badge.DELIVERED{background:rgba(46,204,138,.18);color:#2ecc8a}
+.badge.REVISION_REQUIRED{background:rgba(214,69,69,.2);color:#ff9393}
+.panel{background:#0f2244;border:1px solid rgba(199,167,90,.15);border-radius:12px;padding:18px 20px;margin-bottom:16px}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:#8facd0;margin-bottom:5px}
+input,textarea,select{width:100%;padding:9px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:.86rem}
+textarea{min-height:60px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.1);font-size:.78rem;vertical-align:top}
+th{color:#8facd0;text-transform:uppercase;font-size:.62rem;letter-spacing:.06em}
+.hidden{display:none!important}
+.msg{margin-top:10px;font-size:.8rem;color:#8facd0}
+.msg.err{color:#ff9393}
+.backlink{color:#c7a75a;cursor:pointer;font-size:.8rem}
+.item-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:start;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <input id="keyInput" type="password" placeholder="Operator key">
+  <button onclick="App.connect()">Connect</button>
+</div>
+<div class="wrap hidden" id="wrap">
+  <div id="listView">
+    <h1>Business Development Roadmap — Orders</h1>
+    <p class="meta">Internal operator view.</p>
+    <div id="orderList"></div>
+  </div>
+  <div id="detailView" class="hidden"></div>
+</div>
+<script>
+'use strict';
+const App = (() => {
+  let KEY = '';
+  let current = null;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt = iso => { if(!iso) return '—'; const d = new Date(iso); return isNaN(d.getTime()) ? iso : d.toLocaleString(); };
+
+  async function api(action, { method = 'GET', body, params = {} } = {}) {
+    const qs = new URLSearchParams({ action, key: KEY, ...params });
+    const r = await fetch('/api/roadmap?' + qs.toString(), {
+      method, headers: body ? { 'content-type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.ok) throw new Error(d.error || ('HTTP ' + r.status));
+    return d;
+  }
+
+  async function connect() {
+    KEY = $('keyInput').value.trim();
+    if (!KEY) return;
+    try {
+      await loadList();
+      $('gate').classList.add('hidden');
+      $('wrap').classList.remove('hidden');
+    } catch (e) { alert(e.message || 'Not authorized.'); }
+  }
+
+  async function loadList() {
+    const d = await api('admin-list');
+    const rows = d.orders || [];
+    $('orderList').innerHTML = rows.length ? rows.map(o => `
+      <div class="row" onclick="App.openOrder('${o.id}')">
+        <div class="row-top">
+          <span class="biz">${esc(o.business_name)}</span>
+          <span class="badge ${esc(o.roadmap_status)}">${esc(o.roadmap_status)}</span>
+        </div>
+        <div class="meta">${esc(o.email)} · purchased ${fmt(o.created_at)}</div>
+      </div>`).join('') : '<p class="meta">No orders yet.</p>';
+  }
+
+  function backToList() {
+    $('detailView').classList.add('hidden');
+    $('listView').classList.remove('hidden');
+    loadList();
+  }
+
+  async function openOrder(orderId) {
+    const d = await api('admin-detail', { params: { order_id: orderId } });
+    current = d;
+    $('listView').classList.add('hidden');
+    $('detailView').classList.remove('hidden');
+    renderDetail(d);
+  }
+
+  const STATUSES = ['PURCHASED','INTAKE_PENDING','INTAKE_COMPLETE','RESEARCH','ANALYSIS','QA_REVIEW','REVISION_REQUIRED','APPROVED','DELIVERED','CLOSED'];
+  const LENSES = ['MARKET_FIT','BUYER_FIT','OFFER_FIT','POSITIONING','SALES_READINESS','EXECUTION_CAPACITY'];
+  const FINDING_TYPES = ['CUSTOMER_PROVIDED','VERIFIED_PUBLIC','ASSUMPTION','BODA_ANALYSIS','RECOMMENDATION'];
+  const PHASES = ['DO_NOW','DAYS_1_30','DAYS_31_60','DAYS_61_90'];
+
+  function profileBlock(p) {
+    if (!p) return '<p class="meta">No intake submitted yet.</p>';
+    const row = (label, val) => val ? `<div class="field"><label>${esc(label)}</label><div>${esc(val)}</div></div>` : '';
+    return `<div class="grid2">
+      ${row('Business', p.business_name)}${row('Website', p.website)}
+      ${row('HQ', p.headquarters)}${row('Service area', p.service_area)}
+      ${row('Primary services', p.primary_services)}${row('Secondary services', p.secondary_services)}
+      ${row('NAICS', (p.naics_codes||[]).join(', '))}${row('Certifications', (p.certifications||[]).join(', '))}
+      ${row('Growth objectives', (p.growth_objectives||[]).join(', '))}${row('Other objective', p.growth_objective_other)}
+      ${row('Lead sources', p.current_lead_sources)}${row('Marketing channels', p.current_marketing_channels)}
+      ${row('Sales process', p.current_sales_process)}${row('CRM', p.crm_tracking_method)}
+      ${row('Competitors', p.known_competitors)}${row('Main obstacle', p.main_growth_obstacle)}
+      ${row('Capacity limits', p.capacity_limitations)}${row('Geo limits', p.geographic_limitations)}
+      ${row('Desired 90-day result', p.desired_90_day_result)}${row('Additional context', p.additional_context)}
+    </div>`;
+  }
+
+  function researchBlock(rows) {
+    const list = (rows||[]).map(r => `
+      <div class="item-row">
+        <div><strong>${esc(r.finding_type)}</strong>${r.lens ? ' · ' + esc(r.lens) : ''}<br>${esc(r.summary)}</div>
+        <div class="meta">${r.source_url ? `<a href="${esc(r.source_url)}" target="_blank" style="color:#c7a75a">source</a><br>` : ''}${fmt(r.created_at)}</div>
+        <div></div>
+      </div>`).join('') || '<p class="meta">No research recorded yet.</p>';
+    return `${list}
+      <div class="grid3" style="margin-top:10px">
+        <select id="rFindingType">${FINDING_TYPES.map(f=>`<option value="${f}">${f}</option>`).join('')}</select>
+        <select id="rLens"><option value="">(no lens)</option>${LENSES.map(l=>`<option value="${l}">${l}</option>`).join('')}</select>
+        <input id="rSourceUrl" placeholder="Source URL (optional)">
+      </div>
+      <div class="field" style="margin-top:8px"><textarea id="rSummary" placeholder="Finding summary"></textarea></div>
+      <button class="ghost" onclick="App.addResearch()">Add Finding</button>`;
+  }
+
+  function prioritiesBlock(rows) {
+    const items = (rows && rows.length ? rows : [{}]).map((p,i) => `
+      <div class="item-row" data-idx="${i}">
+        <div><input class="p-type" placeholder="Opportunity type / market segment" value="${esc(p.opportunity_type||'')}">
+          <input class="p-buyer" placeholder="Target buyer type" value="${esc(p.target_buyer_type||'')}" style="margin-top:6px"></div>
+        <div><textarea class="p-rationale" placeholder="Rationale">${esc(p.rationale||'')}</textarea></div>
+        <div><input class="p-rank" type="number" placeholder="Rank" value="${p.priority_rank??''}" style="width:70px">
+          <label style="display:block;margin-top:6px"><input type="checkbox" class="p-approved" ${p.status==='APPROVED'?'checked':''}> Approved</label></div>
+      </div>`).join('');
+    return `<div id="prioritiesItems">${items}</div>
+      <button class="ghost" onclick="App.addPriorityRow()">+ Add Priority</button>
+      <button onclick="App.savePriorities()">Save Priorities</button>`;
+  }
+
+  function actionsBlock(rows) {
+    const items = (rows && rows.length ? rows : [{}]).map((a,i) => `
+      <div class="item-row" data-idx="${i}">
+        <div><select class="a-phase">${PHASES.map(ph=>`<option value="${ph}" ${a.phase===ph?'selected':''}>${ph}</option>`).join('')}</select>
+          <input class="a-action" placeholder="Action" value="${esc(a.action||'')}" style="margin-top:6px"></div>
+        <div><input class="a-result" placeholder="Expected result" value="${esc(a.expected_result||'')}"></div>
+        <div><input class="a-owner" placeholder="Owner" value="${esc(a.owner||'')}" style="width:100px"></div>
+      </div>`).join('');
+    return `<div id="actionsItems">${items}</div>
+      <button class="ghost" onclick="App.addActionRow()">+ Add Action</button>
+      <button onclick="App.saveActions()">Save 90-Day Actions</button>`;
+  }
+
+  function kpisBlock(k) {
+    k = k || {};
+    const f = (id,label,val) => `<div class="field"><label>${label}</label><input id="${id}" type="number" value="${val??''}"></div>`;
+    return `<div class="grid3">
+      ${f('kTarget','Target Accounts',k.target_accounts)}
+      ${f('kContacts','Contacts Reached',k.contacts_reached)}
+      ${f('kResponses','Responses',k.responses)}
+      ${f('kQualified','Qualified Opportunities',k.qualified_opportunities)}
+      ${f('kMeetings','Meetings',k.meetings)}
+      ${f('kProposals','Proposals/Quotes',k.proposals_quotes)}
+      </div>
+      <button onclick="App.saveKpis()">Save KPI Targets</button>`;
+  }
+
+  function blueprintBlock(b) {
+    b = b || {};
+    const f = (id,label,val,isTa) => `<div class="field"><label>${label}</label>${isTa?`<textarea id="${id}">${esc(val||'')}</textarea>`:`<input id="${id}" value="${esc(val||'')}">`}</div>`;
+    return `<div class="grid2">
+      ${f('bSegment','Target segment',b.target_segment)}
+      ${f('bCriteria','Target account criteria',b.target_account_criteria)}
+      ${f('bRoles','Buyer roles',b.buyer_roles)}
+      ${f('bOffer','Offer',b.offer)}
+      ${f('bValueProp','Value proposition',b.value_proposition,true)}
+      ${f('bMessage','Message theme',b.message_theme,true)}
+      ${f('bCta','CTA',b.cta)}
+      ${f('bChannel','Recommended channel',b.recommended_channel)}
+      ${f('bCadence','Cadence',b.cadence)}
+      ${f('bVolume','Campaign volume assumption',b.campaign_volume_assumption)}
+      </div>
+      <label style="display:block;margin:8px 0"><input type="checkbox" id="bApproved" ${b.status==='APPROVED'?'checked':''}> Approved</label>
+      <button onclick="App.saveBlueprint()">Save Campaign Blueprint</button>`;
+  }
+
+  function renderDetail(d) {
+    const o = d.order;
+    $('detailView').innerHTML = `
+      <div class="backlink" onclick="App.backToList()">&larr; All orders</div>
+      <h1>${esc(o.business_name)}</h1>
+      <p class="meta">${esc(o.email)} · ${esc(o.source||'direct')} · purchased ${fmt(o.created_at)}</p>
+      <div class="panel">
+        <div class="field"><label>Roadmap Status</label>
+          <select id="statusSelect">${STATUSES.map(s=>`<option value="${s}" ${s===o.roadmap_status?'selected':''}>${s}</option>`).join('')}</select>
+        </div>
+        <button onclick="App.updateStatus()">Update Status</button>
+        <button onclick="App.approve()">Approve</button>
+        <button class="ghost" onclick="App.deliver()">Mark Delivered</button>
+        <div id="statusMsg" class="msg"></div>
+      </div>
+      <h2>Business Profile (Intake)</h2>
+      <div class="panel">${profileBlock(d.profile)}</div>
+      <h2>Research &amp; Six-Lens Findings</h2>
+      <div class="panel">${researchBlock(d.research)}</div>
+      <h2>Growth Priorities</h2>
+      <div class="panel">${prioritiesBlock(d.priorities)}</div>
+      <h2>90-Day Action Plan</h2>
+      <div class="panel">${actionsBlock(d.actions)}</div>
+      <h2>KPI Targets</h2>
+      <div class="panel">${kpisBlock(d.kpis)}</div>
+      <h2>Marketing Engine Campaign Blueprint</h2>
+      <div class="panel">${blueprintBlock(d.campaign_blueprint)}</div>
+    `;
+  }
+
+  function addPriorityRow() {
+    $('prioritiesItems').insertAdjacentHTML('beforeend', `
+      <div class="item-row">
+        <div><input class="p-type" placeholder="Opportunity type / market segment">
+          <input class="p-buyer" placeholder="Target buyer type" style="margin-top:6px"></div>
+        <div><textarea class="p-rationale" placeholder="Rationale"></textarea></div>
+        <div><input class="p-rank" type="number" placeholder="Rank" style="width:70px">
+          <label style="display:block;margin-top:6px"><input type="checkbox" class="p-approved"> Approved</label></div>
+      </div>`);
+  }
+  function addActionRow() {
+    $('actionsItems').insertAdjacentHTML('beforeend', `
+      <div class="item-row">
+        <div><select class="a-phase">${PHASES.map(ph=>`<option value="${ph}">${ph}</option>`).join('')}</select>
+          <input class="a-action" placeholder="Action" style="margin-top:6px"></div>
+        <div><input class="a-result" placeholder="Expected result"></div>
+        <div><input class="a-owner" placeholder="Owner" style="width:100px"></div>
+      </div>`);
+  }
+
+  async function addResearch() {
+    const summary = $('rSummary').value.trim();
+    if (!summary) return;
+    await api('admin-add-research', { method: 'POST', body: {
+      order_id: current.order.id, finding_type: $('rFindingType').value, lens: $('rLens').value || null,
+      summary, source_url: $('rSourceUrl').value.trim()
+    }});
+    openOrder(current.order.id);
+  }
+
+  async function savePriorities() {
+    const rows = [...document.querySelectorAll('#prioritiesItems .item-row')].map(row => ({
+      opportunity_type: row.querySelector('.p-type').value.trim(),
+      target_buyer_type: row.querySelector('.p-buyer').value.trim(),
+      rationale: row.querySelector('.p-rationale').value.trim(),
+      priority_rank: row.querySelector('.p-rank').value ? Number(row.querySelector('.p-rank').value) : null,
+      status: row.querySelector('.p-approved').checked ? 'APPROVED' : 'DRAFT'
+    })).filter(r => r.opportunity_type || r.rationale);
+    await api('admin-save-priorities', { method: 'POST', body: { order_id: current.order.id, priorities: rows } });
+    openOrder(current.order.id);
+  }
+
+  async function saveActions() {
+    const rows = [...document.querySelectorAll('#actionsItems .item-row')].map(row => ({
+      phase: row.querySelector('.a-phase').value,
+      action: row.querySelector('.a-action').value.trim(),
+      expected_result: row.querySelector('.a-result').value.trim(),
+      owner: row.querySelector('.a-owner').value.trim()
+    })).filter(r => r.action);
+    await api('admin-save-actions', { method: 'POST', body: { order_id: current.order.id, actions: rows } });
+    openOrder(current.order.id);
+  }
+
+  async function saveKpis() {
+    const n = id => $(id).value ? Number($(id).value) : null;
+    await api('admin-save-kpis', { method: 'POST', body: {
+      order_id: current.order.id, target_accounts: n('kTarget'), contacts_reached: n('kContacts'),
+      responses: n('kResponses'), qualified_opportunities: n('kQualified'), meetings: n('kMeetings'),
+      proposals_quotes: n('kProposals')
+    }});
+    openOrder(current.order.id);
+  }
+
+  async function saveBlueprint() {
+    await api('admin-save-blueprint', { method: 'POST', body: {
+      order_id: current.order.id, target_segment: $('bSegment').value.trim(), target_account_criteria: $('bCriteria').value.trim(),
+      buyer_roles: $('bRoles').value.trim(), offer: $('bOffer').value.trim(), value_proposition: $('bValueProp').value.trim(),
+      message_theme: $('bMessage').value.trim(), cta: $('bCta').value.trim(), recommended_channel: $('bChannel').value.trim(),
+      cadence: $('bCadence').value.trim(), campaign_volume_assumption: $('bVolume').value.trim(),
+      status: $('bApproved').checked ? 'APPROVED' : 'DRAFT'
+    }});
+    openOrder(current.order.id);
+  }
+
+  async function updateStatus() {
+    try {
+      await api('admin-update-status', { method: 'POST', body: { order_id: current.order.id, roadmap_status: $('statusSelect').value } });
+      openOrder(current.order.id);
+    } catch (e) { $('statusMsg').className = 'msg err'; $('statusMsg').textContent = e.message; }
+  }
+  async function approve() {
+    try {
+      await api('admin-approve', { method: 'POST', body: { order_id: current.order.id } });
+      openOrder(current.order.id);
+    } catch (e) { $('statusMsg').className = 'msg err'; $('statusMsg').textContent = e.message; }
+  }
+  async function deliver() {
+    try {
+      await api('admin-deliver', { method: 'POST', body: { order_id: current.order.id } });
+      openOrder(current.order.id);
+    } catch (e) { $('statusMsg').className = 'msg err'; $('statusMsg').textContent = e.message; }
+  }
+
+  return { connect, openOrder, backToList, addResearch, savePriorities, saveActions, saveKpis, saveBlueprint, updateStatus, approve, deliver, addPriorityRow, addActionRow };
+})();
+</script>
+</body>
+</html>
