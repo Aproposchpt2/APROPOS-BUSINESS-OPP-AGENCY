@@ -223,7 +223,7 @@ async function checkEntitlement(email) {
   }
 }
 
-export async function db(table, method = 'GET', query = '', body, prefer = '') {
+async function db(table, method = 'GET', query = '', body, prefer = '') {
   const { url, key } = dbConfig();
   const r = await fetch(`${url}/rest/v1/${table}${query}`, {
     method,
@@ -352,7 +352,7 @@ async function profileSeed(businessName, claimantEmail) {
   return seed;
 }
 
-export async function findOrCreateProfile({ businessName, claimId, claimantEmail, publishOnCreate = false, opportunity = null, contractorType = null }) {
+async function findOrCreateProfile({ businessName, claimId, claimantEmail, publishOnCreate = false, opportunity = null, contractorType = null }) {
   // PostgREST's or=() combinator can't handle a raw comma inside a filter
   // value (common in real business names, e.g. "Precision Grade, Inc."),
   // so this is two plain queries instead of one or=(...) query.
