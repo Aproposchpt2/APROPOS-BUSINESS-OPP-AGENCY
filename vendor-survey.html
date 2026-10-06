@@ -36,6 +36,16 @@ button{min-height:48px;padding:0 22px;border:1px solid var(--gold);background:li
 button:disabled{opacity:.55;cursor:wait}
 .status{margin-top:14px;padding:12px 14px;border-radius:8px;display:none;font-size:.84rem}
 .status.success{display:block;background:rgba(46,204,138,.12);color:#2ecc8a;border:1px solid rgba(46,204,138,.3)}
+.status a{color:#2ecc8a;font-weight:700;text-decoration:underline}
+.offers-eyebrow{margin:36px 0 4px}
+.offers-lead{color:var(--muted);max-width:640px;line-height:1.7;margin-bottom:18px;font-size:.88rem}
+.offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.offer{background:linear-gradient(135deg,var(--bg),var(--panel));border:1px solid var(--line2);border-radius:12px;padding:26px}
+.offer .badge{display:inline-block;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bg);background:var(--gold2);padding:4px 9px;border-radius:999px;margin-bottom:10px}
+.offer h3{font:400 1.3rem var(--disp);margin:0 0 10px;color:#fff}
+.offer p{color:var(--muted);line-height:1.65;font-size:.86rem;margin:0 0 10px}
+.offer .q{color:var(--gold2);font-style:italic;font-family:var(--serif);font-size:1rem;line-height:1.5;margin:0 0 10px}
+@media(max-width:640px){.offer-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -58,6 +68,23 @@ button:disabled{opacity:.55;cursor:wait}
     <div id="status" class="status" role="status" aria-live="polite"></div>
   </div>
 
+  <div class="eyebrow offers-eyebrow">Grow Beyond This Opportunity</div>
+  <p class="offers-lead">Your complimentary contract and free Vendor Card are the start. When you're ready to grow further, here's what the Business Opportunity Development Agency is building next.</p>
+  <div class="offer-grid">
+    <div class="offer">
+      <div class="badge">Pricing &amp; Build In Development</div>
+      <h3>Business Development Roadmap</h3>
+      <p class="q">Where should this business go to get more business, and what should it do next?</p>
+      <p>A one-time strategic engagement that turns your business's current position into a practical, prioritized 90-day growth plan -- target markets, buyer segments, positioning, outreach channels, and the actions to take first.</p>
+    </div>
+    <div class="offer">
+      <div class="badge">Pricing TBD</div>
+      <h3>Business Development Marketing Engine</h3>
+      <p class="q">Who will execute the growth plan and consistently put our business in front of the right buyers?</p>
+      <p>The Agency runs your approved outreach for you -- target-account research, campaign messaging, email outreach, follow-up, and reporting. The same outreach system already running across our own sites.</p>
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -78,10 +105,9 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
       body: JSON.stringify({ rating: rating || null, comment: document.getElementById('comment').value, action: 'survey_submit' })
     });
   } catch (e) { /* best-effort */ }
-  statusEl.textContent = 'Thank you for your feedback. Taking you to your Vendor Card…';
+  statusEl.innerHTML = 'Thank you for your feedback. <a href="/vendor-workspace">Edit your Vendor Card →</a>';
   statusEl.className = 'status success';
   btn.textContent = 'SUBMITTED';
-  setTimeout(() => { location.assign('/vendor-workspace'); }, 1100);
 });
 </script>
 </body>
