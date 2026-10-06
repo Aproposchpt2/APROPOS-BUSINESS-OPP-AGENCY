@@ -12,13 +12,12 @@
 // curates: both live in the same Supabase project
 // (pwvstaigtdrccirdvqka), so this is a direct read, not a sync/mirror.
 //
-// Access posture, revised 2026-10-05 (Jeff, free-access pivot): full
-// contract detail is part of claiming a free Vendor Card now, same as
-// NAT-CORP's own self-serve search -- there is no further paywall on
-// contract data itself. The revenue product is Funding Preparation, not
-// contract access. See fullOpportunity() below.
-
-import { createHash } from 'node:crypto';
+// Access posture, revised 2026-10-06 (Jeff): this search portal does not
+// require claiming a Vendor Card at all -- it's free and open, full stop.
+// Claiming is its own separate action (editing/owning a business's public
+// presence), not a precondition for searching contracts. See
+// fullOpportunity() below for the full-detail (non-paywalled) response
+// shape this already returns.
 
 const json = (body, status = 200, headers = {}) =>
   new Response(JSON.stringify(body), {
@@ -51,21 +50,6 @@ async function dbGet(table, query = '') {
     throw new Error(`Contract search service ${table} ${r.status}`);
   }
   return data;
-}
-
-function cookieToken(req) {
-  const raw = req.headers.get('cookie') || '';
-  const m = raw.match(/(?:^|;\s*)boda_vendor_session=([^;]+)/);
-  return m ? decodeURIComponent(m[1]) : '';
-}
-
-async function sessionOk(req) {
-  const raw = cookieToken(req);
-  if (!raw) return false;
-  const hash = createHash('sha256').update(raw).digest('hex');
-  const sessions = await dbGet('boda_vendor_sessions',
-    `?select=profile_id&token_hash=eq.${encodeURIComponent(hash)}&expires_at=gt.${encodeURIComponent(new Date().toISOString())}&limit=1`);
-  return Boolean(sessions?.length);
 }
 
 // ---- Shared dedupe/filter logic, ported unchanged from BDMS's
@@ -208,8 +192,6 @@ export default async function handler(req) {
   const action = url.searchParams.get('action');
 
   try {
-    if (!(await sessionOk(req))) return json({ ok: false, error: 'Session required.' }, 401);
-
     if (req.method === 'GET' && action === 'taxonomy') {
       const filters = parseNonTaxonomyFilters(url.searchParams);
       const [allAssignments, source] = await Promise.all([taxonomyAssignments(), distributionReadyRows()]);
