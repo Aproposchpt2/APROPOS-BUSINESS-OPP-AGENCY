@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Your Marketing Engine Campaign | Business Opportunity Development Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#081a31;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;--ink:#14233a;--muted:#657489;--line:#c9d9e5;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif;--green:#217a57}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#f8fbfd,#edf4f8);color:var(--ink);font-family:var(--sans)}
+a{text-decoration:none;color:inherit}.shell{width:min(900px,calc(100% - 32px));margin:auto;padding:40px 0 70px}
+h1,h2,h3{font-family:var(--serif);font-weight:500}
+.eyebrow{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#8c6e2a}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);color:var(--navy);margin:8px 0 10px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:20px;box-shadow:0 12px 34px rgba(8,26,49,.06)}
+.status-tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8c6e2a;background:rgba(199,167,90,.14);padding:4px 10px;border-radius:999px}
+.status-tag.active{color:var(--green);background:rgba(33,122,87,.1)}
+.section-title{font-family:var(--serif);font-size:1.3rem;color:var(--navy);margin:0 0 12px}
+.msg{color:var(--muted);line-height:1.7}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;background:#fbfdfe}
+.kpi b{display:block;font-family:var(--serif);font-size:1.5rem;color:var(--navy)}
+.kpi span{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.msgcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:10px;background:#fbfdfe}
+.msgcard b{display:block;color:var(--navy);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.opp{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:10px}
+.opp b{color:var(--navy)}
+.note-item{border-bottom:1px solid var(--line);padding:10px 0;font-size:.85rem;color:#3b4d63}
+.note-item:last-child{border-bottom:none}
+.btn{display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:0 20px;border-radius:9px;background:var(--navy);color:#fff;font-weight:700;font-size:.72rem;margin-top:14px;cursor:pointer;border:none}
+@media(max-width:700px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+</style></head>
+<body>
+<main class="shell">
+<div class="eyebrow">Business Opportunity Development Agency</div>
+<h1 id="pageTitle">Your Marketing Engine Campaign</h1>
+<div class="panel" id="statusPanel"><p class="msg">Loading your campaign status…</p></div>
+<div id="detailArea"></div>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const qs=new URLSearchParams(location.search);
+const accountId=qs.get('account_id')||sessionStorage.getItem('marketingEngineAccountId')||'';
+if(accountId) sessionStorage.setItem('marketingEngineAccountId', accountId);
+
+const STATUS_LABEL={SETUP:'Being Set Up',AWAITING_CUSTOMER_APPROVAL:'Awaiting Your Approval',APPROVED:'Approved',RESEARCH:'Researching Targets',READY_TO_LAUNCH:'Ready to Launch',ACTIVE:'Active',PAUSED:'Paused',OPTIMIZING:'Optimizing',COMPLETED:'Completed',CANCELLED:'Cancelled'};
+
+async function approve(campaignId){
+  const btn=$('approveBtn'); if(btn) btn.textContent='Approving…';
+  try{
+    const r=await fetch('/api/marketing-engine?action=approve-campaign',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({campaign_id:campaignId})});
+    const d=await r.json();
+    if(!r.ok||!d.ok) throw new Error(d.error||'Could not approve the campaign.');
+    load();
+  }catch(e){ if(btn){btn.textContent='Approve Campaign'; alert(e.message);} }
+}
+
+function renderCampaign(c, approvedMessages, kpis, opportunities, notes){
+  const statusCls = c.status==='ACTIVE' ? 'active' : '';
+  let approveBlock='';
+  if(c.status==='AWAITING_CUSTOMER_APPROVAL'){
+    approveBlock = `<div class="panel"><div class="section-title">Review &amp; Approve</div>
+      <p class="msg"><strong>Target:</strong> ${esc(c.target_segment||'—')}</p>
+      <p class="msg"><strong>Offer:</strong> ${esc(c.offer||'—')}</p>
+      <p class="msg"><strong>Call to action:</strong> ${esc(c.cta||'—')}</p>
+      <button class="btn" id="approveBtn" onclick="window.__approve('${c.id}')">Approve Campaign</button>
+    </div>`;
+  }
+  const messages = (approvedMessages||[]).map(m=>`<div class="msgcard"><b>${esc(m.message_type)}</b>${esc(m.subject||'')}<br><span style="color:var(--muted)">${esc((m.body||'').slice(0,220))}${(m.body||'').length>220?'…':''}</span></div>`).join('') || '<p class="msg">No approved messages yet.</p>';
+  const k=kpis||{};
+  const kpiBlock=`<div class="kpi-row">
+    <div class="kpi"><b>${k.outreach_sent??0}</b><span>Outreach Sent</span></div>
+    <div class="kpi"><b>${k.responses??0}</b><span>Responses</span></div>
+    <div class="kpi"><b>${k.qualified_opportunities??0}</b><span>Qualified Opps</span></div>
+    <div class="kpi"><b>${k.meetings??0}</b><span>Meetings</span></div>
+  </div>`;
+  const opps = (opportunities||[]).map(o=>`<div class="opp"><b>${esc(o.opportunity_type||'Opportunity')}</b><br><span style="color:var(--muted)">${esc(o.recommended_next_action||'')}</span></div>`).join('') || '<p class="msg">No opportunities handed off yet.</p>';
+  const noteItems=(notes||[]).map(n=>`<div class="note-item">${esc(n.observation||'')}</div>`).join('') || '<p class="msg">No updates yet.</p>';
+  return `
+  ${approveBlock}
+  <div class="panel"><div class="section-title">Campaign Status</div><span class="status-tag ${statusCls}">${esc(STATUS_LABEL[c.status]||c.status)}</span></div>
+  <div class="panel"><div class="section-title">Performance</div>${kpiBlock}</div>
+  <div class="panel"><div class="section-title">Your Approved Outreach</div>${messages}</div>
+  <div class="panel"><div class="section-title">Qualified Opportunities</div>${opps}</div>
+  <div class="panel"><div class="section-title">Campaign Updates</div>${noteItems}</div>
+  `;
+}
+
+window.__approve=approve;
+
+async function claim(){
+  const email=($('claimEmail')||{}).value||'';
+  const btn=$('claimBtn'); if(btn) btn.textContent='Checking…';
+  try{
+    const r=await fetch('/api/marketing-engine?action=claim-account',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email})});
+    const d=await r.json();
+    if(!r.ok||!d.ok) throw new Error(d.error||'Could not find an active subscription for that email.');
+    sessionStorage.setItem('marketingEngineAccountId', d.account_id);
+    await fetch('/api/marketing-engine?action=setup-campaign-from-roadmap',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({account_id:d.account_id})}).catch(()=>{});
+    location.href='/marketing-engine-workspace?account_id='+encodeURIComponent(d.account_id);
+  }catch(e){ if(btn){btn.textContent='Access My Campaign'; alert(e.message);} }
+}
+window.__claim=claim;
+
+async function load(){
+  if(!accountId){
+    $('statusPanel').innerHTML=`<p class="msg">Enter the email you subscribed with to access your campaign workspace.</p>
+      <input id="claimEmail" type="email" placeholder="you@yourbusiness.com" style="width:100%;max-width:340px;padding:12px 14px;border:1px solid var(--line);border-radius:9px;font-size:.9rem;margin-top:10px">
+      <br><button class="btn" id="claimBtn" onclick="window.__claim()">Access My Campaign</button>
+      <p class="msg" style="margin-top:14px">Haven't subscribed yet? Start from the <a href="/business-development-marketing-engine">Business Development Marketing Engine</a> page.</p>`;
+    return;
+  }
+  try{
+    const r=await fetch('/api/marketing-engine?action=workspace-status&account_id='+encodeURIComponent(accountId),{cache:'no-store'});
+    const d=await r.json();
+    if(!r.ok||!d.ok) throw new Error(d.error||'Could not load your campaign.');
+    $('pageTitle').textContent=d.account.business_name?`${d.account.business_name}'s Marketing Engine Campaign`:'Your Marketing Engine Campaign';
+    if(!d.campaign){
+      $('statusPanel').innerHTML='<p class="msg">Your account is confirmed. Your campaign is being set up from your approved Roadmap -- check back shortly.</p>';
+      $('detailArea').innerHTML='';
+      return;
+    }
+    $('statusPanel').innerHTML='<p class="msg">Live campaign status below.</p>';
+    $('detailArea').innerHTML=renderCampaign(d.campaign, d.approved_messages, d.kpis, d.qualified_opportunities, d.optimization_notes);
+  }catch(e){
+    $('statusPanel').innerHTML=`<p class="msg">${esc(e.message||'Could not load your campaign status.')}</p>`;
+  }
+}
+load();
+})();
+</script>
+</body></html>

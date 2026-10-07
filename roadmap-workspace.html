@@ -104,7 +104,7 @@ async function load(){
     $('pageTitle').textContent=d.order.business_name?`${d.order.business_name}'s Business Development Roadmap`:'Your Business Development Roadmap';
     let note='';
     if(d.order.roadmap_status==='INTAKE_PENDING') note=`<p class="msg">Your purchase is confirmed. <a href="/roadmap-intake">Complete your intake</a> to begin.</p>`;
-    else if(['DELIVERED','APPROVED'].includes(d.order.roadmap_status)) note=`<p class="msg">Your Roadmap is ready below. <a href="/opportunity-next-steps">See implementation options</a> when you're ready.</p>`;
+    else if(['DELIVERED','APPROVED'].includes(d.order.roadmap_status)) note=`<p class="msg">Your Roadmap is ready below. Ready to act on it? <a href="/business-development-marketing-engine">BODA can execute this Roadmap for you</a> through the Business Development Marketing Engine, or <a href="/opportunity-next-steps">see all implementation options</a>.</p>`;
     else note=`<p class="msg">Your Roadmap is in progress. BODA will notify you at ${esc(d.order.business_name?'':'')} when it's ready for review.</p>`;
     $('statusPanel').innerHTML=`<div class="steps">${renderSteps(d.order.roadmap_status)}</div>${note}`;
     $('deliverableArea').innerHTML=renderDeliverable(d.deliverable);

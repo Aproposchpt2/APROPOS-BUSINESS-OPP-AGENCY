@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Marketing Engine Operator | Internal</title>
+<style>
+body{margin:0;background:#0A1A3A;color:#f0f6ff;font-family:Arial,Helvetica,sans-serif;font-size:14px}
+.wrap{max-width:1150px;margin:auto;padding:26px 20px 80px}
+h1{font-size:1.4rem;margin:0 0 4px}h2{font-size:1.15rem;margin:22px 0 10px;color:#ead9a5}
+.gate{max-width:380px;margin:80px auto;background:#0f2244;border:1px solid rgba(199,167,90,.25);border-radius:12px;padding:26px}
+.gate input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;margin-bottom:12px;font-size:.9rem}
+button,.gate button{padding:9px 16px;border:1px solid #c7a75a;border-radius:8px;background:linear-gradient(135deg,#c7a75a,#ead9a5);color:#0A1A3A;font-weight:700;cursor:pointer;font-size:.78rem;margin:2px 4px 2px 0}
+button.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.25)}
+button.danger{background:#d64545;border-color:#d64545;color:#fff}
+button:disabled{opacity:.5;cursor:wait}
+.row{background:#0f2244;border:1px solid rgba(199,167,90,.15);border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer}
+.row:hover{border-color:rgba(199,167,90,.4)}
+.row-top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.biz{font-weight:700}.meta{font-size:.72rem;color:#8facd0}
+.badge{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgba(199,167,90,.18);color:#ead9a5}
+.badge.ACTIVE{background:rgba(46,204,138,.18);color:#2ecc8a}
+.badge.PAUSED,.badge.CANCELLED{background:rgba(214,69,69,.2);color:#ff9393}
+.panel{background:#0f2244;border:1px solid rgba(199,167,90,.15);border-radius:12px;padding:18px 20px;margin-bottom:16px}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:#8facd0;margin-bottom:5px}
+input,textarea,select{width:100%;padding:9px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:.86rem}
+textarea{min-height:60px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.1);font-size:.78rem;vertical-align:top}
+th{color:#8facd0;text-transform:uppercase;font-size:.62rem;letter-spacing:.06em}
+.hidden{display:none!important}
+.msg{margin-top:10px;font-size:.8rem;color:#8facd0}
+.msg.err{color:#ff9393}
+.backlink{color:#c7a75a;cursor:pointer;font-size:.8rem}
+.item-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:start;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}
+.pill{display:inline-block;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.08);margin-right:4px}
+.pill.VERIFIED{background:rgba(46,204,138,.18);color:#2ecc8a}
+.pill.UNVERIFIED{background:rgba(255,255,255,.1)}
+.pill.REJECTED,.pill.OPT_OUT{background:rgba(214,69,69,.2);color:#ff9393}
+.contact-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.inert-note{background:rgba(199,167,90,.1);border:1px solid rgba(199,167,90,.3);border-radius:8px;padding:10px 12px;font-size:.75rem;color:#ead9a5;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <input id="keyInput" type="password" placeholder="Operator key">
+  <button onclick="App.connect()">Connect</button>
+</div>
+<div class="wrap hidden" id="wrap">
+  <div id="listView">
+    <h1>Business Development Marketing Engine — Accounts</h1>
+    <p class="meta">Internal operator view.</p>
+    <div id="acctList"></div>
+  </div>
+  <div id="detailView" class="hidden"></div>
+</div>
+<script>
+'use strict';
+const App = (() => {
+  let KEY = '';
+  let current = null;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt = iso => { if(!iso) return '—'; const d = new Date(iso); return isNaN(d.getTime()) ? iso : d.toLocaleString(); };
+
+  async function api(action, { method = 'GET', body, params = {} } = {}) {
+    const qs = new URLSearchParams({ action, key: KEY, ...params });
+    const r = await fetch('/api/marketing-engine?' + qs.toString(), {
+      method, headers: body ? { 'content-type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.ok) throw new Error(d.error || ('HTTP ' + r.status));
+    return d;
+  }
+
+  async function connect() {
+    KEY = $('keyInput').value.trim();
+    if (!KEY) return;
+    try {
+      await loadList();
+      $('gate').classList.add('hidden');
+      $('wrap').classList.remove('hidden');
+    } catch (e) { alert(e.message || 'Not authorized.'); }
+  }
+
+  async function loadList() {
+    const d = await api('admin-list');
+    const rows = d.accounts || [];
+    $('acctList').innerHTML = rows.length ? rows.map(a => `
+      <div class="row" onclick="App.openAccount('${a.id}')">
+        <div class="row-top">
+          <span class="biz">${esc(a.business_name)}</span>
+          <span class="badge">${esc(a.subscription_status)}</span>
+        </div>
+        <div class="meta">${esc(a.contact_email)} · term ${fmt(a.campaign_term_start)} – ${fmt(a.campaign_term_end)}</div>
+      </div>`).join('') : '<p class="meta">No accounts yet.</p>';
+  }
+
+  function backToList() {
+    $('detailView').classList.add('hidden');
+    $('listView').classList.remove('hidden');
+    loadList();
+  }
+
+  async function openAccount(accountId) {
+    const d = await api('admin-detail', { params: { account_id: accountId } });
+    current = d;
+    $('listView').classList.add('hidden');
+    $('detailView').classList.remove('hidden');
+    renderDetail(d);
+  }
+
+  const CAMPAIGN_STATUSES = ['SETUP','AWAITING_CUSTOMER_APPROVAL','APPROVED','RESEARCH','READY_TO_LAUNCH','ACTIVE','PAUSED','OPTIMIZING','COMPLETED','CANCELLED'];
+  const MESSAGE_TYPES = ['INITIAL','FOLLOW_UP_1','FOLLOW_UP_2','FINAL_FOLLOW_UP'];
+  const RESPONSE_CLASSIFICATIONS = ['POSITIVE_INTEREST','FOLLOW_UP_LATER','REFERRAL','INFORMATION_REQUEST','NOT_INTERESTED','UNQUALIFIED','OPT_OUT','DELIVERY_FAILURE','OTHER'];
+
+  function specBlock(c) {
+    c = c || {};
+    const f = (id,label,val,isTa) => `<div class="field"><label>${label}</label>${isTa?`<textarea id="${id}">${esc(val||'')}</textarea>`:`<input id="${id}" value="${esc(val||'')}">`}</div>`;
+    return `<div class="grid2">
+      ${f('sSegment','Target segment',c.target_segment)}
+      ${f('sCriteria','Target account criteria',c.target_account_criteria,true)}
+      ${f('sRoles','Buyer roles',c.buyer_roles)}
+      ${f('sOffer','Offer',c.offer)}
+      ${f('sValueProp','Value proposition',c.value_proposition,true)}
+      ${f('sMessage','Message theme',c.message_theme,true)}
+      ${f('sCta','CTA',c.cta)}
+      ${f('sChannel','Primary channel',c.primary_channel)}
+      ${f('sCadence','Cadence',c.cadence)}
+      ${f('sCapacity','Monthly capacity',c.monthly_capacity)}
+      </div>
+      <button onclick="App.saveSpec(false)">Save Spec</button>
+      <button onclick="App.saveSpec(true)">Save &amp; Send for Customer Approval</button>`;
+  }
+
+  function statusControls(c) {
+    return `<div class="field"><label>Campaign Status</label>
+        <select id="statusSelect">${CAMPAIGN_STATUSES.map(s=>`<option value="${s}" ${s===c.status?'selected':''}>${s}</option>`).join('')}</select>
+      </div>
+      <button onclick="App.updateCampaignStatus()">Update Status</button>
+      <button class="ghost" onclick="App.setStatusTo('PAUSED')">Pause</button>
+      <button class="ghost" onclick="App.setStatusTo('ACTIVE')">Resume / Activate</button>
+      <div id="statusMsg" class="msg"></div>`;
+  }
+
+  function targetsBlock(rows) {
+    const list = (rows||[]).map(t => `
+      <div class="contact-row">
+        <strong>${esc(t.business_name)}</strong>
+        <span class="pill ${esc(t.verification_status)}">${esc(t.verification_status)}</span>
+        <span class="meta">${esc(t.industry||'')} ${esc(t.geography||'')}</span>
+        <span class="meta" data-id="${t.id}">id: ${t.id.slice(0,8)}</span>
+      </div>`).join('') || '<p class="meta">No target accounts yet.</p>';
+    return `${list}
+      <div class="grid3" style="margin-top:10px">
+        <input id="tBusiness" placeholder="Business name">
+        <input id="tIndustry" placeholder="Industry">
+        <input id="tGeography" placeholder="Geography">
+      </div>
+      <div class="grid2" style="margin-top:6px">
+        <input id="tSourceUrl" placeholder="Source URL (evidence)">
+        <input id="tQualBasis" placeholder="Qualification basis">
+      </div>
+      <button class="ghost" onclick="App.addTarget()">+ Add Target Account</button>`;
+  }
+
+  function contactsBlock(rows, targets) {
+    const targetOpts = (targets||[]).map(t=>`<option value="${t.id}">${esc(t.business_name)}</option>`).join('');
+    const list = (rows||[]).map(c => `
+      <div class="contact-row">
+        <strong>${esc(c.contact_name||c.email)}</strong>
+        <span class="meta">${esc(c.email)}</span>
+        <span class="pill ${esc(c.verification_status)}">${esc(c.verification_status)}</span>
+        ${c.do_not_contact?'<span class="pill OPT_OUT">DO NOT CONTACT</span>':''}
+        ${c.outreach_eligible?'<span class="pill VERIFIED">ELIGIBLE</span>':''}
+        <label style="font-size:.7rem;margin-left:auto"><input type="checkbox" data-contact-id="${c.id}" class="elig-toggle" ${c.outreach_eligible?'checked':''} ${c.verification_status!=='VERIFIED'||c.do_not_contact?'disabled':''}> eligible</label>
+      </div>`).join('') || '<p class="meta">No contacts yet.</p>';
+    return `${list}
+      <div class="grid3" style="margin-top:10px">
+        <select id="cTargetAccount">${targetOpts}</select>
+        <input id="cName" placeholder="Contact name">
+        <input id="cTitle" placeholder="Title / buyer role">
+      </div>
+      <div class="grid3" style="margin-top:6px">
+        <input id="cEmail" placeholder="Email">
+        <input id="cSourceUrl" placeholder="Source URL (required to mark VERIFIED)">
+        <label style="display:flex;align-items:center;gap:6px;font-size:.78rem"><input type="checkbox" id="cVerified"> Mark VERIFIED</label>
+      </div>
+      <button class="ghost" onclick="App.addContact()">+ Add Contact</button>
+      <button onclick="App.applyEligibility()">Apply Eligibility Changes</button>`;
+  }
+
+  function messagesBlock(rows) {
+    const list = (rows||[]).map(m => `
+      <div class="item-row">
+        <div><strong>${esc(m.message_type)}</strong> v${m.version}${m.active?' <span class="pill VERIFIED">ACTIVE</span>':''}<br><span class="meta">${esc(m.approval_status)}</span></div>
+        <div>${esc((m.body||'').slice(0,160))}</div>
+        <div class="meta">${fmt(m.created_at)}</div>
+      </div>`).join('') || '<p class="meta">No messages yet.</p>';
+    return `${list}
+      <div class="grid2" style="margin-top:10px">
+        <select id="mType">${MESSAGE_TYPES.map(t=>`<option value="${t}">${t}</option>`).join('')}</select>
+        <input id="mSubject" placeholder="Subject line">
+      </div>
+      <div class="field" style="margin-top:6px"><textarea id="mBody" placeholder="Message body"></textarea></div>
+      <input id="mCta" placeholder="Call to action" style="margin-top:6px">
+      <label style="display:block;margin:8px 0"><input type="checkbox" id="mApproved"> Approved</label>
+      <label style="display:block;margin:8px 0"><input type="checkbox" id="mActive"> Active (replaces current active message of this type)</label>
+      <button onclick="App.saveMessage()">Save Message</button>`;
+  }
+
+  function outreachBlock(rows, contacts, messages) {
+    const eligible = (contacts||[]).filter(c => c.verification_status==='VERIFIED' && c.outreach_eligible && !c.do_not_contact);
+    const contactOpts = eligible.map(c=>`<label style="display:block;font-size:.78rem"><input type="checkbox" class="queue-contact" value="${c.id}"> ${esc(c.contact_name||c.email)}</label>`).join('') || '<p class="meta">No eligible contacts yet.</p>';
+    const messageOpts = (messages||[]).filter(m=>m.approval_status==='APPROVED'&&m.active).map(m=>`<option value="${m.id}">${esc(m.message_type)} v${m.version}</option>`).join('') || '<option value="">No approved active messages</option>';
+    const events = (rows||[]).slice(0,30).map(e => `<tr><td>${fmt(e.scheduled_at)}</td><td>${esc(e.status)}</td><td>${e.response_detected?'yes':'—'}</td></tr>`).join('') || '<tr><td colspan="3">No outreach events yet.</td></tr>';
+    return `<div class="inert-note">Sending is inert in this build: queuing writes a READY_TO_SEND event but does not call an email provider. Real sending requires sender-domain (SPF/DKIM/DMARC) setup, confirmed separately.</div>
+      <div class="field"><label>Approved message</label><select id="qMessage">${messageOpts}</select></div>
+      <div class="field"><label>Eligible contacts</label>${contactOpts}</div>
+      <button onclick="App.queueOutreach()">Queue Outreach (READY_TO_SEND)</button>
+      <table><thead><tr><th>Scheduled</th><th>Status</th><th>Response?</th></tr></thead><tbody>${events}</tbody></table>`;
+  }
+
+  function responsesBlock(rows) {
+    const list = (rows||[]).map(r => `<tr><td>${fmt(r.received_at)}</td><td>${esc(r.classification)}</td><td>${esc((r.response_text||'').slice(0,80))}</td><td>${r.operator_reviewed?'yes':'no'}</td></tr>`).join('') || '<tr><td colspan="4">No responses yet.</td></tr>';
+    return `<table><thead><tr><th>Received</th><th>Classification</th><th>Text</th><th>Reviewed</th></tr></thead><tbody>${list}</tbody></table>
+      <div class="grid3" style="margin-top:10px">
+        <input id="rOutreachEventId" placeholder="Outreach event ID">
+        <select id="rClassification">${RESPONSE_CLASSIFICATIONS.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
+        <input id="rNextAction" placeholder="Next action">
+      </div>
+      <div class="field" style="margin-top:6px"><textarea id="rText" placeholder="Response text"></textarea></div>
+      <button class="ghost" onclick="App.addResponse()">Log Response</button>`;
+  }
+
+  function opportunitiesBlock(rows) {
+    const list = (rows||[]).map(o => `
+      <div class="item-row">
+        <div><strong>${esc(o.opportunity_type||'Opportunity')}</strong><br><span class="meta">${esc(o.qualification_status)} · ${esc(o.handoff_status)}</span></div>
+        <div>${esc(o.recommended_next_action||'')}</div>
+        <div>${o.handoff_status!=='HANDED_OFF'?`<button class="ghost" onclick="App.handoff('${o.id}')">Hand Off</button>`:'<span class="meta">Handed off ' + fmt(o.handoff_at) + '</span>'}</div>
+      </div>`).join('') || '<p class="meta">No opportunities yet.</p>';
+    return `${list}
+      <div class="grid3" style="margin-top:10px">
+        <input id="oContactId" placeholder="Contact ID">
+        <input id="oType" placeholder="Opportunity type">
+        <input id="oNextAction" placeholder="Recommended next action">
+      </div>
+      <div class="field" style="margin-top:6px"><textarea id="oBasis" placeholder="Qualification basis"></textarea></div>
+      <button class="ghost" onclick="App.addOpportunity()">+ Create Opportunity</button>`;
+  }
+
+  function kpiBlock(snapshots) {
+    const list = (snapshots||[]).map(k => `<tr><td>${fmt(k.snapshot_date)}</td><td>${k.outreach_sent??0}</td><td>${k.responses??0}</td><td>${k.qualified_opportunities??0}</td><td>${k.meetings??0}</td><td>${k.closed_sales??0}</td></tr>`).join('') || '<tr><td colspan="6">No snapshots yet.</td></tr>';
+    return `<table><thead><tr><th>Date</th><th>Sent</th><th>Responses</th><th>Qualified</th><th>Meetings</th><th>Closed</th></tr></thead><tbody>${list}</tbody></table>
+      <input id="kAttributedRevenue" placeholder="Attributed revenue (optional)" type="number" style="margin-top:10px;max-width:260px">
+      <button class="ghost" onclick="App.recordKpiSnapshot()">Record Snapshot Now (auto-computed)</button>`;
+  }
+
+  function optimizationBlock(rows) {
+    const list = (rows||[]).map(o => `<tr><td>${fmt(o.effective_at)}</td><td>${esc(o.variable_changed||'')}</td><td>${esc(o.reason||'')}</td><td>${o.customer_visible?'yes':'no'}</td></tr>`).join('') || '<tr><td colspan="4">No entries yet.</td></tr>';
+    return `<table><thead><tr><th>Date</th><th>Changed</th><th>Reason</th><th>Customer visible</th></tr></thead><tbody>${list}</tbody></table>
+      <div class="field" style="margin-top:10px"><textarea id="optObservation" placeholder="Observation"></textarea></div>
+      <div class="grid3">
+        <input id="optVariable" placeholder="Variable changed">
+        <input id="optOld" placeholder="Old value">
+        <input id="optNew" placeholder="New value">
+      </div>
+      <input id="optReason" placeholder="Reason" style="margin-top:6px">
+      <label style="display:block;margin:8px 0"><input type="checkbox" id="optVisible"> Customer-visible</label>
+      <button class="ghost" onclick="App.logOptimization()">Log Optimization</button>`;
+  }
+
+  function renderDetail(d) {
+    const a = d.account;
+    const c = d.campaign;
+    if (!c) {
+      $('detailView').innerHTML = `
+        <div class="backlink" onclick="App.backToList()">&larr; All accounts</div>
+        <h1>${esc(a.business_name)}</h1>
+        <p class="meta">${esc(a.contact_email)}</p>
+        <div class="panel"><p class="meta">No campaign yet. The customer must claim their account and trigger campaign setup from the workspace, or it will be created from their approved Roadmap automatically.</p></div>`;
+      return;
+    }
+    $('detailView').innerHTML = `
+      <div class="backlink" onclick="App.backToList()">&larr; All accounts</div>
+      <h1>${esc(a.business_name)}</h1>
+      <p class="meta">${esc(a.contact_email)} · campaign <span class="badge ${esc(c.status)}">${esc(c.status)}</span></p>
+      <div class="panel">${statusControls(c)}</div>
+      <h2>Campaign Spec</h2>
+      <div class="panel">${specBlock(c)}</div>
+      <h2>Target Accounts</h2>
+      <div class="panel">${targetsBlock(d.targets)}</div>
+      <h2>Contacts</h2>
+      <div class="panel">${contactsBlock(d.contacts, d.targets)}</div>
+      <h2>Outreach Messages</h2>
+      <div class="panel">${messagesBlock(d.messages)}</div>
+      <h2>Outreach Queue</h2>
+      <div class="panel">${outreachBlock(d.outreach, d.contacts, d.messages)}</div>
+      <h2>Responses</h2>
+      <div class="panel">${responsesBlock(d.responses)}</div>
+      <h2>Opportunities &amp; Handoff</h2>
+      <div class="panel">${opportunitiesBlock(d.opportunities)}</div>
+      <h2>KPI Snapshots</h2>
+      <div class="panel">${kpiBlock(d.kpi_snapshots)}</div>
+      <h2>Optimization Log</h2>
+      <div class="panel">${optimizationBlock(d.optimization_log)}</div>
+    `;
+  }
+
+  async function saveSpec(sendForApproval) {
+    await api('admin-set-campaign-spec', { method: 'POST', body: {
+      campaign_id: current.campaign.id, target_segment: $('sSegment').value.trim(), target_account_criteria: $('sCriteria').value.trim(),
+      buyer_roles: $('sRoles').value.trim(), offer: $('sOffer').value.trim(), value_proposition: $('sValueProp').value.trim(),
+      message_theme: $('sMessage').value.trim(), cta: $('sCta').value.trim(), primary_channel: $('sChannel').value.trim(),
+      cadence: $('sCadence').value.trim(), monthly_capacity: $('sCapacity').value ? Number($('sCapacity').value) : null,
+      send_for_approval: sendForApproval
+    }});
+    openAccount(current.account.id);
+  }
+
+  async function updateCampaignStatus() {
+    try {
+      await api('admin-update-campaign-status', { method: 'POST', body: { campaign_id: current.campaign.id, status: $('statusSelect').value } });
+      openAccount(current.account.id);
+    } catch (e) { $('statusMsg').className = 'msg err'; $('statusMsg').textContent = e.message; }
+  }
+  async function setStatusTo(status) {
+    try {
+      await api('admin-update-campaign-status', { method: 'POST', body: { campaign_id: current.campaign.id, status } });
+      openAccount(current.account.id);
+    } catch (e) { $('statusMsg').className = 'msg err'; $('statusMsg').textContent = e.message; }
+  }
+
+  async function addTarget() {
+    const business_name = $('tBusiness').value.trim();
+    if (!business_name) return;
+    await api('admin-add-target-account', { method: 'POST', body: {
+      campaign_id: current.campaign.id, business_name, industry: $('tIndustry').value.trim(),
+      geography: $('tGeography').value.trim(), source_url: $('tSourceUrl').value.trim(), qualification_basis: $('tQualBasis').value.trim()
+    }});
+    openAccount(current.account.id);
+  }
+
+  async function addContact() {
+    const email = $('cEmail').value.trim();
+    const target_account_id = $('cTargetAccount').value;
+    if (!email || !target_account_id) return;
+    await api('admin-add-contact', { method: 'POST', body: {
+      campaign_id: current.campaign.id, target_account_id, contact_name: $('cName').value.trim(),
+      title: $('cTitle').value.trim(), email, source_url: $('cSourceUrl').value.trim(),
+      verification_status: $('cVerified').checked ? 'VERIFIED' : 'UNVERIFIED'
+    }});
+    openAccount(current.account.id);
+  }
+
+  async function applyEligibility() {
+    const toggles = [...document.querySelectorAll('.elig-toggle')];
+    for (const t of toggles) {
+      await api('admin-update-contact', { method: 'POST', body: { contact_id: t.dataset.contactId, outreach_eligible: t.checked } });
+    }
+    openAccount(current.account.id);
+  }
+
+  async function saveMessage() {
+    const body = $('mBody').value.trim();
+    if (!body) return;
+    await api('admin-save-message', { method: 'POST', body: {
+      campaign_id: current.campaign.id, message_type: $('mType').value, subject: $('mSubject').value.trim(),
+      body, cta: $('mCta').value.trim(), approval_status: $('mApproved').checked ? 'APPROVED' : 'DRAFT', active: $('mActive').checked
+    }});
+    openAccount(current.account.id);
+  }
+
+  async function queueOutreach() {
+    const contact_ids = [...document.querySelectorAll('.queue-contact:checked')].map(c => c.value);
+    const message_id = $('qMessage').value;
+    if (!message_id || !contact_ids.length) return;
+    await api('admin-queue-outreach', { method: 'POST', body: { campaign_id: current.campaign.id, message_id, contact_ids } });
+    openAccount(current.account.id);
+  }
+
+  async function addResponse() {
+    const outreach_event_id = $('rOutreachEventId').value.trim();
+    if (!outreach_event_id) return;
+    await api('admin-add-response', { method: 'POST', body: {
+      outreach_event_id, classification: $('rClassification').value, response_text: $('rText').value.trim(), next_action: $('rNextAction').value.trim()
+    }});
+    openAccount(current.account.id);
+  }
+
+  async function addOpportunity() {
+    const contact_id = $('oContactId').value.trim();
+    const qualification_basis = $('oBasis').value.trim();
+    if (!contact_id || !qualification_basis) return;
+    await api('admin-create-opportunity', { method: 'POST', body: {
+      campaign_id: current.campaign.id, contact_id, qualification_basis, opportunity_type: $('oType').value.trim(), recommended_next_action: $('oNextAction').value.trim()
+    }});
+    openAccount(current.account.id);
+  }
+
+  async function handoff(opportunityId) {
+    await api('admin-handoff-opportunity', { method: 'POST', body: { opportunity_id: opportunityId } });
+    openAccount(current.account.id);
+  }
+
+  async function recordKpiSnapshot() {
+    const v = $('kAttributedRevenue').value;
+    await api('admin-record-kpi-snapshot', { method: 'POST', body: { campaign_id: current.campaign.id, attributed_revenue: v ? Number(v) : null } });
+    openAccount(current.account.id);
+  }
+
+  async function logOptimization() {
+    const observation = $('optObservation').value.trim();
+    if (!observation) return;
+    await api('admin-log-optimization', { method: 'POST', body: {
+      campaign_id: current.campaign.id, observation, variable_changed: $('optVariable').value.trim(),
+      old_value: $('optOld').value.trim(), new_value: $('optNew').value.trim(), reason: $('optReason').value.trim(),
+      customer_visible: $('optVisible').checked
+    }});
+    openAccount(current.account.id);
+  }
+
+  return { connect, openAccount, backToList, saveSpec, updateCampaignStatus, setStatusTo, addTarget, addContact, applyEligibility,
+    saveMessage, queueOutreach, addResponse, addOpportunity, handoff, recordKpiSnapshot, logOptimization };
+})();
+</script>
+</body>
+</html>

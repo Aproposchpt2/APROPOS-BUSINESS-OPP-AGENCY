@@ -283,3 +283,35 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
+
+[[redirects]]
+  from = "/business-development-marketing-engine"
+  to = "/business-development-marketing-engine.html"
+  status = 200
+
+[[headers]]
+  for = "/business-development-marketing-engine.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+[[redirects]]
+  from = "/marketing-engine-workspace"
+  to = "/marketing-engine-workspace.html"
+  status = 200
+
+[[headers]]
+  for = "/marketing-engine-workspace.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[redirects]]
+  from = "/marketing-engine-admin"
+  to = "/marketing-engine-admin.html"
+  status = 200
+
+[[headers]]
+  for = "/marketing-engine-admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
