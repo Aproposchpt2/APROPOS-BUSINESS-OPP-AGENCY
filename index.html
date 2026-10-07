@@ -317,8 +317,8 @@
       inset: 0;
       z-index: -2;
       background:
-        linear-gradient(90deg, rgba(2,11,24,.96) 0%, rgba(3,15,33,.88) 34%, rgba(5,25,53,.58) 60%, rgba(5,25,53,.18) 100%),
-        linear-gradient(180deg, rgba(2,11,24,.22) 0%, rgba(2,11,24,.08) 54%, rgba(2,11,24,.82) 100%);
+        linear-gradient(90deg, rgba(2,11,24,.72) 0%, rgba(3,15,33,.60) 34%, rgba(5,25,53,.32) 60%, rgba(5,25,53,.08) 100%),
+        linear-gradient(180deg, rgba(2,11,24,.12) 0%, rgba(2,11,24,.04) 54%, rgba(2,11,24,.55) 100%);
     }
     .hero-grid-lines {
       position: absolute;
@@ -520,7 +520,7 @@
 
     .purpose {
       position: relative;
-      padding: 150px 0 145px;
+      padding: 72px 0 72px;
       background: var(--navy-mid);
       color: #fff;
       overflow: hidden;
@@ -735,7 +735,7 @@
       .brand-text strong { font-size: .84rem; letter-spacing: .16em; }
       .brand-text span { font-size: .48rem; letter-spacing: .12em; }
       .hero::before { background-position: 61% center; }
-      .hero::after { background: linear-gradient(90deg, rgba(2,11,24,.94), rgba(2,11,24,.70) 68%, rgba(2,11,24,.42)), linear-gradient(180deg, rgba(2,11,24,.18), rgba(2,11,24,.90)); }
+      .hero::after { background: linear-gradient(90deg, rgba(2,11,24,.72), rgba(2,11,24,.55) 68%, rgba(2,11,24,.30)), linear-gradient(180deg, rgba(2,11,24,.12), rgba(2,11,24,.65)); }
       .hero-inner { padding-bottom: 62px; }
       .hero h1 { font-size: clamp(3.1rem, 14vw, 4.8rem); line-height: .88; }
       .hero-positioning { padding-left: 18px; }
@@ -787,12 +787,12 @@
     @media(max-width:900px){.preparedness-grid{grid-template-columns:1fr}.preparedness-kicker{max-width:720px}}
     @media(max-width:640px){.preparedness-promo{padding:88px 0}.preparedness-links{flex-direction:column}.preparedness-links a{justify-content:center}}
   
-    .bd-services { background: linear-gradient(135deg,var(--navy-deep),var(--navy-mid)); color:#fff; padding:120px 0; border-top:1px solid rgba(229,207,154,.16); border-bottom:1px solid rgba(229,207,154,.16); }
-    .bd-services-head { display:grid; grid-template-columns:.85fr 1.15fr; gap:70px; align-items:end; margin-bottom:42px; }
+    .bd-services { background: linear-gradient(135deg,var(--navy-deep),var(--navy-mid)); color:#fff; padding:50px 0; border-top:1px solid rgba(229,207,154,.16); border-bottom:1px solid rgba(229,207,154,.16); }
+    .bd-services-head { display:grid; grid-template-columns:.85fr 1.15fr; gap:40px; align-items:end; margin-bottom:24px; }
     .bd-services .section-title { color:#fff; }
     .bd-services-intro { color:rgba(255,255,255,.72); max-width:760px; font-size:1.02rem; }
     .bd-product-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-    .bd-product { border:1px solid rgba(229,207,154,.26); background:rgba(255,255,255,.045); padding:34px; }
+    .bd-product { border:1px solid rgba(229,207,154,.26); background:rgba(255,255,255,.045); padding:20px; }
     .bd-product small { display:block; color:var(--gold-light); font-size:.62rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; margin-bottom:10px; }
     .bd-product h3 { color:#fff; font-family:var(--serif); font-size:2rem; line-height:1.05; margin:0 0 12px; }
     .bd-product p { color:rgba(255,255,255,.72); }
@@ -806,7 +806,7 @@
     @media(min-width:851px){
       html{scroll-snap-type:y mandatory;scroll-padding-top:var(--header-h)}
       .hero{scroll-snap-align:start}
-      .purpose,.growth-model,.marketplace,.development,.bd-services,.preparedness-promo,.local-growth,.why,.community-impact,.role,.partnerships,.commitment,.closing-signature{
+      .purpose,.bd-services,.preparedness-promo{
         min-height:calc(100vh - var(--header-h));
         scroll-snap-align:start
       }
@@ -851,13 +851,9 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
       <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav">Menu</button>
       <nav class="nav" id="primaryNav" aria-label="Primary navigation">
         <a href="#purpose">Purpose</a>
-        <a href="#model">Growth Model</a>
-        <a href="#marketplace">Opportunity</a>
         <a href="/contract-preparedness">Contract Preparedness</a>
         <a href="/business-development-roadmap">Roadmap</a>
-        <a href="/business-development-marketing-engine">Marketing Engine</a>
-        <a href="#impact">Impact</a>
-        <a href="#partnerships" class="nav-accent">Partnerships</a>
+        <a href="/business-development-marketing-engine" class="nav-accent">Marketing Engine</a>
       </nav>
     </div>
   </header>
@@ -916,61 +912,6 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
       </div>
     </section>
 
-    <section class="growth-model" id="model">
-      <div class="shell model-grid">
-        <div class="model-intro reveal">
-          <div class="eyebrow">The Economic Growth Model</div>
-          <h2 class="section-title">Opportunity moves through an economy.</h2>
-          <p>Business growth is not an isolated outcome. It can create a chain of economic activity that reaches employees, households, suppliers, and the wider community.</p>
-        </div>
-        <div class="model-sequence">
-          <div class="model-step reveal"><div class="num">01</div><div><h3>Opportunity</h3><p>Creates pathways for business growth.</p></div></div>
-          <div class="model-step reveal"><div class="num">02</div><div><h3>Business Growth</h3><p>Creates greater potential for revenue, investment, supplier activity, and employment.</p></div></div>
-          <div class="model-step reveal"><div class="num">03</div><div><h3>Economic Participation</h3><p>Employment and participation contribute to household stability, career advancement, and local spending.</p></div></div>
-          <div class="model-step reveal"><div class="num">04</div><div><h3>Stronger Communities</h3><p>Those outcomes help build stronger communities and stronger local economies.</p></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="marketplace" id="marketplace">
-      <div class="shell marketplace-grid">
-        <div class="marketplace-statement reveal">
-          <div class="eyebrow">Government Marketplace Opportunity</div>
-          <h2>Public contracting can be an engine for business growth.</h2>
-        </div>
-        <div class="marketplace-copy reveal">
-          <p>Every year, federal, state, county, municipal, educational, and other public institutions purchase an enormous range of products and services from businesses.</p>
-          <p>For capable businesses, participation in this marketplace can provide another pathway to revenue, experience, capacity, employment, and long-term growth.</p>
-          <p>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY works to make relevant public-sector opportunities easier for businesses to discover and pursue.</p>
-          <p class="closing-line">When government contracts are fulfilled by qualified businesses, those businesses have an opportunity to grow, strengthen their capabilities, create jobs, engage suppliers, and contribute to the economic vitality of the communities they serve.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="development" id="development">
-      <div class="shell">
-        <div class="development-head reveal">
-          <div><div class="eyebrow">Business Opportunity Development</div><h2 class="section-title">Growth requires more than contracts.</h2></div>
-          <p>A healthy business ecosystem contains many forms of opportunity. The Agency's work can connect businesses with a broader range of pathways for growth.</p>
-        </div>
-        <div class="opportunity-index" aria-label="Business opportunity pathways">
-          <div class="opportunity-item reveal"><span class="index">01</span><strong>Government contracting opportunities</strong></div>
-          <div class="opportunity-item reveal"><span class="index">02</span><strong>Private-sector business opportunities</strong></div>
-          <div class="opportunity-item reveal"><span class="index">03</span><strong>Supplier and subcontracting opportunities</strong></div>
-          <div class="opportunity-item reveal"><span class="index">04</span><strong>Business development resources</strong></div>
-          <div class="opportunity-item reveal"><span class="index">05</span><strong>Capital and funding resources</strong></div>
-          <div class="opportunity-item reveal"><span class="index">06</span><strong>Technical assistance</strong></div>
-          <div class="opportunity-item reveal"><span class="index">07</span><strong>Strategic partnerships</strong></div>
-          <div class="opportunity-item reveal"><span class="index">08</span><strong>Market-expansion opportunities</strong></div>
-          <div class="opportunity-item reveal"><span class="index">09</span><strong>Entrepreneurship resources</strong></div>
-          <div class="opportunity-item reveal"><span class="index">10</span><strong>Local and regional economic-development initiatives</strong></div>
-        </div>
-        <div class="development-objective reveal"><span>Service Areas</span><p>Contract Preparedness · Contract Search Services · Contract Development · Contract Technical Assistance · Economic Opportunity Development · Small Business Opportunity Support · Business Services · Workforce Development · Partnership Coordination · Community &amp; Faith-Based Outreach · Collaboration with Community Organizations and Public Agencies · Training Sessions for Businesses and Community Organizations · Business Seminars and Workshops</p></div>
-        <div class="development-objective reveal"><span>The Objective</span><p>Expand the number of pathways through which businesses can grow.</p></div>
-      </div>
-    </section>
-
-
     <section class="bd-services" id="business-development-services">
       <div class="shell">
         <div class="bd-services-head reveal">
@@ -1014,89 +955,13 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
       </div>
     </section>
 
-    <section class="local-growth" id="local-growth">
-      <div class="shell local-grid">
-        <div class="local-copy reveal">
-          <div class="eyebrow">Local Economic Growth</div>
-          <h2 class="section-title">Building economic capacity — city by city.</h2>
-          <p>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY is designed to organize its work within the communities it serves.</p>
-          <p>From there, the Agency can help identify the businesses, institutions, buyers, resources, partners, and opportunities that form the local economic ecosystem.</p>
-          <p>This creates an opportunity-development infrastructure focused on generating greater business participation and economic activity within the community.</p>
-        </div>
-        <div class="local-question reveal"><span>Every local initiative begins with one question</span><p>What opportunities can help businesses in this community grow?</p></div>
-      </div>
-    </section>
-
-    <section class="why" id="why">
-      <div class="shell">
-        <div class="why-head reveal"><div><div class="section-number">02</div></div><div><div class="eyebrow">Why Business Growth Matters</div><h2 class="section-title">A business opportunity can reach far beyond the business.</h2></div></div>
-        <div class="cause-chain">
-          <div class="cause-row reveal"><div class="cause">A contract creates revenue.</div><div class="effect">Revenue can give a capable business room to invest, expand, and strengthen operations.</div></div>
-          <div class="cause-row reveal"><div class="cause">Revenue supports expansion.</div><div class="effect">Expansion can create new capacity, new demand, and new pathways for growth.</div></div>
-          <div class="cause-row reveal"><div class="cause">Expansion creates employment.</div><div class="effect">Employment can strengthen households through income, stability, and professional advancement.</div></div>
-          <div class="cause-row reveal"><div class="cause">Growing businesses support other businesses.</div><div class="effect">Purchasing from suppliers circulates economic activity across a broader local business ecosystem.</div></div>
-          <div class="cause-row reveal"><div class="cause">Successful entrepreneurs invest in community.</div><div class="effect">Communities with stronger businesses have a broader economic foundation from which to grow.</div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="community-impact" id="impact">
-      <div class="shell">
-        <div class="impact-heading reveal"><div class="eyebrow">Community Impact</div><h2>Businesses grow.<br />People <span>prosper.</span><br />Communities become stronger.</h2></div>
-        <div class="impact-copy-grid reveal"><div><p>When people gain access to meaningful employment, greater financial stability, and new opportunities for advancement, the benefits extend beyond the workplace.</p><p>Families gain greater economic security. Local purchasing power increases. Businesses gain customers. Neighborhoods gain economic activity. Communities become more resilient.</p></div><p class="impact-last">Economic development ultimately becomes meaningful when opportunity reaches people.</p></div>
-      </div>
-    </section>
-
-    <section class="role" id="role">
-      <div class="shell">
-        <div class="role-intro reveal"><div><div class="eyebrow">Our Role</div><h2 class="section-title">An opportunity development organization.</h2></div><p>We work to identify and connect the components of economic growth. Our role is to help those components connect more effectively so that more economic opportunity can move through the communities we serve.</p></div>
-        <div class="role-equation" aria-label="Components of economic growth">
-          <div class="role-term reveal"><span class="term-num">01</span><strong>Businesses</strong><span class="plus">+</span></div>
-          <div class="role-term reveal"><span class="term-num">02</span><strong>Opportunities</strong><span class="plus">+</span></div>
-          <div class="role-term reveal"><span class="term-num">03</span><strong>Buyers</strong><span class="plus">+</span></div>
-          <div class="role-term reveal"><span class="term-num">04</span><strong>Capital</strong><span class="plus">+</span></div>
-          <div class="role-term reveal"><span class="term-num">05</span><strong>Resources</strong><span class="plus">+</span></div>
-          <div class="role-term reveal"><span class="term-num">06</span><strong>Partners</strong><span class="plus">+</span></div>
-          <div class="role-term reveal"><span class="term-num">07</span><strong>Communities</strong><span class="plus">+</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="partnerships" id="partnerships">
-      <div class="shell partnership-grid">
-        <div class="partnership-copy reveal"><div class="eyebrow">Partnerships</div><h2 class="section-title">Economic growth is collaborative.</h2><p>The Agency seeks to work alongside organizations already committed to strengthening businesses and communities.</p></div>
-        <div>
-          <div class="partner-list" aria-label="Potential agency partners">
-            <div class="partner-row reveal"><span>01</span><strong>Cities and counties</strong></div>
-            <div class="partner-row reveal"><span>02</span><strong>Economic-development organizations</strong></div>
-            <div class="partner-row reveal"><span>03</span><strong>Community organizations</strong></div>
-            <div class="partner-row reveal"><span>04</span><strong>Colleges and universities</strong></div>
-            <div class="partner-row reveal"><span>05</span><strong>Chambers of commerce</strong></div>
-            <div class="partner-row reveal"><span>06</span><strong>Business-development organizations</strong></div>
-            <div class="partner-row reveal"><span>07</span><strong>Public agencies</strong></div>
-            <div class="partner-row reveal"><span>08</span><strong>Corporations and institutional buyers</strong></div>
-            <div class="partner-row reveal"><span>09</span><strong>Financial institutions</strong></div>
-            <div class="partner-row reveal"><span>10</span><strong>Foundations and philanthropic organizations</strong></div>
-          </div>
-          <div class="partner-principle reveal"><p>The objective is not to duplicate the work of existing organizations. It is to strengthen the opportunity infrastructure connecting their resources to businesses and communities.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="commitment" id="commitment">
-      <div class="shell"><div class="commitment-inner reveal"><div class="eyebrow">Our Commitment</div><h2 class="section-title">Opportunity is one of the fundamental building blocks of economic development.</h2><p>Our commitment is to help communities create more pathways through which businesses can participate, compete, grow, employ people, and contribute to the economies around them.</p><p>Because when opportunity reaches business, its impact does not have to stop there.</p><div class="reach-list" aria-label="Where opportunity can reach"><span>Employees</span><span>Families</span><span>Suppliers</span><span>Neighborhoods</span><span>Entire Communities</span></div></div></div>
-    </section>
-
-    <section class="closing-signature" aria-label="Closing statement">
-      <div class="shell reveal"><div class="eyebrow">BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</div><h2>Opportunity Builds Business.<span>Business Builds Community.</span></h2><p>Dedicated to building economic, business, and community growth.</p></div>
-    </section>
   </main>
 
   <footer>
     <div class="shell">
       <div class="footer-top">
         <div><p class="footer-name">BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</p><p class="footer-tagline">Economic. Business. Community Growth.</p></div>
-        <nav class="footer-nav" aria-label="Footer navigation"><a href="#purpose">Purpose</a><a href="#model">Growth Model</a><a href="#marketplace">Opportunity</a><a href="/contract-preparedness">Contract Preparedness</a><a href="/business-development-roadmap">Roadmap</a><a href="/business-development-marketing-engine">Marketing Engine</a><a href="#impact">Impact</a><a href="#partnerships">Partnerships</a></nav>
+        <nav class="footer-nav" aria-label="Footer navigation"><a href="#purpose">Purpose</a><a href="/contract-preparedness">Contract Preparedness</a><a href="/business-development-roadmap">Roadmap</a><a href="/business-development-marketing-engine">Marketing Engine</a></nav>
       </div>
       <div class="footer-bottom"><span>Business & Contract Opportunity Service Platform · OPERATED BY APROPOS GROUP LLC</span><span>&copy; <span id="year"></span> BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</span></div>
     </div>
