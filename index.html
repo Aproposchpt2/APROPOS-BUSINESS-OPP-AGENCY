@@ -136,15 +136,7 @@
     .shell { width: var(--shell); margin: 0 auto; }
     .serif { font-family: var(--serif); }
     .gold { color: var(--gold-light); }
-    .section-number {
-      font-family: var(--serif);
-      font-size: clamp(4.8rem, 9vw, 9rem);
-      line-height: .78;
-      color: rgba(6, 22, 47, .08);
-      letter-spacing: -.05em;
-      user-select: none;
-    }
-    .section-number.light { color: rgba(255, 255, 255, .10); }
+    .section-number { display: none; }
     .eyebrow {
       display: flex;
       align-items: center;
@@ -532,7 +524,6 @@
       gap: clamp(70px, 10vw, 150px);
     }
     .purpose-aside { padding-top: 9px; }
-    .purpose-aside .section-number { margin-bottom: 34px; }
     .purpose-aside p {
       max-width: 240px;
       margin: 0;
@@ -542,7 +533,6 @@
       font-weight: 700;
       color: rgba(255,255,255,.58);
     }
-    .purpose .section-number { color: rgba(255,255,255,.10); }
     .purpose-content { max-width: 900px; }
     .purpose-content .section-title { max-width: 800px; font-size: clamp(1.8rem, 3.4vw, 3.6rem); }
     .purpose-content > p { max-width: 790px; font-size: .88rem; color: rgba(255,255,255,.72); }
@@ -642,7 +632,7 @@
     .partner-principle p { margin: 0; font-family: var(--serif); font-size: clamp(1.65rem, 3vw, 2.9rem); line-height: 1.16; color: #fff; }
 
     .commitment { position: relative; min-height: 92svh; display: flex; align-items: center; background: var(--navy); color: #fff; overflow: hidden; padding: 140px 0; }
-    .commitment::before { content: "OPPORTUNITY"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-family: var(--serif); font-size: clamp(11rem, 25vw, 30rem); line-height: .8; color: rgba(255,255,255,.018); white-space: nowrap; pointer-events: none; }
+    .commitment::before { content: none; }
     .commitment-inner { position: relative; max-width: 1030px; }
     .commitment .section-title { max-width: 900px; }
     .commitment p { max-width: 830px; color: rgba(255,255,255,.68); }
@@ -705,7 +695,6 @@
       .purpose-grid, .model-grid, .marketplace-grid, .development-head, .local-grid, .why-head, .impact-copy-grid, .role-intro, .partnership-grid { grid-template-columns: 1fr; }
       .purpose-grid { gap: 44px; }
       .purpose-aside { display: flex; align-items: end; gap: 30px; }
-      .purpose-aside .section-number { margin: 0; }
       .model-intro, .partnership-copy { position: static; }
       .marketplace-copy { padding-top: 0; }
       .marketplace-statement::before { left: -20px; }
@@ -762,7 +751,7 @@
     }
 
     .preparedness-promo{position:relative;background:linear-gradient(135deg,#06162f 0%,#0a2448 100%);color:#fff;padding:110px 0;border-top:1px solid rgba(229,207,154,.24);border-bottom:1px solid rgba(229,207,154,.24);overflow:hidden}
-    .preparedness-promo::after{content:"READY";position:absolute;right:-1vw;bottom:-2vw;font-family:var(--serif);font-size:clamp(9rem,20vw,22rem);line-height:.72;color:rgba(255,255,255,.025);pointer-events:none}
+    .preparedness-promo::after{content:none}
     .preparedness-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(60px,8vw,120px);align-items:center}
     .preparedness-promo .section-title{color:#fff;margin-bottom:24px}
     .preparedness-promo p{color:rgba(255,255,255,.68);max-width:720px}
@@ -881,7 +870,6 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
     <section class="purpose" id="purpose">
       <div class="shell purpose-grid">
         <aside class="purpose-aside reveal">
-          <div class="section-number">01</div>
           <p>Our Purpose</p>
         </aside>
         <div class="purpose-content reveal">
