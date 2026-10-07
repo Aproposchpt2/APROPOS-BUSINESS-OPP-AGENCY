@@ -520,22 +520,10 @@
 
     .purpose {
       position: relative;
-      padding: 72px 0 72px;
+      padding: 28px 0;
       background: var(--navy-mid);
       color: #fff;
       overflow: hidden;
-    }
-    .purpose::before {
-      content: "PURPOSE";
-      position: absolute;
-      right: -1.5vw;
-      top: 40px;
-      font-family: var(--serif);
-      font-size: clamp(8rem, 20vw, 22rem);
-      line-height: .8;
-      color: rgba(255,255,255,.035);
-      letter-spacing: -.06em;
-      pointer-events: none;
     }
     .purpose-grid {
       position: relative;
@@ -556,19 +544,19 @@
     }
     .purpose .section-number { color: rgba(255,255,255,.10); }
     .purpose-content { max-width: 900px; }
-    .purpose-content .section-title { max-width: 800px; }
-    .purpose-content > p { max-width: 790px; font-size: 1.05rem; color: rgba(255,255,255,.72); }
+    .purpose-content .section-title { max-width: 800px; font-size: clamp(1.8rem, 3.4vw, 3.6rem); }
+    .purpose-content > p { max-width: 790px; font-size: .88rem; color: rgba(255,255,255,.72); }
     .economic-actions {
-      margin-top: 58px;
+      margin-top: 20px;
       border-top: 1px solid rgba(255,255,255,.22);
       border-bottom: 1px solid rgba(255,255,255,.22);
       display: grid;
       grid-template-columns: repeat(4, 1fr);
     }
-    .economic-actions div { padding: 28px 22px 28px 0; border-right: 1px solid rgba(255,255,255,.16); }
-    .economic-actions div:not(:first-child) { padding-left: 22px; }
+    .economic-actions div { padding: 12px 16px 12px 0; border-right: 1px solid rgba(255,255,255,.16); }
+    .economic-actions div:not(:first-child) { padding-left: 16px; }
     .economic-actions div:last-child { border-right: 0; }
-    .economic-actions strong { display: block; margin-bottom: 8px; font-family: var(--serif); font-size: 1.5rem; color: #fff; font-weight: 600; }
+    .economic-actions strong { display: block; margin-bottom: 4px; font-family: var(--serif); font-size: 1.1rem; color: #fff; font-weight: 500; }
     .economic-actions span { font-size: .76rem; color: rgba(255,255,255,.55); }
 
     .growth-model { background: var(--navy); color: #fff; padding: 145px 0 150px; position: relative; overflow: hidden; }
