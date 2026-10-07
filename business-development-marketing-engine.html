@@ -43,7 +43,16 @@ section.block p.lead{color:var(--muted);max-width:760px;line-height:1.75}
 .cta-band p{color:#d4e0eb;max-width:620px;margin:0 auto 22px}
 .disclaimer{color:#8695a6;font-size:.72rem;max-width:760px;margin-top:16px;line-height:1.7}
 .footer{text-align:center;padding:30px 20px 50px;color:#7b8999;font-size:.67rem}
-@media(max-width:850px){.grid2,.deliver-grid,.phases{grid-template-columns:1fr}}
+.contact-wrap{margin:34px 0 10px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px;box-shadow:0 12px 34px rgba(8,26,49,.06)}
+.contact-wrap h2{margin:0 0 8px!important}.contact-wrap>p{color:var(--muted);line-height:1.7;max-width:760px}
+.contact-form{display:grid;gap:14px;margin-top:22px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:#fbfdff;padding:13px 14px;font:inherit;color:var(--ink)}
+.field textarea{min-height:130px;resize:vertical}.consent{display:flex;gap:9px;align-items:flex-start;color:var(--muted);font-size:.75rem;line-height:1.5}
+.contact-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.contact-submit{border:0;cursor:pointer}.form-status{font-size:.76rem;color:var(--muted)}
+.form-status.ok{color:#166b4b}.form-status.error{color:#9b2929}.hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+
+@media(max-width:850px){.form-grid{grid-template-columns:1fr}.grid2,.deliver-grid,.phases{grid-template-columns:1fr}}
 </style></head>
 <body>
 <section class="hero"><div class="shell">
@@ -54,6 +63,7 @@ section.block p.lead{color:var(--muted);max-width:760px;line-height:1.75}
 <div class="price">$1,495<small>Per Month &middot; 90-Day Initial Term</small></div>
 <a class="btn" href="https://ai4-product-purchasing.ai4businesses.org/boda-marketing-engine">Start My Campaign</a>
 <a class="btn ghost" href="/business-development-roadmap">Build My Roadmap First</a>
+<a class="btn ghost" href="#contact">Contact Us</a>
 </div>
 </div></section>
 
@@ -110,8 +120,45 @@ section.block p.lead{color:var(--muted);max-width:760px;line-height:1.75}
 <p>$1,495/month, 90-day initial term, requires an approved Business Development Roadmap.</p>
 <a class="btn" href="https://ai4-product-purchasing.ai4businesses.org/boda-marketing-engine">Start My Campaign</a>
 </div>
+
+<div class="contact-wrap" id="contact">
+<h2>Want BODA to execute your growth strategy?</h2>
+<p>Tell us about your business, your Roadmap status, and what you want the campaign to accomplish. We’ll use this request to determine the right next step.</p>
+<form class="contact-form" id="engineContact">
+<div class="form-grid">
+<div class="field"><label for="engineContactName">Your Name *</label><input id="engineContactName" name="name" required autocomplete="name"></div>
+<div class="field"><label for="engineContactOrg">Business / Organization</label><input id="engineContactOrg" name="organization" autocomplete="organization"></div>
+<div class="field"><label for="engineContactEmail">Email *</label><input id="engineContactEmail" name="email" type="email" required autocomplete="email"></div>
+<div class="field"><label for="engineContactPhone">Phone</label><input id="engineContactPhone" name="phone" type="tel" autocomplete="tel"></div>
+<div class="field"><label for="engineContactState">State *</label><input id="engineContactState" name="state" required autocomplete="address-level1"></div>
+</div>
+<div class="field"><label for="engineContactMessage">What do you want the Marketing Engine to accomplish, and do you already have an approved Business Development Roadmap? *</label><textarea id="engineContactMessage" name="message" required></textarea></div>
+<div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<label class="consent"><input type="checkbox" name="consent" required> I consent to be contacted by the Business Opportunity Development Agency regarding the Business Development Marketing Engine.</label>
+<div class="contact-actions"><button class="btn contact-submit" type="submit">Contact Us About the Marketing Engine</button><span class="form-status" id="engineContactStatus" aria-live="polite"></span></div>
+</form>
+</div>
 <p class="disclaimer">The Business Development Marketing Engine is a managed outreach service. It does not guarantee meetings, proposals, contracts, or sales. BODA only contacts verified decision-makers and never generates or guesses contact information; opt-out requests are honored permanently. Outreach volume and channels are set by the approved campaign specification and may be adjusted by BODA as performance data comes in.</p>
 </section>
 </main>
 <footer class="footer"><strong>Business Opportunity Development Agency</strong><br>A property of <strong>Apropos Group LLC</strong></footer>
+
+<script>
+(()=>{'use strict';
+ const form=document.getElementById('engineContact'),status=document.getElementById('engineContactStatus');
+ if(!form)return;
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();const btn=form.querySelector('button[type="submit"]');btn.disabled=true;status.className='form-status';status.textContent='Sending…';
+  const fd=new FormData(form);
+  const payload={name:fd.get('name'),organization:fd.get('organization'),email:fd.get('email'),phone:fd.get('phone'),state:fd.get('state'),message:fd.get('message'),website:fd.get('website'),consent:fd.get('consent')==='on',inquiryType:'Business Development Marketing Engine'};
+  try{
+   const r=await fetch('/api/inquiry',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+   const d=await r.json().catch(()=>({}));
+   if(!r.ok||!d.ok)throw new Error(d.message||'Your request could not be sent.');
+   status.className='form-status ok';status.textContent=d.message||'Thank you. Your request has been sent.';form.reset();
+  }catch(err){status.className='form-status error';status.textContent=err.message||'Please try again.'}
+  finally{btn.disabled=false}
+ });
+})();
+</script>
 </body></html>
