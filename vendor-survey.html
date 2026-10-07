@@ -36,7 +36,9 @@ button{min-height:48px;padding:0 22px;border:1px solid var(--gold);background:li
 button:disabled{opacity:.55;cursor:wait}
 .status{margin-top:14px;padding:12px 14px;border-radius:8px;display:none;font-size:.84rem}
 .status.success{display:block;background:rgba(46,204,138,.12);color:#2ecc8a;border:1px solid rgba(46,204,138,.3)}
+.status.error{display:block;background:rgba(214,69,69,.12);color:#ff9393;border:1px solid rgba(214,69,69,.3)}
 .status a{color:#2ecc8a;font-weight:700;text-decoration:underline}
+#offers{display:none}
 .offers-eyebrow{margin:36px 0 4px}
 .offers-lead{color:var(--muted);max-width:640px;line-height:1.7;margin-bottom:18px;font-size:.88rem}
 .offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
@@ -68,20 +70,22 @@ button:disabled{opacity:.55;cursor:wait}
     <div id="status" class="status" role="status" aria-live="polite"></div>
   </div>
 
-  <div class="eyebrow offers-eyebrow">Grow Beyond This Opportunity</div>
-  <p class="offers-lead">Your complimentary contract and free Vendor Card are the start. When you're ready to grow further, here's what the Business Opportunity Development Agency is building next.</p>
-  <div class="offer-grid">
-    <div class="offer">
-      <div class="badge">Pricing &amp; Build In Development</div>
-      <h3>Business Development Roadmap</h3>
-      <p class="q">Where should this business go to get more business, and what should it do next?</p>
-      <p>A one-time strategic engagement that turns your business's current position into a practical, prioritized 90-day growth plan -- target markets, buyer segments, positioning, outreach channels, and the actions to take first.</p>
-    </div>
-    <div class="offer">
-      <div class="badge">$1,495 / month</div>
-      <h3>Business Development Marketing Engine</h3>
-      <p class="q">Who will execute the growth plan and consistently put our business in front of the right buyers?</p>
-      <p>The Agency puts your approved growth strategy into action through managed campaign development, market outreach, response management, qualified-opportunity delivery, and performance reporting.</p>
+  <div id="offers">
+    <div class="eyebrow offers-eyebrow">Grow Beyond This Opportunity</div>
+    <p class="offers-lead">Your complimentary contract and free Vendor Card are the start. When you're ready to grow further, here's what the Business Opportunity Development Agency is building next.</p>
+    <div class="offer-grid">
+      <div class="offer">
+        <div class="badge">Pricing &amp; Build In Development</div>
+        <h3>Business Development Roadmap</h3>
+        <p class="q">Where should this business go to get more business, and what should it do next?</p>
+        <p>A one-time strategic engagement that turns your business's current position into a practical, prioritized 90-day growth plan -- target markets, buyer segments, positioning, outreach channels, and the actions to take first.</p>
+      </div>
+      <div class="offer">
+        <div class="badge">$1,495 / month</div>
+        <h3>Business Development Marketing Engine</h3>
+        <p class="q">Who will execute the growth plan and consistently put our business in front of the right buyers?</p>
+        <p>The Agency puts your approved growth strategy into action through managed campaign development, market outreach, response management, qualified-opportunity delivery, and performance reporting.</p>
+      </div>
     </div>
   </div>
 
@@ -100,14 +104,20 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
   const btn = document.getElementById('submitBtn'), statusEl = document.getElementById('status');
   btn.disabled = true; btn.textContent = 'SUBMITTING…';
   try {
-    await fetch('/api/vendor-presence?action=survey', {
+    const r = await fetch('/api/vendor-presence?action=survey', {
       method: 'POST', headers: {'content-type':'application/json'},
       body: JSON.stringify({ rating: rating || null, comment: document.getElementById('comment').value, action: 'survey_submit' })
     });
-  } catch (e) { /* best-effort */ }
-  statusEl.innerHTML = 'Thank you for your feedback. <a href="/vendor-workspace">Edit your Vendor Card →</a>';
-  statusEl.className = 'status success';
-  btn.textContent = 'SUBMITTED';
+    if (!r.ok) throw new Error(r.status === 401 ? 'Your session has expired. Please reopen the link from your original email.' : 'Could not submit feedback.');
+    statusEl.innerHTML = 'Thank you for your feedback. <a href="/vendor-workspace">Edit your Vendor Card →</a>';
+    statusEl.className = 'status success';
+    btn.textContent = 'SUBMITTED';
+    document.getElementById('offers').style.display = 'block';
+  } catch (e) {
+    statusEl.textContent = e.message || 'Could not submit feedback. Please try again.';
+    statusEl.className = 'status error';
+    btn.disabled = false; btn.textContent = 'Submit Feedback';
+  }
 });
 </script>
 </body>
