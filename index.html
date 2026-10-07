@@ -803,6 +803,15 @@
     .bd-actions a.secondary { background:transparent; color:#fff; border-color:rgba(255,255,255,.28); }
     @media(max-width:900px){.bd-services-head,.bd-product-grid{grid-template-columns:1fr}.bd-services{padding:88px 0}}
 
+    @media(min-width:851px){
+      html{scroll-snap-type:y mandatory;scroll-padding-top:var(--header-h)}
+      .hero{scroll-snap-align:start}
+      .purpose,.growth-model,.marketplace,.development,.bd-services,.preparedness-promo,.local-growth,.why,.community-impact,.role,.partnerships,.commitment,.closing-signature{
+        min-height:calc(100vh - var(--header-h));
+        scroll-snap-align:start
+      }
+    }
+
   </style>
 <!-- Google tag: Apropos Group LLC .ORG / Apropos Opportunity -->
 <script>
@@ -837,7 +846,6 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
         <span class="brand-rule" aria-hidden="true"></span>
         <span class="brand-text">
           <strong>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</strong>
-          <span>Operated by Apropos Group LLC</span>
         </span>
       </a>
       <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav">Menu</button>
