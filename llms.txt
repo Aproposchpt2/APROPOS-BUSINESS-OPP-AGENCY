@@ -10,7 +10,7 @@ BUSINESS OPPORTUNITY DEVELOPMENT AGENCY is operated by Apropos Group LLC.
 
 - Economic opportunity development
 - Business Development Roadmap (90-day business growth strategy, government and commercial)
-- Business Development Marketing Engine (managed outbound campaign execution for an approved Roadmap)
+- Business Development Marketing Engine (managed business development campaign execution for an approved Roadmap)
 - Business growth
 - Community economic development
 - Government contracting opportunities
@@ -107,6 +107,6 @@ Client funding workspaces, opportunity workspaces, vendor administration and sur
 Primary search intents include business development roadmap, 90-day business growth plan, business development strategy, target market strategy, B2B growth strategy, commercial business development planning, government and commercial market strategy, and growth opportunity planning.
 
 ## Business Development Marketing Engine
-[Business Development Marketing Engine](https://aproposopportunity.org/business-development-marketing-engine): A managed B2B outreach execution service for businesses with an approved Business Development Roadmap. The service researches target accounts, verifies relevant contacts, executes approved outreach and follow-up, tracks responses, qualifies opportunities, provides sales handoffs, reports KPIs, and optimizes campaigns over an initial 90-day cycle.
+[Business Development Marketing Engine](https://aproposopportunity.org/business-development-marketing-engine): A managed business development campaign service for businesses with an approved Business Development Roadmap. The service develops and manages the campaign, expands market reach, captures and qualifies responses, provides qualified-opportunity handoffs, reports KPIs, and optimizes performance over an initial 90-day cycle.
 
-Primary search intents include managed B2B outreach, outsourced business development, business development marketing service, B2B lead generation service, outbound sales campaign management, target account outreach, qualified opportunity generation, and managed prospecting.
+Primary search intents include managed business development campaign, outsourced business development, business development marketing service, B2B lead generation service, campaign management, qualified opportunity generation, growth campaign execution, and managed market outreach.
