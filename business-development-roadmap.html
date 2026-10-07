@@ -40,7 +40,16 @@ section.block p.lead{color:var(--muted);max-width:760px;line-height:1.75}
 .cta-band p{color:#d4e0eb;max-width:600px;margin:0 auto 22px}
 .disclaimer{color:#8695a6;font-size:.72rem;max-width:760px;margin-top:16px;line-height:1.7}
 .footer{text-align:center;padding:30px 20px 50px;color:#7b8999;font-size:.67rem}
-@media(max-width:850px){.grid2,.deliver-grid,.phases{grid-template-columns:1fr}}
+.contact-wrap{margin:34px 0 10px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px;box-shadow:0 12px 34px rgba(8,26,49,.06)}
+.contact-wrap h2{margin:0 0 8px!important}.contact-wrap>p{color:var(--muted);line-height:1.7;max-width:760px}
+.contact-form{display:grid;gap:14px;margin-top:22px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field label{display:block;font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:#fbfdff;padding:13px 14px;font:inherit;color:var(--ink)}
+.field textarea{min-height:130px;resize:vertical}.consent{display:flex;gap:9px;align-items:flex-start;color:var(--muted);font-size:.75rem;line-height:1.5}
+.contact-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.contact-submit{border:0;cursor:pointer}.form-status{font-size:.76rem;color:var(--muted)}
+.form-status.ok{color:#166b4b}.form-status.error{color:#9b2929}.hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+
+@media(max-width:850px){.form-grid{grid-template-columns:1fr}.grid2,.deliver-grid,.phases{grid-template-columns:1fr}}
 </style></head>
 <body>
 <section class="hero"><div class="shell">
@@ -51,6 +60,7 @@ section.block p.lead{color:var(--muted);max-width:760px;line-height:1.75}
 <div class="price">$1,295<small>One Time</small></div>
 <a class="btn" href="https://ai4-product-purchasing.ai4businesses.org/boda-roadmap">Build My Business Development Roadmap</a>
 <a class="btn ghost" href="/opportunity-next-steps">Back to Your Next Steps</a>
+<a class="btn ghost" href="#contact">Contact Us</a>
 </div>
 </div></section>
 
@@ -109,8 +119,45 @@ section.block p.lead{color:var(--muted);max-width:760px;line-height:1.75}
 <p>That's the question this Roadmap answers. One time, $1,295, delivered after BODA research and internal QA review.</p>
 <a class="btn" href="https://ai4-product-purchasing.ai4businesses.org/boda-roadmap">Build My Business Development Roadmap</a>
 </div>
+
+<div class="contact-wrap" id="contact">
+<h2>Not ready to purchase yet? Start with a conversation.</h2>
+<p>Tell us where your business is today and what kind of growth you are pursuing. This is a preliminary contact request—not the full paid Roadmap intake.</p>
+<form class="contact-form" id="roadmapContact">
+<div class="form-grid">
+<div class="field"><label for="roadmapContactName">Your Name *</label><input id="roadmapContactName" name="name" required autocomplete="name"></div>
+<div class="field"><label for="roadmapContactOrg">Business / Organization</label><input id="roadmapContactOrg" name="organization" autocomplete="organization"></div>
+<div class="field"><label for="roadmapContactEmail">Email *</label><input id="roadmapContactEmail" name="email" type="email" required autocomplete="email"></div>
+<div class="field"><label for="roadmapContactPhone">Phone</label><input id="roadmapContactPhone" name="phone" type="tel" autocomplete="tel"></div>
+<div class="field"><label for="roadmapContactState">State *</label><input id="roadmapContactState" name="state" required autocomplete="address-level1"></div>
+</div>
+<div class="field"><label for="roadmapContactMessage">What are you trying to accomplish over the next 90 days? *</label><textarea id="roadmapContactMessage" name="message" required></textarea></div>
+<div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<label class="consent"><input type="checkbox" name="consent" required> I consent to be contacted by the Business Opportunity Development Agency regarding the Business Development Roadmap.</label>
+<div class="contact-actions"><button class="btn contact-submit" type="submit">Contact Us About the Roadmap</button><span class="form-status" id="roadmapContactStatus" aria-live="polite"></span></div>
+</form>
+</div>
 <p class="disclaimer">The Business Development Roadmap is a strategic planning deliverable. It does not guarantee contracts, revenue, awards, or sales, and it does not include campaign execution, proposal writing, or solicitation-document preparation. Research findings are drawn from information you provide and publicly verifiable sources; BODA does not fabricate contacts, certifications, or business facts.</p>
 </section>
 </main>
 <footer class="footer"><strong>Business Opportunity Development Agency</strong><br>A property of <strong>Apropos Group LLC</strong></footer>
+
+<script>
+(()=>{'use strict';
+ const form=document.getElementById('roadmapContact'),status=document.getElementById('roadmapContactStatus');
+ if(!form)return;
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();const btn=form.querySelector('button[type="submit"]');btn.disabled=true;status.className='form-status';status.textContent='Sending…';
+  const fd=new FormData(form);
+  const payload={name:fd.get('name'),organization:fd.get('organization'),email:fd.get('email'),phone:fd.get('phone'),state:fd.get('state'),message:fd.get('message'),website:fd.get('website'),consent:fd.get('consent')==='on',inquiryType:'Business Development Roadmap'};
+  try{
+   const r=await fetch('/api/inquiry',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+   const d=await r.json().catch(()=>({}));
+   if(!r.ok||!d.ok)throw new Error(d.message||'Your request could not be sent.');
+   status.className='form-status ok';status.textContent=d.message||'Thank you. Your request has been sent.';form.reset();
+  }catch(err){status.className='form-status error';status.textContent=err.message||'Please try again.'}
+  finally{btn.disabled=false}
+ });
+})();
+</script>
 </body></html>
