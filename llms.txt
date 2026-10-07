@@ -95,9 +95,6 @@ The Agency serves as a resource and referral connector. Third-party providers ar
 
 Canonical page: https://aproposopportunity.org/contract-preparedness
 
-## Funding Development Center
-[Funding Development Center](https://aproposopportunity.org/funding): Business Funding Profile Development and Funding Preparation. The process includes a funding-development interview, readiness analysis, evidence and gap identification, capital-requirement development and potential funding-path review. Preparation does not guarantee funding approval, eligibility or terms.
-
 Client funding workspaces, opportunity workspaces, vendor administration and surveys are operational flows, not public reference pages.
 
 

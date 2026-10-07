@@ -61,7 +61,7 @@ h2{font:400 29px/1.15 var(--serif);color:var(--navy);margin:7px 0 13px}
   border:1px solid #d7e2ea;border-radius:15px;padding:21px;
   background:linear-gradient(180deg,#fff,var(--ice))
 }
-.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tool-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
 .tool-card{
   display:block;padding:16px;border-radius:12px;border:1px solid #d7e2ea;
   background:#fff;text-decoration:none;transition:border-color .15s,box-shadow .15s
@@ -203,7 +203,6 @@ async function load(){
       +'<div class="tool-grid">'
       +'<a class="tool-card" href="/vendor-licensed-search"><strong>Custom Contract Search Dashboard</strong><span>Full access to every open government contract in the repository. Free -- claiming your Vendor Card is not required to search.</span></a>'
       +'<a class="tool-card" href="/vendor-workspace"><strong>Edit Vendor Card</strong><span>You have access to edit your business\'s presence. Your Vendor Card is visible to other Contractors and to Government Buyers.</span></a>'
-      +'<a class="tool-card" href="/funding"><strong>Contract Bid Preparation and Assistance</strong><span>Get help preparing a strong, compliant bid or proposal for a contract you want to win.</span></a>'
       +'</div></div>'
       +'<div class="panel"><div class="eyebrow">Business Snapshot</div>'
       +(caps.length?'<div class="snapshot-block"><small>Capabilities</small><div class="snapshot-tags">'+caps.map(x=>'<span class="tag">'+esc(x)+'</span>').join('')+'</div></div>':'')

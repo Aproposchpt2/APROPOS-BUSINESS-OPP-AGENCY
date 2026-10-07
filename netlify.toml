@@ -81,13 +81,18 @@
 
 [[redirects]]
   from = "/funding"
-  to = "/fdc.html"
-  status = 200
+  to = "/"
+  status = 301
 
 [[redirects]]
   from = "/fdc"
-  to = "/fdc.html"
-  status = 200
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/fdc.html"
+  to = "/"
+  status = 301
 
 [[redirects]]
   from = "/funding/start"
