@@ -23,7 +23,7 @@ async function ceocRequest(path, options = {}) {
   return data;
 }
 
-async function captureInCeoc({ name, organization, email, phone, state, inquiryType, message, consent, receivedAt }) {
+async function captureInCeoc({ name, organization, email, phone, state, inquiryType, message, consent, receivedAt, submissionId }) {
   if (!Netlify.env.get("CEOC_SUPABASE_SERVICE_ROLE_KEY")) return { skipped: true };
 
   const tenantRows = await ceocRequest(
@@ -66,14 +66,17 @@ async function captureInCeoc({ name, organization, email, phone, state, inquiryT
 
   if (!contactId) throw new Error("CEOC contact could not be created or resolved.");
 
-  const interactionRows = await ceocRequest("ai4cc_interactions", {
+  // Stable identifier permits safe recovery if the browser retries after a timeout.
+  const externalId = `boda-form-${submissionId}`;
+  const matchingInteractions = await ceocRequest(`ai4cc_interactions?tenant_id=eq.${encodeURIComponent(tenantId)}&external_id=eq.${encodeURIComponent(externalId)}&select=id&limit=1`);
+  const interactionRows = matchingInteractions?.[0]?.id ? matchingInteractions : await ceocRequest("ai4cc_interactions", {
     method: "POST",
     headers: { Prefer: "return=representation" },
     body: JSON.stringify({
       tenant_id: tenantId,
       channel: "email",
       direction: "inbound",
-      external_id: `boda-form-${crypto.randomUUID()}`,
+      external_id: externalId,
       customer_identifier: email,
       status: "completed",
       started_at: receivedAt,
@@ -91,7 +94,9 @@ async function captureInCeoc({ name, organization, email, phone, state, inquiryT
   });
   const interactionId = interactionRows?.[0]?.id || null;
 
-  const leadRows = await ceocRequest("ai4cc_leads", {
+  if (!interactionId) throw new Error("CEOC interaction was not persisted.");
+  const existingLeads = await ceocRequest(`ai4cc_leads?tenant_id=eq.${encodeURIComponent(tenantId)}&originating_interaction_id=eq.${encodeURIComponent(interactionId)}&select=id&limit=1`);
+  const leadRows = existingLeads?.[0]?.id ? existingLeads : await ceocRequest("ai4cc_leads", {
     method: "POST",
     headers: { Prefer: "return=representation" },
     body: JSON.stringify({
@@ -117,6 +122,7 @@ async function captureInCeoc({ name, organization, email, phone, state, inquiryT
     })
   });
 
+  if (!leadRows?.[0]?.id) throw new Error("CEOC lead was not persisted.");
   return {
     ok: true,
     contact_id: contactId,
@@ -151,13 +157,18 @@ export default async (request) => {
     return Response.json({ ok: false, message: "Please complete all required fields correctly." }, { status: 400 });
   }
 
+  const submissionId = clean(data.submissionId, 80);
+  if (!/^[0-9a-f]{8}-[0-9a-f-]{27,36}$/i.test(submissionId)) {
+    return Response.json({ ok: false, message: "Please refresh the page and try again." }, { status: 400 });
+  }
+
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   const from = Netlify.env.get("RESEND_FROM_EMAIL");
   const to = Netlify.env.get("RESEND_TO_EMAIL");
   const resendConfigured = Boolean(apiKey && from && to);
   const ceocConfigured = Boolean(Netlify.env.get("CEOC_SUPABASE_SERVICE_ROLE_KEY"));
 
-  if (!resendConfigured && !ceocConfigured) {
+  if (!ceocConfigured) {
     return Response.json({ ok: false, message: "Inquiry service is temporarily unavailable." }, { status: 503 });
   }
 
@@ -167,35 +178,33 @@ export default async (request) => {
   const text = `BUSINESS OPPORTUNITY DEVELOPMENT AGENCY\nNEW WEBSITE INQUIRY\n\nInquiry Type: ${inquiryType}\nName: ${name}\nBusiness / Organization: ${organization || "Not provided"}\nEmail: ${email}\nPhone: ${phone || "Not provided"}\nState: ${state}\nReceived: ${receivedAt}\n\nMessage:\n${message}`;
   const html = `<div style="font-family:Arial,sans-serif;color:#101b2c"><h2 style="color:#06162f">BUSINESS OPPORTUNITY DEVELOPMENT AGENCY — New Inquiry</h2><p><strong>Inquiry Type:</strong> ${safe(inquiryType)}</p><p><strong>Name:</strong> ${safe(name)}</p><p><strong>Business / Organization:</strong> ${safe(organization || "Not provided")}</p><p><strong>Email:</strong> ${safe(email)}</p><p><strong>Phone:</strong> ${safe(phone || "Not provided")}</p><p><strong>State:</strong> ${safe(state)}</p><hr><p>${safe(message).replace(/\n/g,"<br>")}</p><hr><small>Received ${safe(receivedAt)}. Visitor consented to be contacted regarding this inquiry.</small></div>`;
 
-  const payload = { name, organization, email, phone, state, inquiryType, message, consent, receivedAt };
+  const payload = { name, organization, email, phone, state, inquiryType, message, consent, receivedAt, submissionId };
 
-  const resendPromise = resendConfigured
-    ? fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ from, to: [to], reply_to: email, subject, text, html })
-      }).then(async (res) => {
-        if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
-        return { ok: true };
-      })
-    : Promise.resolve({ skipped: true });
-
-  const ceocPromise = ceocConfigured
-    ? captureInCeoc(payload)
-    : Promise.resolve({ skipped: true });
-
-  const [resendResult, ceocResult] = await Promise.allSettled([resendPromise, ceocPromise]);
-
-  const resendOk = resendResult.status === "fulfilled" && !resendResult.value?.skipped;
-  const ceocOk = ceocResult.status === "fulfilled" && !ceocResult.value?.skipped;
-
-  if (resendResult.status === "rejected") console.error("Resend failed:", resendResult.reason);
-  if (ceocResult.status === "rejected") console.error("CEOC capture failed:", ceocResult.reason);
-
-  if (!resendOk && !ceocOk) {
-    return Response.json({ ok: false, message: "We could not submit your inquiry right now. Please try again." }, { status: 502 });
+  // Never acknowledge an inquiry unless the CEOC contact, interaction, and lead exist.
+  let capture;
+  try {
+    capture = await captureInCeoc(payload);
+    if (!capture?.contact_id || !capture?.interaction_id || !capture?.lead_id) throw new Error("Incomplete CEOC capture");
+  } catch (error) {
+    console.error("BODA inquiry CEOC capture failed:", { submissionId, error: String(error) });
+    return Response.json({ ok: false, message: "We could not save your inquiry right now. Please try again." }, { status: 503 });
   }
 
+  // Notification email is supplementary; a mail outage must not lose a persisted lead.
+  if (resendConfigured) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", "Idempotency-Key": submissionId },
+        body: JSON.stringify({ from, to: [to], reply_to: email, subject, text, html })
+      });
+      if (!res.ok) throw new Error(`Resend ${res.status}`);
+    } catch (error) {
+      console.error("BODA inquiry notification failed (lead saved):", { submissionId, error: String(error) });
+    }
+  } else {
+    console.warn("BODA inquiry email notification unavailable (lead saved):", { submissionId });
+  }
   return Response.json({ ok: true, message: "Thank you. Your inquiry has been sent to the Agency." });
 };
 
