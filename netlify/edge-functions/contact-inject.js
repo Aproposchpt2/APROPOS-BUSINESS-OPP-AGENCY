@@ -134,7 +134,11 @@ const contactScript = `
       return;
     }
 
+    // Preserve the same ID until the server confirms database persistence.
+    const submissionId = form.dataset.submissionId || crypto.randomUUID();
+    form.dataset.submissionId = submissionId;
     const data = Object.fromEntries(new FormData(form).entries());
+    data.submissionId = submissionId;
     data.consent = document.getElementById('inq-consent').checked;
     button.disabled = true;
     button.textContent = 'Sending…';
@@ -155,6 +159,7 @@ const contactScript = `
       } catch (_) { /* Analytics must not affect a successful inquiry. */ }
       status.textContent = result.message || 'Thank you. Your inquiry has been sent to the Agency.';
       form.reset();
+      delete form.dataset.submissionId;
     } catch (error) {
       status.className = 'form-status error';
       status.textContent = error.message || 'We could not send your inquiry right now. Please try again.';
