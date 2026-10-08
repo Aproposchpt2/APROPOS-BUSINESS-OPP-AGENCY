@@ -320,3 +320,9 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
+
+# About Us page
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
