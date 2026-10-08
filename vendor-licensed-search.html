@@ -7,11 +7,11 @@
 <title>Search Contracts | Business Opportunity Development Agency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital@0;1&family=Cormorant+Garamond:ital@1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0A1A3A;--surface:#0f2244;--panel:#132954;--line:rgba(199,167,90,.18);--line2:rgba(199,167,90,.32);
-  --text:#f0f6ff;--muted:#8facd0;--soft:#5a7899;--gold:#c7a75a;--gold2:#ead9a5;--green:#2ecc8a;--amber:#f0a500;--red:#e05555;
-  --disp:"Bodoni Moda",Georgia,serif;--serif:"Cormorant Garamond",Georgia,serif}
+:root{--bg:#081a31;--surface:#0f2244;--panel:#132954;--line:rgba(199,167,90,.18);--line2:rgba(199,167,90,.32);
+  --text:#f0f6ff;--muted:#8facd0;--soft:#5a7899;--gold:#c7a75a;--gold2:#ead9a5;--green:#2ecc8a;--amber:#f0a500;--red:#e05555;--boda-hh:72px;
+  --disp:"Cormorant Garamond",Georgia,serif;--serif:"Cormorant Garamond",Georgia,serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6;font-family:'Manrope',Arial,sans-serif}
 a{text-decoration:none;color:inherit}
@@ -77,13 +77,13 @@ th{color:var(--soft);font-size:.62rem;text-transform:uppercase;letter-spacing:.0
 
 @media(max-width:920px){.layout{flex-direction:column}.sidebar{width:100%;flex:none;position:static;max-height:none}.filter-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.filter-grid{grid-template-columns:1fr}}
+body.nav-open{overflow:hidden}.boda-header{position:fixed;inset:0 0 auto 0;z-index:9000;height:var(--boda-hh);background:rgba(2,11,24,.95);border-bottom:1px solid rgba(199,167,90,.22);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#fff}.boda-hinner{max-width:1380px;height:100%;margin:0 auto;padding:0 max(24px,4vw);display:flex;align-items:center;justify-content:space-between;gap:32px}.boda-brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff;flex-shrink:0}.boda-rule{width:2px;height:36px;background:linear-gradient(#ead9a5,#c7a75a);flex-shrink:0}.boda-brand strong{display:block;font-size:.78rem;letter-spacing:.18em;font-weight:700;line-height:1}.boda-nav{display:flex;align-items:center;gap:20px}.boda-nav a{text-decoration:none;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap;transition:color .2s}.boda-nav a:hover{color:#fff}.boda-nav .boda-cta{padding:10px 14px;border:1px solid rgba(229,207,154,.5);color:#ead9a5}.boda-toggle{display:none;background:transparent;border:0;color:#fff;cursor:pointer;font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;font-family:inherit;font-weight:600;padding:10px 0;flex-shrink:0}@media(max-width:860px){.boda-toggle{display:block}.boda-nav{position:fixed;inset:var(--boda-hh) 0 0 0;background:rgba(2,11,24,.98);flex-direction:column;align-items:flex-start;justify-content:center;padding:48px max(32px,8vw);gap:26px;opacity:0;visibility:hidden;transform:translateY(-12px);transition:.22s ease}.boda-nav.open{opacity:1;visibility:visible;transform:none}.boda-nav a{font-size:.78rem}.boda-nav .boda-cta{padding:12px 0;border:0;border-bottom:1px solid rgba(229,207,154,.28)}}@media(max-width:480px){.boda-brand strong{font-size:.66rem;letter-spacing:.12em}}.boda-spacer{height:var(--boda-hh)}
+.footer{text-align:center;padding:30px 20px 50px;color:rgba(255,255,255,.4);font-size:.67rem;border-top:1px solid rgba(199,167,90,.15);margin-top:40px}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand"><div class="brand-mark">BA</div><div><div class="brand-name">Business Opportunity Development Agency</div><div class="brand-sub">Contract Search</div></div></div>
-  <a class="back-link" href="/vendor-dashboard">← Back to Dashboard</a>
-</header>
+<header class="boda-header" id="bodaHeader"><div class="boda-hinner"><a class="boda-brand" href="/" aria-label="Business Opportunity Development Agency home"><span class="boda-rule" aria-hidden="true"></span><span><strong>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</strong></span></a><button class="boda-toggle" id="bodaToggle" type="button" aria-expanded="false" aria-controls="bodaNav">Menu</button><nav class="boda-nav" id="bodaNav" aria-label="Site navigation"><a href="/">Home</a><a href="/contract-preparedness">Contract Preparedness</a><a href="/business-development-roadmap">Roadmap</a><a href="/business-development-marketing-engine">Marketing Engine</a><a class="boda-cta" href="/claim">Claim an Opportunity</a></nav><a class="back-link" href="/vendor-dashboard" style="margin-left:8px;border-color:rgba(229,207,154,.3);color:var(--gold2);font-size:.62rem;border-radius:7px;padding:8px 14px;border:1px solid rgba(229,207,154,.3);text-decoration:none">← Dashboard</a></div></header>
+<div class="boda-spacer" aria-hidden="true"></div>
 
 <section class="intro"><div class="intro-in">
   <div class="eyebrow">Search Contracts</div>
@@ -211,6 +211,8 @@ $('prev').onclick=()=>{if(state.page>1){state.page--;load()}};
 $('next').onclick=()=>{if(state.page<state.totalPages){state.page++;load()}};
 
 (async()=>{try{if(await loadTree())await load()}catch(e){$('rows').innerHTML=`<tr><td colspan="5" class="empty-row">${esc(e.message)}</td></tr>`}})();
+const _bt=document.getElementById('bodaToggle'),_bn=document.getElementById('bodaNav');if(_bt&&_bn){_bt.addEventListener('click',()=>{const o=_bn.classList.toggle('open');_bt.setAttribute('aria-expanded',o);document.body.classList.toggle('nav-open',o);});}
 </script>
+<footer class="footer"><strong style="color:#fff">Business Opportunity Development Agency</strong><br>A property of <strong style="color:#fff">Apropos Group LLC</strong></footer>
 </body>
 </html>
