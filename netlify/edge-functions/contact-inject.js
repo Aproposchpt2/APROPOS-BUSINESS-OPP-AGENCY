@@ -27,6 +27,21 @@ const contactStyles = `
   .form-status{margin:0;min-height:24px;font-size:.82rem;color:var(--gold-light)}
   .form-status.error{color:#ffd0c8}
   .honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+  /* Premium Presence: distinct, highly visible bubble-style intake controls. */
+  .contact-section .inquiry-form{padding:28px 30px 32px;border:1px solid rgba(200,164,91,.44);border-radius:26px;background:linear-gradient(150deg,rgba(18,58,104,.42),rgba(2,11,24,.8));box-shadow:0 22px 65px rgba(0,0,0,.22)}
+  .contact-section .form-row{gap:20px;padding:13px 0;border-bottom:0}
+  .contact-section .field label{margin:0 0 9px 12px;color:var(--gold-light);font-size:.68rem;letter-spacing:.13em}
+  .contact-section .field input,.contact-section .field select,.contact-section .field textarea{display:block;width:100%;min-height:56px;padding:15px 20px;border:1px solid rgba(229,207,154,.64);border-radius:30px;background:#081a31;color:#fff;box-shadow:inset 0 1px 3px rgba(0,0,0,.2);font-size:1rem;line-height:1.45;outline:0;transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
+  .contact-section .field select{padding-right:38px;cursor:pointer;background-color:#081a31}
+  .contact-section .field textarea{min-height:160px;border-radius:22px;resize:vertical}
+  .contact-section .field input:focus-visible,.contact-section .field select:focus-visible,.contact-section .field textarea:focus-visible{border-color:var(--gold-light);background:#0a2448;box-shadow:0 0 0 3px rgba(200,164,91,.22)}
+  .contact-section .field input::placeholder,.contact-section .field textarea::placeholder{color:rgba(255,255,255,.64)}
+  .contact-section .field input:-webkit-autofill{box-shadow:0 0 0 100px #081a31 inset;-webkit-text-fill-color:#fff}
+  .contact-section .consent-row{padding:20px 8px 4px}
+  .contact-section .consent-row label{color:rgba(255,255,255,.85)}
+  .contact-section .inquiry-submit{border-radius:30px;min-height:54px;padding:14px 30px;box-shadow:0 7px 24px rgba(200,164,91,.15)}
+  .contact-section .inquiry-submit:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  @media(max-width:640px){.contact-section .inquiry-form{padding:24px 17px;border-radius:22px}.contact-section .form-row{gap:18px;padding:10px 0}.contact-section .field input,.contact-section .field select{min-height:54px}}
   @media(max-width:900px){.contact-grid{grid-template-columns:1fr;gap:64px}.contact-copy{position:static}}
   @media(max-width:640px){.contact-section{padding:105px 0 110px}.form-row{grid-template-columns:1fr;gap:22px;padding:22px 0}.form-actions{align-items:flex-start;flex-direction:column}.inquiry-submit{width:100%}}
 </style>`;
