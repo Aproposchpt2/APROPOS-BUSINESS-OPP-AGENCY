@@ -6,31 +6,36 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#081a31;--navy2:#12375e;--gold:#c7a75a;--gold2:#ead9a5;--ink:#14233a;--muted:#657489;--line:#c9d9e5;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif;--green:#217a57}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#f8fbfd,#edf4f8);color:var(--ink);font-family:var(--sans)}
+:root{--navy:#fff;--gold:#c7a75a;--gold2:#ead9a5;--muted:rgba(255,255,255,.6);--line:rgba(255,255,255,.12);--serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",Arial,sans-serif;--green:#5ecfa4;--boda-hh:72px}
+*{box-sizing:border-box}body{margin:0;background:#081a31;color:#fff;font-family:var(--sans)}
 a{text-decoration:none;color:inherit}.shell{width:min(900px,calc(100% - 32px));margin:auto;padding:40px 0 70px}
 h1,h2,h3{font-family:var(--serif);font-weight:500}
-.eyebrow{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#8c6e2a}
-h1{font-size:clamp(1.8rem,4vw,2.6rem);color:var(--navy);margin:8px 0 10px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:20px;box-shadow:0 12px 34px rgba(8,26,49,.06)}
-.status-tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8c6e2a;background:rgba(199,167,90,.14);padding:4px 10px;border-radius:999px}
-.status-tag.active{color:var(--green);background:rgba(33,122,87,.1)}
-.section-title{font-family:var(--serif);font-size:1.3rem;color:var(--navy);margin:0 0 12px}
-.msg{color:var(--muted);line-height:1.7}
+.eyebrow{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2)}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);color:#fff;margin:8px 0 10px}
+.panel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:26px;margin-top:20px}
+.status-tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2);background:rgba(199,167,90,.14);padding:4px 10px;border-radius:999px}
+.status-tag.active{color:#5ecfa4;background:rgba(46,204,138,.1)}
+.section-title{font-family:var(--serif);font-size:1.3rem;color:var(--gold2);margin:0 0 12px}
+.msg{color:rgba(255,255,255,.65);line-height:1.7}.msg a{color:var(--gold2);text-decoration:underline}
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
-.kpi{border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;background:#fbfdfe}
-.kpi b{display:block;font-family:var(--serif);font-size:1.5rem;color:var(--navy)}
-.kpi span{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.msgcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:10px;background:#fbfdfe}
-.msgcard b{display:block;color:var(--navy);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
-.opp{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:10px}
-.opp b{color:var(--navy)}
-.note-item{border-bottom:1px solid var(--line);padding:10px 0;font-size:.85rem;color:#3b4d63}
+.kpi{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px;text-align:center;background:rgba(255,255,255,.05)}
+.kpi b{display:block;font-family:var(--serif);font-size:1.5rem;color:#fff}
+.kpi span{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.45)}
+.msgcard{border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 16px;margin-top:10px;background:rgba(255,255,255,.04)}
+.msgcard b{display:block;color:#fff;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.opp{border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 16px;margin-top:10px}
+.opp b{color:#fff}
+.note-item{border-bottom:1px solid rgba(255,255,255,.1);padding:10px 0;font-size:.85rem;color:rgba(255,255,255,.75)}
 .note-item:last-child{border-bottom:none}
-.btn{display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:0 20px;border-radius:9px;background:var(--navy);color:#fff;font-weight:700;font-size:.72rem;margin-top:14px;cursor:pointer;border:none}
+.btn{display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:0 20px;border-radius:9px;background:linear-gradient(180deg,#d8bd79,#c39c47);color:#081a31;font-weight:700;font-size:.72rem;margin-top:14px;cursor:pointer;border:none}
+input[type=email]{border:1px solid rgba(255,255,255,.15)!important;background:rgba(255,255,255,.06)!important;color:#fff!important;border-radius:9px!important}
 @media(max-width:700px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+body.nav-open{overflow:hidden}.boda-header{position:fixed;inset:0 0 auto 0;z-index:9000;height:var(--boda-hh);background:rgba(2,11,24,.95);border-bottom:1px solid rgba(199,167,90,.22);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#fff}.boda-hinner{max-width:1380px;height:100%;margin:0 auto;padding:0 max(24px,4vw);display:flex;align-items:center;justify-content:space-between;gap:32px}.boda-brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff;flex-shrink:0}.boda-rule{width:2px;height:36px;background:linear-gradient(#ead9a5,#c7a75a);flex-shrink:0}.boda-brand strong{display:block;font-size:.78rem;letter-spacing:.18em;font-weight:700;line-height:1}.boda-nav{display:flex;align-items:center;gap:20px}.boda-nav a{text-decoration:none;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap;transition:color .2s}.boda-nav a:hover{color:#fff}.boda-nav .boda-cta{padding:10px 14px;border:1px solid rgba(229,207,154,.5);color:#ead9a5}.boda-toggle{display:none;background:transparent;border:0;color:#fff;cursor:pointer;font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;font-family:inherit;font-weight:600;padding:10px 0;flex-shrink:0}@media(max-width:860px){.boda-toggle{display:block}.boda-nav{position:fixed;inset:var(--boda-hh) 0 0 0;background:rgba(2,11,24,.98);flex-direction:column;align-items:flex-start;justify-content:center;padding:48px max(32px,8vw);gap:26px;opacity:0;visibility:hidden;transform:translateY(-12px);transition:.22s ease}.boda-nav.open{opacity:1;visibility:visible;transform:none}.boda-nav a{font-size:.78rem}.boda-nav .boda-cta{padding:12px 0;border:0;border-bottom:1px solid rgba(229,207,154,.28)}}@media(max-width:480px){.boda-brand strong{font-size:.66rem;letter-spacing:.12em}}.boda-spacer{height:var(--boda-hh)}
+.footer{text-align:center;padding:30px 20px 50px;color:rgba(255,255,255,.4);font-size:.67rem;border-top:1px solid rgba(199,167,90,.15);margin-top:40px}
 </style></head>
 <body>
+<header class="boda-header" id="bodaHeader"><div class="boda-hinner"><a class="boda-brand" href="/" aria-label="Business Opportunity Development Agency home"><span class="boda-rule" aria-hidden="true"></span><span><strong>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</strong></span></a><button class="boda-toggle" id="bodaToggle" type="button" aria-expanded="false" aria-controls="bodaNav">Menu</button><nav class="boda-nav" id="bodaNav" aria-label="Site navigation"><a href="/">Home</a><a href="/contract-preparedness">Contract Preparedness</a><a href="/business-development-roadmap">Roadmap</a><a href="/business-development-marketing-engine">Marketing Engine</a><a class="boda-cta" href="/claim">Claim an Opportunity</a></nav></div></header>
+<div class="boda-spacer" aria-hidden="true"></div>
 <main class="shell">
 <div class="eyebrow">Business Opportunity Development Agency</div>
 <h1 id="pageTitle">Your Marketing Engine Campaign</h1>
@@ -129,6 +134,8 @@ async function load(){
   }
 }
 load();
+const _t=document.getElementById('bodaToggle'),_n=document.getElementById('bodaNav');if(_t&&_n){_t.addEventListener('click',()=>{const o=_n.classList.toggle('open');_t.setAttribute('aria-expanded',o);document.body.classList.toggle('nav-open',o);});}
 })();
 </script>
+<footer class="footer"><strong style="color:#fff">Business Opportunity Development Agency</strong><br>A property of <strong style="color:#fff">Apropos Group LLC</strong></footer>
 </body></html>
