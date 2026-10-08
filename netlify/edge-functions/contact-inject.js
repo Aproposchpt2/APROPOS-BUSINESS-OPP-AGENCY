@@ -31,6 +31,14 @@ const contactStyles = `
   @media(max-width:640px){.contact-section{padding:105px 0 110px}.form-row{grid-template-columns:1fr;gap:22px;padding:22px 0}.form-actions{align-items:flex-start;flex-direction:column}.inquiry-submit{width:100%}}
 </style>`;
 
+const missionBanner = `
+<section aria-label="Our community economic growth mission" style="background:var(--navy-mid);border-top:1px solid rgba(229,207,154,.24);padding:58px 0;">
+  <div class="shell">
+    <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3.3vw,3.2rem);line-height:1.15;font-weight:600;color:var(--gold-light);margin:0 0 18px;">Economic Growth Through Business Development</h2>
+    <p style="color:#fff;font-size:clamp(1rem,1.5vw,1.24rem);line-height:1.8;max-width:970px;margin:0;">We stimulate economic growth by developing businesses that create opportunities, generate employment, strengthen families, and build prosperous communities.</p>
+  </div>
+</section>`;
+
 const contactSection = `
 <section class="contact-section" id="contact" aria-labelledby="contact-title">
   <div class="shell contact-grid">
@@ -175,7 +183,8 @@ export default async (request, context) => {
     '<a href="#partnerships">Partnerships</a>\n        </nav>',
     '<a href="#partnerships">Partnerships</a>\n          <a href="#contact">Contact</a>\n        </nav>'
   );
-  html = html.replace("</main>", `${contactSection}\n</main>`);
+  const isHome = new URL(request.url).pathname === "/" || new URL(request.url).pathname === "/index.html";
+  html = html.replace("</main>", `${isHome ? missionBanner : ""}${contactSection}\n</main>`);
   html = html.replace("</body>", `${contactScript}\n</body>`);
 
   const headers = new Headers(response.headers);
