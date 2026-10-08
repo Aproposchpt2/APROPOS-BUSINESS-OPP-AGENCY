@@ -7,9 +7,9 @@
 <title>Vendor Dashboard | Business Opportunity Development Agency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital@0;1&family=Cormorant+Garamond:ital@1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0A1A3A;--surface:#0f2244;--panel:#132954;--line:rgba(199,167,90,.18);--line2:rgba(199,167,90,.32);
+:root{--bg:#081a31;--surface:#0f2244;--panel:#132954;--boda-hh:72px;--line:rgba(199,167,90,.18);--line2:rgba(199,167,90,.32);
   --text:#f0f6ff;--muted:#8facd0;--soft:#5a7899;--gold:#c7a75a;--gold2:#ead9a5;--green:#2ecc8a;--amber:#f0a500;--red:#e05555}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6;font-family:'Manrope',Arial,sans-serif}
@@ -42,7 +42,7 @@ header{background:var(--surface);border-bottom:1px solid var(--line);padding:14p
 .search-cta p{margin:0 0 18px;color:var(--muted);font-size:.86rem;line-height:1.65;max-width:640px}
 .search-cta-btn{display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0F2A6A;font-weight:800;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;padding:13px 22px;border-radius:8px}
 .search-cta-btn:hover{filter:brightness(1.06)}
-.comp-title{font-family:'Bodoni Moda',serif;font-size:1.2rem;margin-bottom:5px}
+.comp-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.2rem;font-weight:500;margin-bottom:5px}
 .comp-agency{font-size:.78rem;color:var(--muted);margin-bottom:10px}
 .comp-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .pill{padding:4px 11px;border-radius:999px;font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
@@ -76,7 +76,7 @@ tr:hover td{background:rgba(199,167,90,.04)}
 .cd-inner{padding:22px 26px 50px}
 .cd-close{position:fixed;top:14px;right:14px;z-index:802;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);border-radius:8px;color:#fff;font-size:1.1rem;cursor:pointer;padding:5px 11px}
 .cd-eye{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);margin-bottom:8px}
-.cd-title{font-family:'Bodoni Moda',serif;font-size:1.2rem;font-weight:600;line-height:1.3;margin-bottom:6px;padding-right:52px}
+.cd-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.2rem;font-weight:500;line-height:1.3;margin-bottom:6px;padding-right:52px}
 .cd-agency{font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:16px}
 .cd-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
 .cd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
@@ -92,13 +92,13 @@ tr:hover td{background:rgba(199,167,90,.04)}
 .cd-btn.primary:hover{filter:brightness(1.06)}
 
 @media(max-width:640px){.entity-card{gap:14px}}
+body.nav-open{overflow:hidden}.boda-header{position:fixed;inset:0 0 auto 0;z-index:9000;height:var(--boda-hh);background:rgba(2,11,24,.95);border-bottom:1px solid rgba(199,167,90,.22);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#fff}.boda-hinner{max-width:1380px;height:100%;margin:0 auto;padding:0 max(24px,4vw);display:flex;align-items:center;justify-content:space-between;gap:32px}.boda-brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff;flex-shrink:0}.boda-rule{width:2px;height:36px;background:linear-gradient(#ead9a5,#c7a75a);flex-shrink:0}.boda-brand strong{display:block;font-size:.78rem;letter-spacing:.18em;font-weight:700;line-height:1}.boda-nav{display:flex;align-items:center;gap:20px}.boda-nav a{text-decoration:none;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap;transition:color .2s}.boda-nav a:hover{color:#fff}.boda-nav .boda-cta{padding:10px 14px;border:1px solid rgba(229,207,154,.5);color:#ead9a5}.boda-toggle{display:none;background:transparent;border:0;color:#fff;cursor:pointer;font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;font-family:inherit;font-weight:600;padding:10px 0;flex-shrink:0}@media(max-width:860px){.boda-toggle{display:block}.boda-nav{position:fixed;inset:var(--boda-hh) 0 0 0;background:rgba(2,11,24,.98);flex-direction:column;align-items:flex-start;justify-content:center;padding:48px max(32px,8vw);gap:26px;opacity:0;visibility:hidden;transform:translateY(-12px);transition:.22s ease}.boda-nav.open{opacity:1;visibility:visible;transform:none}.boda-nav a{font-size:.78rem}.boda-nav .boda-cta{padding:12px 0;border:0;border-bottom:1px solid rgba(229,207,154,.28)}}@media(max-width:480px){.boda-brand strong{font-size:.66rem;letter-spacing:.12em}}.boda-spacer{height:var(--boda-hh)}
+.footer{text-align:center;padding:30px 20px 50px;color:rgba(255,255,255,.4);font-size:.67rem;border-top:1px solid rgba(199,167,90,.15);margin-top:40px}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand"><div class="brand-mark">BA</div><div><div class="brand-name">Business Opportunity Development Agency</div><div class="brand-sub">Vendor Dashboard</div></div></div>
-  <button class="signout-btn" onclick="signOut()">Sign Out</button>
-</header>
+<header class="boda-header" id="bodaHeader"><div class="boda-hinner"><a class="boda-brand" href="/" aria-label="Business Opportunity Development Agency home"><span class="boda-rule" aria-hidden="true"></span><span><strong>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</strong></span></a><button class="boda-toggle" id="bodaToggle" type="button" aria-expanded="false" aria-controls="bodaNav">Menu</button><nav class="boda-nav" id="bodaNav" aria-label="Site navigation"><a href="/">Home</a><a href="/contract-preparedness">Contract Preparedness</a><a href="/business-development-roadmap">Roadmap</a><a href="/business-development-marketing-engine">Marketing Engine</a><a class="boda-cta" href="/claim">Claim an Opportunity</a></nav><button class="signout-btn" onclick="signOut()" style="margin-left:8px">Sign Out</button></div></header>
+<div class="boda-spacer" aria-hidden="true"></div>
 
 <main class="page">
   <div class="loading" id="loadingEl">Finding your matched opportunities…</div>
@@ -368,6 +368,8 @@ async function load() {
   }
 }
 load();
+const _bt=document.getElementById('bodaToggle'),_bn=document.getElementById('bodaNav');if(_bt&&_bn){_bt.addEventListener('click',()=>{const o=_bn.classList.toggle('open');_bt.setAttribute('aria-expanded',o);document.body.classList.toggle('nav-open',o);});}
 </script>
+<footer class="footer"><strong style="color:#fff">Business Opportunity Development Agency</strong><br>A property of <strong style="color:#fff">Apropos Group LLC</strong></footer>
 </body>
 </html>
