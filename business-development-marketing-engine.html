@@ -180,6 +180,7 @@ section.block p.lead{color:rgba(255,255,255,.68);max-width:760px;line-height:1.7
 <label class="consent"><input type="checkbox" name="consent" required> I consent to be contacted by the Business Opportunity Development Agency regarding the Business Development Marketing Engine.</label>
 <div class="contact-actions"><button class="btn contact-submit" type="submit">Contact Us About the Marketing Engine</button><span class="form-status" id="engineContactStatus" aria-live="polite"></span></div>
 </form>
+<div id="engineBooking" hidden style="margin-top:24px;padding:22px;border:1px solid rgba(199,167,90,.55);border-radius:12px;background:rgba(255,255,255,.06)" aria-live="polite"><h3 style="color:#ead9a5;margin:0 0 10px">Next Step: Schedule Your Consultation</h3><p style="line-height:1.6">Your Marketing Engine inquiry has been received. Choose an available consultation time using Google Calendar.</p><a class="btn" href="https://calendar.app.google/DNAMvEyWbg2jfxaN8" target="_blank" rel="noopener noreferrer">Schedule Your Google Meet Consultation</a><p style="font-size:.78rem;opacity:.8">Your appointment is not confirmed until you complete the calendar booking.</p></div>
 </div>
 <p class="disclaimer">The Business Development Marketing Engine is a managed business development campaign service. It does not guarantee meetings, proposals, contracts, revenue, or sales. Campaign scope and performance optimization are managed by BODA throughout the service term.</p>
 </section>
@@ -198,7 +199,7 @@ section.block p.lead{color:rgba(255,255,255,.68);max-width:760px;line-height:1.7
    const r=await fetch('/api/inquiry',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
    const d=await r.json().catch(()=>({}));
    if(!r.ok||!d.ok)throw new Error(d.message||'Your request could not be sent.');
-   status.className='form-status ok';status.textContent=d.message||'Thank you. Your request has been sent.';form.reset();
+   status.className='form-status ok';status.textContent=d.message||'Thank you. Your request has been sent.';form.reset();document.getElementById('engineBooking').hidden=false;
   }catch(err){status.className='form-status error';status.textContent=err.message||'Please try again.'}
   finally{btn.disabled=false}
  });
