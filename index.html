@@ -956,6 +956,14 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
         menuToggle.textContent = 'Menu';
       });
     });
+    const closeMobileMenu = () => {
+      nav.classList.remove('open');
+      document.body.classList.remove('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.textContent = 'Menu';
+    };
+    window.addEventListener('resize', () => { if (window.innerWidth > 900) closeMobileMenu(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMobileMenu(); });
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
