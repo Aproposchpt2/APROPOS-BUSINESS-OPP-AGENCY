@@ -81,7 +81,22 @@ section.block p.lead{color:rgba(255,255,255,.68);max-width:760px;line-height:1.7
 }
 /* === Site nav === */
 :root{--boda-hh:72px}body.nav-open{overflow:hidden}.boda-header{position:fixed;inset:0 0 auto 0;z-index:9000;height:var(--boda-hh);background:rgba(2,11,24,.95);border-bottom:1px solid rgba(199,167,90,.22);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#fff}.boda-hinner{max-width:1380px;height:100%;margin:0 auto;padding:0 max(24px,4vw);display:flex;align-items:center;justify-content:space-between;gap:32px}.boda-brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff;flex-shrink:0}.boda-rule{width:2px;height:36px;background:linear-gradient(#ead9a5,#c7a75a);flex-shrink:0}.boda-brand strong{display:block;font-size:.78rem;letter-spacing:.18em;font-weight:700;line-height:1}.boda-brand em{display:block;margin-top:5px;font-style:normal;font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.6)}.boda-nav{display:flex;align-items:center;gap:20px}.boda-nav a{text-decoration:none;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap;transition:color .2s}.boda-nav a:hover,.boda-nav a[aria-current]{color:#fff}.boda-nav .boda-cta{padding:10px 14px;border:1px solid rgba(229,207,154,.5);color:#ead9a5}.boda-toggle{display:none;background:transparent;border:0;color:#fff;cursor:pointer;font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;font-family:inherit;font-weight:600;padding:10px 0;flex-shrink:0}@media(max-width:860px){.boda-toggle{display:block}.boda-nav{position:fixed;inset:var(--boda-hh) 0 0 0;background:rgba(2,11,24,.98);flex-direction:column;align-items:flex-start;justify-content:center;padding:48px max(32px,8vw);gap:26px;opacity:0;visibility:hidden;transform:translateY(-12px);transition:.22s ease}.boda-nav.open{opacity:1;visibility:visible;transform:none}.boda-nav a{font-size:.78rem}.boda-nav .boda-cta{padding:12px 0;border:0;border-bottom:1px solid rgba(229,207,154,.28)}}@media(max-width:480px){.boda-brand strong{font-size:.66rem;letter-spacing:.12em}}.boda-spacer{height:var(--boda-hh)}
-</style></head>
+</style><script>
+(function(){
+ if(!['aproposopportunity.org','www.aproposopportunity.org'].includes(location.hostname))return;
+ window.dataLayer=window.dataLayer||[];
+ window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
+ gtag('js',new Date());
+ const q=new URLSearchParams(location.search), attribution={};
+ const sources=['linkedin','google_business_profile','iss_outreach'],media=['social','organic','email'],names=['iss_sales','opportunity_services'];
+ if(sources.includes(q.get('utm_source')))attribution.campaign_source=q.get('utm_source');
+ if(media.includes(q.get('utm_medium')))attribution.campaign_medium=q.get('utm_medium');
+ if(names.includes(q.get('utm_campaign')))attribution.campaign_name=q.get('utm_campaign');
+ gtag('config','G-VXX1P92PHS',{...attribution,page_location:location.origin+location.pathname});
+ const tag=document.createElement('script');tag.async=true;tag.src='https://www.googletagmanager.com/gtag/js?id=G-VXX1P92PHS';document.head.appendChild(tag);
+})();
+</script>
+</head>
 <body>
 <header class="boda-header" id="bodaHeader">
   <div class="boda-hinner">
@@ -191,14 +206,17 @@ section.block p.lead{color:rgba(255,255,255,.68);max-width:760px;line-height:1.7
 (()=>{'use strict';
  const form=document.getElementById('engineContact'),status=document.getElementById('engineContactStatus');
  if(!form)return;
+ let submissionId=crypto.randomUUID();
  form.addEventListener('submit',async e=>{
   e.preventDefault();const btn=form.querySelector('button[type="submit"]');btn.disabled=true;status.className='form-status';status.textContent='Sending…';
   const fd=new FormData(form);
-  const payload={name:fd.get('name'),organization:fd.get('organization'),email:fd.get('email'),phone:fd.get('phone'),state:fd.get('state'),message:fd.get('message'),website:fd.get('website'),consent:fd.get('consent')==='on',inquiryType:'Business Development Marketing Engine'};
+  const payload={submissionId,name:fd.get('name'),organization:fd.get('organization'),email:fd.get('email'),phone:fd.get('phone'),state:fd.get('state'),message:fd.get('message'),website:fd.get('website'),consent:fd.get('consent')==='on',inquiryType:'Business Development Marketing Engine'};
   try{
    const r=await fetch('/api/inquiry',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
    const d=await r.json().catch(()=>({}));
    if(!r.ok||!d.ok)throw new Error(d.message||'Your request could not be sent.');
+   try{if(typeof window.gtag==='function'&&!fd.get('website'))window.gtag('event','generate_lead',{send_to:'G-VXX1P92PHS',page_location:location.origin+location.pathname});}catch(_){}
+   submissionId=crypto.randomUUID();
    status.className='form-status ok';status.textContent=d.message||'Thank you. Your request has been sent.';form.reset();document.getElementById('engineBooking').hidden=false;
   }catch(err){status.className='form-status error';status.textContent=err.message||'Please try again.'}
   finally{btn.disabled=false}
