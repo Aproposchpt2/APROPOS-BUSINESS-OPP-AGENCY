@@ -130,6 +130,13 @@ section.block p.lead{color:rgba(255,255,255,.68);max-width:760px;line-height:1.7
 (()=>{'use strict';
  const form=document.getElementById('engineContact'),status=document.getElementById('engineContactStatus');
  if(!form)return;
+ const bookingLink=document.querySelector('#engineBooking a');
+ if(bookingLink)bookingLink.addEventListener('click',()=>{
+  try{
+   if(['aproposopportunity.org','www.aproposopportunity.org'].includes(location.hostname)&&typeof window.gtag==='function')
+    window.gtag('event','consultation_booking_click',{send_to:'G-VXX1P92PHS',service:'marketing_engine',page_location:location.origin+location.pathname});
+  }catch(_){}
+ });
  let submissionId=crypto.randomUUID();
  form.addEventListener('submit',async e=>{
   e.preventDefault();const btn=form.querySelector('button[type="submit"]');btn.disabled=true;status.className='form-status';status.textContent='Sending…';
