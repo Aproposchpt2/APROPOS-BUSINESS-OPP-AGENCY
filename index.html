@@ -596,15 +596,26 @@
     @media (max-width: 900px) {
       :root { --header-h: 76px; --shell: min(100% - 40px, 1380px); }
       .header-inner { grid-template-columns: 1fr auto; }
+      /* Blur creates a containing block for fixed descendants on mobile Safari. */
+      .site-header, .site-header.scrolled {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+      body.menu-open .site-header { background: var(--navy-deep); }
       .menu-toggle { display: block; }
       .nav {
         position: fixed;
         inset: var(--header-h) 0 0 0;
-        background: rgba(2,11,24,.985);
+        height: calc(100vh - var(--header-h));
+        height: calc(100dvh - var(--header-h));
+        box-sizing: border-box;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        background: var(--navy-deep);
         flex-direction: column;
         align-items: flex-start;
-        justify-content: center;
-        padding: 60px 10vw;
+        justify-content: flex-start;
+        padding: 32px 10vw max(32px, env(safe-area-inset-bottom));
         gap: 30px;
         opacity: 0;
         visibility: hidden;
@@ -612,7 +623,7 @@
         transition: .25s ease;
       }
       .nav.open { opacity: 1; visibility: visible; transform: translateY(0); }
-      .nav a { font-size: .82rem; }
+      .nav a { font-size: .82rem; flex-shrink: 0; min-height: 44px; display: flex; align-items: center; }
       .hero-inner { grid-template-columns: 1fr; padding-top: calc(var(--header-h) + 72px); }
       .hero h1 { font-size: clamp(3.8rem, 11vw, 6.4rem); }
       .hero-side { justify-self: start; align-self: start; width: min(440px,100%); }
