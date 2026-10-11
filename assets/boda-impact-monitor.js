@@ -12,7 +12,7 @@
       if (!data.ok || !Number.isSafeInteger(data.unique_businesses) || data.unique_businesses < 0) throw new Error('Invalid count');
       number.textContent = data.unique_businesses.toLocaleString('en-US');
       status.textContent = data.historical_reconciliation_complete
-        ? 'Verified opportunity outreach records · Updates every 5 minutes'
+        ? 'Verified opportunity outreach records · Updates daily'
         : 'Recorded opportunity introductions · Historical reconciliation in progress';
     } catch (_) {
       number.textContent = '—';
@@ -20,5 +20,5 @@
     }
   }
   refresh();
-  setInterval(refresh, 300000);
+  setInterval(refresh, 86400000);
 })();
