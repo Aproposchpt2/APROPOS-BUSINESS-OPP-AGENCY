@@ -331,6 +331,28 @@
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
 
+# Contract Search Services
+[[redirects]]
+  from = "/contract-search-services"
+  to = "/contract-search-services.html"
+  status = 200
+
+[[headers]]
+  for = "/contract-search-services.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+# Contract Technical Assistance
+[[redirects]]
+  from = "/contract-technical-assistance"
+  to = "/contract-technical-assistance.html"
+  status = 200
+
+[[headers]]
+  for = "/contract-technical-assistance.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
 # About Us page
 [[redirects]]
   from = "/about"
