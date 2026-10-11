@@ -1,118 +1,91 @@
 # BUSINESS OPPORTUNITY DEVELOPMENT AGENCY
 
-> Building Economic, Business & Community Growth Through Opportunity.
-
-BUSINESS OPPORTUNITY DEVELOPMENT AGENCY is a business-opportunity and contract-opportunity service platform focused on expanding pathways to economic opportunity so businesses can grow, participate, employ people, engage suppliers, invest, and strengthen the communities they serve.
+> Developing Businesses. Creating Opportunities. Strengthening Communities.
 
 BUSINESS OPPORTUNITY DEVELOPMENT AGENCY is operated by Apropos Group LLC. Apropos Group LLC is an independent private company, and BUSINESS OPPORTUNITY DEVELOPMENT AGENCY is not a government agency.
 
-## Primary Focus
+## Primary Operating Model — Opportunity Outreach Program
 
-- Economic opportunity development
-- Business Development Roadmap (90-day business growth strategy, government and commercial)
-- Business Development Marketing Engine (managed business development campaign execution for an approved Roadmap)
-- Business growth
-- Community economic development
-- Government contracting opportunities
-- Procurement intelligence
-- Supplier and subcontracting opportunities
-- Buyer connections
-- Business development resources
-- Capital and funding resources
-- Technical assistance
-- Strategic partnerships
-- Market-expansion opportunities
-- Entrepreneurship resources
-- Local economic-development initiatives
+The Opportunity Outreach Program is BODA's proactive approach to the procurement process.
 
+Rather than requiring businesses to spend valuable time searching for every opportunity themselves, BODA starts with the contractor's capability profile and service location, compares that information with contract opportunities in its repository, identifies potential matches, and contacts the business directly.
 
-## Service Search-Intent Architecture
+The program sequence is:
 
-The following service phrases are first-class search and answer-engine targets for BUSINESS OPPORTUNITY DEVELOPMENT AGENCY:
+1. Review a contractor's business capability profile and service location.
+2. Compare the profile with contract opportunities in the BODA repository.
+3. Identify a potential contract match based on the work requirements, business capabilities, and service location.
+4. Send the complimentary contract opportunity to the contractor by email.
+5. Invite the business to participate in the procurement outreach initiative.
+6. Provide participating businesses complimentary advertising space on the BUSINESS OPPORTUNITY DEVELOPMENT AGENCY website.
+7. Help create a more efficient connection between buyers and capable service providers.
 
-- Contract Preparedness
+There is no charge to participate in the introductory Opportunity Outreach Program or to receive the complimentary advertising space described by the program.
+
+Opportunity matching is a discovery and outreach function. A match does not establish eligibility, qualification, responsiveness, responsibility, or guarantee a contract award. Businesses must review the complete solicitation and authoritative procurement source before deciding whether to pursue an opportunity.
+
+Canonical program page: https://aproposopportunity.org/opportunity-outreach-program
+
+## Current Public Services
+
+- Opportunity Outreach Program
+- Complimentary contract opportunity matching and delivery
+- Complimentary advertising space for participating businesses
 - Contract Search Services
-- Contract Development
 - Contract Technical Assistance
-- Economic Opportunity Development
-- Small Business Opportunity Support
-- Business Services
-- Workforce Development
-- Partnership Coordination
-- Community & Faith-Based Outreach
-- Collaboration with Community Organizations and Public Agencies
-- Training Sessions for Businesses and Community Organizations
-- Business Seminars and Workshops
+- Contract Preparedness Services
+- Business Development Marketing Engine
 
-Related semantic variants include government contract preparedness, government contract search services, small business contract development, government contracting technical assistance, business opportunity development, small business opportunity services, workforce development programs, community partnership coordination, small business training, business workshops, and business seminars.
+## Contract Search Services
+
+Contract Search Services support discovery of public-sector opportunities and review of the stated work against business capabilities, industry context, geography, and official requirements.
+
+Page: https://aproposopportunity.org/contract-search-services
+
+## Contract Technical Assistance
+
+Contract Technical Assistance helps businesses understand procurement terminology, identify readiness questions, review important requirements, and determine practical next steps before pursuing an opportunity.
+
+Page: https://aproposopportunity.org/contract-technical-assistance
+
+## Contract Preparedness Services
+
+Contract Preparedness Services provide a resource pathway for businesses that may need bonding or surety resources, licensing and permits, business insurance, financing or working capital resources, certifications and registrations, proposal development support, or other contract-readiness assistance.
+
+The Agency serves as a resource and referral connector. Third-party providers are independent unless expressly stated otherwise. Businesses evaluate provider qualifications, terms, pricing, eligibility, and suitability directly with the provider.
+
+Page: https://aproposopportunity.org/contract-preparedness
+
+## Business Development Marketing Engine
+
+The Business Development Marketing Engine is a managed business-development campaign service designed to help businesses expand market reach, execute outreach, capture responses, and move qualified opportunities into the sales process.
+
+Page: https://aproposopportunity.org/business-development-marketing-engine
 
 ## Core Positioning
 
 Opportunity Builds Business. Business Builds Community.
 
-The Agency works to strengthen the connection between businesses and the opportunities, buyers, resources, capital, markets, and partnerships that can help create greater economic participation and local growth.
+BODA's procurement outreach approach is designed to create value for the participants in the procurement process:
 
-## Economic Development Model
-
-Opportunity can lead to business growth. Business growth can create revenue, expansion, employment, investment, and supplier activity. Greater economic participation can strengthen families, communities, and local economies.
-
-## Government Marketplace
-
-Public contracting is one major economic-opportunity pathway within the Agency's broader mission. Federal, state, county, municipal, educational, and other public institutions purchase a wide range of products and services from businesses. The Agency works to improve access to relevant public-sector opportunities and the resources businesses need to pursue them.
-
-## Business Opportunity Development
-
-The Agency supports pathways that include government contracting opportunities, supplier and subcontracting opportunities, buyer connections, business-development resources, capital and funding resources, technical assistance, strategic partnerships, market expansion, entrepreneurship resources, and local or regional economic-development initiatives.
-
-## Community Growth
-
-The Agency works to strengthen the connection between businesses and the opportunities, buyers, resources, capital, and partnerships that can contribute to economic growth within the communities it serves. Each community presents different businesses, industries, institutions, buyers, resources, and economic opportunities.
+- Buyers gain another pathway for discovering businesses capable of satisfying procurement requirements.
+- Contractors receive relevant contract opportunities based on business capabilities and service locations.
+- Participating businesses receive complimentary advertising space to increase visibility.
 
 ## Canonical Website
 
-- https://aproposopportunity.org/
+https://aproposopportunity.org/
 
-## Key Website Sections
+## Key Public Pages
 
-- Purpose: https://aproposopportunity.org/#purpose
-- Growth Model: https://aproposopportunity.org/#model
-- Government Marketplace Opportunity: https://aproposopportunity.org/#marketplace
-- Business Opportunity Development: https://aproposopportunity.org/#development
-- Community Impact: https://aproposopportunity.org/#impact
-- Partnerships: https://aproposopportunity.org/#partnerships
-- Contact the Agency: https://aproposopportunity.org/#contact
+- Opportunity Outreach Program: https://aproposopportunity.org/opportunity-outreach-program
+- About: https://aproposopportunity.org/about
+- Contract Search Services: https://aproposopportunity.org/contract-search-services
+- Contract Technical Assistance: https://aproposopportunity.org/contract-technical-assistance
+- Contract Preparedness Services: https://aproposopportunity.org/contract-preparedness
+- Business Development Marketing Engine: https://aproposopportunity.org/business-development-marketing-engine
+- Contact: https://aproposopportunity.org/#contact
 
 ## Contact
 
 Website inquiries are accepted through the Contact the Agency form at https://aproposopportunity.org/#contact.
-
-
-## Contract Preparedness Services
-
-BUSINESS OPPORTUNITY DEVELOPMENT AGENCY provides a contract-preparedness resource pathway for businesses pursuing public-sector opportunities. The service helps businesses identify relevant third-party resources and providers for bonding and surety, business licensing and permits, business insurance, financing and working capital, certifications and registrations, proposal development and bid support, accounting and financial readiness, workforce resources, and other contract-readiness needs.
-
-The Agency serves as a resource and referral connector. Third-party providers are independent unless expressly stated otherwise. Businesses evaluate provider qualifications, terms, pricing, eligibility, and suitability directly with the provider.
-
-Canonical page: https://aproposopportunity.org/contract-preparedness
-
-Client funding workspaces, opportunity workspaces, vendor administration and surveys are operational flows, not public reference pages.
-
-
-## Business Development Roadmap
-[Business Development Roadmap](https://aproposopportunity.org/business-development-roadmap): A one-time, personalized 90-day business development strategy for established businesses. The service identifies target markets, buyer profiles, competitive positioning, offer and messaging strategy, outreach priorities, capability gaps, KPI targets, and a sequenced action plan. It is the PLAN stage of the Agency's DISCOVER → PLAN → EXECUTE → CONVERT model.
-
-Primary search intents include business development roadmap, 90-day business growth plan, business development strategy, target market strategy, B2B growth strategy, commercial business development planning, government and commercial market strategy, and growth opportunity planning.
-
-## Business Development Marketing Engine
-[Business Development Marketing Engine](https://aproposopportunity.org/business-development-marketing-engine): A managed business development campaign service for businesses with an approved Business Development Roadmap. The service develops and manages the campaign, expands market reach, captures and qualifies responses, provides qualified-opportunity handoffs, reports KPIs, and optimizes performance over an initial 90-day cycle.
-
-Primary search intents include managed business development campaign, outsourced business development, business development marketing service, B2B lead generation service, campaign management, qualified opportunity generation, growth campaign execution, and managed market outreach.
-
-
-## Contract Search Services
-Contract Search Services help businesses discover public-sector opportunities and review them against business capabilities, industry context, geography, and official requirements.
-Page: https://aproposopportunity.org/contract-search-services
-
-## Contract Technical Assistance
-Contract Technical Assistance helps businesses understand procurement terminology, identify readiness questions, review requirements, and determine practical next steps before pursuing an opportunity.
-Page: https://aproposopportunity.org/contract-technical-assistance
