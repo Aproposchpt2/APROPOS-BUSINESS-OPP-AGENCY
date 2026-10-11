@@ -331,6 +331,17 @@
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "private, no-store"
 
+# Opportunity Outreach Program
+[[redirects]]
+  from = "/opportunity-outreach-program"
+  to = "/opportunity-outreach-program.html"
+  status = 200
+
+[[headers]]
+  for = "/opportunity-outreach-program.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
 # Contract Search Services
 [[redirects]]
   from = "/contract-search-services"
