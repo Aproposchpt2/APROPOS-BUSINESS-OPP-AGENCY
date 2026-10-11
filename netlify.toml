@@ -10,6 +10,16 @@
   function = "contact-inject"
   path = "/index.html"
 
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]
