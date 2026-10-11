@@ -38,7 +38,7 @@ const contactStyles = `
   .contact-section .field input::placeholder,.contact-section .field textarea::placeholder{color:rgba(255,255,255,.64)}
   .contact-section .field input:-webkit-autofill{box-shadow:0 0 0 100px #081a31 inset;-webkit-text-fill-color:#fff}
   .contact-section .consent-row{padding:20px 8px 4px}
-  .contact-section .consent-row label{color:rgba(255,255,255,.85)}
+  .contact-section .consent-row label{color:rgba(255,255,255,.85)}\n  .contact-section .consent-row a{color:var(--gold-light);text-decoration:underline;text-underline-offset:3px}
   .contact-section .inquiry-submit{border-radius:30px;min-height:54px;padding:14px 30px;box-shadow:0 7px 24px rgba(200,164,91,.15)}
   .contact-section .inquiry-submit:focus-visible{outline:3px solid #fff;outline-offset:3px}
   @media(max-width:640px){.contact-section .inquiry-form{padding:24px 17px;border-radius:22px}.contact-section .form-row{gap:18px;padding:10px 0}.contact-section .field input,.contact-section .field select{min-height:54px}}
@@ -120,7 +120,7 @@ const contactSection = `
 
       <div class="consent-row">
         <input id="inq-consent" name="consent" type="checkbox" required>
-        <label for="inq-consent">I agree to be contacted by BUSINESS OPPORTUNITY DEVELOPMENT AGENCY regarding this inquiry.</label>
+        <label for="inq-consent">I agree to be contacted by BUSINESS OPPORTUNITY DEVELOPMENT AGENCY regarding this inquiry and acknowledge the <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</label>
       </div>
 
       <div class="form-actions">
