@@ -805,6 +805,7 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
   document.head.appendChild(tag);
 }());
 </script>
+  <link rel="stylesheet" href="/assets/boda-impact-monitor.css" />
 </head>
 <body>
   <header class="site-header" id="siteHeader">
@@ -848,6 +849,21 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
         </aside>
       </div>
       <div class="scroll-cue" aria-hidden="true">Scroll to explore</div>
+    </section>
+
+    <section class="boda-impact" aria-labelledby="bodaImpactHeading">
+      <div class="boda-impact-inner">
+        <div>
+          <p class="boda-impact-eyebrow">Our Opportunity Outreach Impact</p>
+          <h2 id="bodaImpactHeading">Businesses Provided Contract Opportunities</h2>
+          <p class="boda-impact-description">We proactively introduce businesses to relevant government contract opportunities through our state, local, and federal outreach programs.</p>
+        </div>
+        <div class="boda-impact-stat" role="status" aria-live="polite" aria-atomic="true">
+          <span class="boda-impact-number" id="bodaImpactCount">—</span>
+          <span class="boda-impact-stat-label">Businesses Introduced to Opportunities</span>
+          <span class="boda-impact-status" id="bodaImpactStatus">Retrieving verified outreach records…</span>
+        </div>
+      </div>
     </section>
 
     <section aria-label="Agency identity" style="background:#071426;border-top:1px solid rgba(229,207,154,.18);border-bottom:1px solid rgba(229,207,154,.18);padding:24px 0;">
@@ -1029,5 +1045,6 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
     }
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+  <script src="/assets/boda-impact-monitor.js" defer></script>
 </body>
 </html>
