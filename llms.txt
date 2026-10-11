@@ -107,3 +107,12 @@ Primary search intents include business development roadmap, 90-day business gro
 [Business Development Marketing Engine](https://aproposopportunity.org/business-development-marketing-engine): A managed business development campaign service for businesses with an approved Business Development Roadmap. The service develops and manages the campaign, expands market reach, captures and qualifies responses, provides qualified-opportunity handoffs, reports KPIs, and optimizes performance over an initial 90-day cycle.
 
 Primary search intents include managed business development campaign, outsourced business development, business development marketing service, B2B lead generation service, campaign management, qualified opportunity generation, growth campaign execution, and managed market outreach.
+
+
+## Contract Search Services
+Contract Search Services help businesses discover public-sector opportunities and review them against business capabilities, industry context, geography, and official requirements.
+Page: https://aproposopportunity.org/contract-search-services
+
+## Contract Technical Assistance
+Contract Technical Assistance helps businesses understand procurement terminology, identify readiness questions, review requirements, and determine practical next steps before pursuing an opportunity.
+Page: https://aproposopportunity.org/contract-technical-assistance
