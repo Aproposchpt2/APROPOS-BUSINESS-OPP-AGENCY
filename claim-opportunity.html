@@ -94,6 +94,7 @@ window.trackOpportunityEvent = function (name, service, done) {
 <div class="field"><label for="reference">Opportunity Reference</label><input id="reference" name="opportunity_reference" placeholder="AP-XXXXXXXX or NG-XXXXXXXX" required></div>
 </div>
 <button type="submit">CLAIM YOUR COMPLIMENTARY CONTRACT OPPORTUNITY</button>
+<p class="links">By claiming, you authorize the Business Opportunity Development Agency to list your business in its Vendor Registry.</p>
 <div id="status" class="status" role="status" aria-live="polite"></div>
 </form>
 <p class="links" id="federalLink"><button type="button" class="linkbtn" id="showFederal">Have a federal Opportunity Reference (NG-)?</button></p>
@@ -154,10 +155,11 @@ form.addEventListener('submit',async e=>{
      const r=await fetch('/api/vendor-presence?action=claim-outreach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({opportunity_reference:ref,business_name:payload.business_name,name:payload.name,email:payload.email})});
      const d=await r.json();
      if(!r.ok||!d.ok)throw new Error(d.error||'Claim could not be completed.');
-     // Claim -> contract workspace (Print / Download) -> Claim your FREE BUSINESS VENDOR CARD.
+     // Claim -> Vendor Card with the contract, Print / Download and the contact form, all in one
+     // place (Jeff, 2026-10-13). Claim details feed the survey that follows.
      sessionStorage.setItem('aboaVendorSlug',d.profile.slug);
-     sessionStorage.setItem('aboaOpportunityType','bcp');
-     window.trackOpportunityEvent('generate_lead', 'contract_claim', function () { location.assign('/opportunity-workspace'); });
+     sessionStorage.setItem('aboaOpportunityClaim',JSON.stringify({business_name:d.profile.business_name||payload.business_name,contact_name:payload.name,contact_email:payload.email,opportunity_reference:ref}));
+     window.trackOpportunityEvent('generate_lead', 'contract_claim', function () { location.assign('/vendor/'+encodeURIComponent(d.profile.slug)+'?setup=1'); });
      return;
    }
    const r=await fetch('/api/opportunity-gateway?action=claim&type='+encodeURIComponent(type),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});

@@ -153,6 +153,19 @@ h2{font:400 29px/1.15 var(--serif);color:#fff;margin:7px 0 13px}
 .contact-form .button{grid-column:1/-1;justify-self:start}
 .cf-msg{grid-column:1/-1;font-size:13px}.cf-msg.ok{color:var(--gold2)}.cf-msg.bad{color:#ff9999}
 @media(max-width:700px){.contact-grid,.contact-form{grid-template-columns:1fr}.contact-form .button{justify-self:stretch}}
+.card-url{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:10px 0 18px;padding:12px 14px;border-radius:10px;background:rgba(2,11,24,.35);font-size:13px;color:rgba(255,255,255,.7)}
+.card-url a{color:var(--gold2);text-decoration:underline;word-break:break-all}
+.card-url .copy-btn{width:auto;margin:0;padding:8px 12px}
+.opp-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}.opp-actions .button-outline{width:auto;margin:0}
+/* Print Contract prints only the contract card on white paper. */
+@media print{
+  body.print-contract{background:#fff!important}
+  body.print-contract .boda-header,body.print-contract .hero,body.print-contract .footer,body.print-contract .body>*:not(.opportunity),body.print-contract .opp-actions,body.print-contract #oppMsg,body.print-contract .modal-overlay{display:none!important}
+  body.print-contract .card,body.print-contract .opportunity,body.print-contract .opportunity-body{background:#fff!important;border:0!important;box-shadow:none!important}
+  body.print-contract .opportunity-head{background:#081a31!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-contract .opp-title,body.print-contract .fact strong,body.print-contract .opp-scope p{color:#000!important}
+  body.print-contract .fact small,body.print-contract .opp-scope small{color:#555!important}
+}
 .footer{
   text-align:center;padding:18px;background:rgba(2,11,24,.3);color:rgba(255,255,255,.45);
   font-size:9px;letter-spacing:.04em;border-top:1px solid rgba(255,255,255,.1)
@@ -197,15 +210,37 @@ function fact(label,value){return value?'<div class="fact"><small>'+esc(label)+'
 function fact2(label,value){return value?'<div class="fact" style="flex:1;min-width:140px"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong></div>':''}
 function date(v){if(!v)return'';const d=new Date(v);return isNaN(d.getTime())?String(v):d.toLocaleDateString('en-US',{dateStyle:'long'})}
 
-function opportunityCard(o){
+// No outbound "Open Authoritative Procurement Site" button (Jeff, 2026-10-13): leaving the site
+// loses the follow-on survey and offers. The owner keeps the contract via Print / Download.
+function opportunityCard(o,owner){
   if(!o||typeof o!=='object')return'';
   if(!o.title&&!o.agency_name&&!o.solicitation_number)return'';
-  return '<div class="opportunity"><div class="opportunity-head"><div class="eyebrow">Current Contract Opportunity</div><div class="live">Open For Bid</div></div>'
+  return '<div class="opportunity" id="opportunityCard"><div class="opportunity-head"><div class="eyebrow">Current Contract Opportunity</div><div class="live">Open For Bid</div></div>'
     +'<div class="opportunity-body"><div class="opp-title">'+esc(o.title||'Government Contract Opportunity')+'</div>'
     +'<div class="opp-facts">'+fact('Agency',o.agency_name)+fact('Solicitation #',o.solicitation_number)+fact('Response Deadline',date(o.response_deadline))+fact('Location',o.place_of_performance)+'</div>'
     +(o.scope_summary?'<div class="opp-scope"><small>Scope Of Work</small><p>'+esc(o.scope_summary)+'</p></div>':'')
-    +(o.authoritative_url?'<a class="button opp-link" target="_blank" rel="noopener noreferrer" href="'+esc(o.authoritative_url)+'">Open Authoritative Procurement Site</a>':'')
+    +(owner?'<div class="opp-actions"><button class="button" type="button" id="downloadPdf">Download Contract (PDF)</button><button class="button-outline" type="button" id="printContract">Print Contract</button></div><div id="oppMsg" class="cf-msg" role="status" aria-live="polite"></div>':'')
     +'</div></div>';
+}
+function loadScript(src){return new Promise((ok,fail)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>fail(new Error('The download tool could not load. Please try again.'));document.head.appendChild(s)})}
+async function downloadContractPdf(o,business){
+  if(!window.jspdf)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  const doc=new window.jspdf.jsPDF({unit:'pt',format:'letter'}),W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),L=54,R=W-54;let y=0;
+  const need=h=>{if(y+h>H-60){doc.addPage();y=60}};
+  const para=(t,size=10.5,gap=6)=>{doc.setFont('helvetica','normal');doc.setFontSize(size);doc.setTextColor(30,41,59);doc.splitTextToSize(String(t||''),R-L).forEach(line=>{need(size+4);doc.text(line,L,y);y+=size+4});y+=gap};
+  const head=t=>{need(34);y+=8;doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(8,26,49);doc.text(t,L,y);y+=6;doc.setDrawColor(199,167,90);doc.setLineWidth(1);doc.line(L,y,R,y);y+=16};
+  doc.setFillColor(8,26,49);doc.rect(0,0,W,96,'F');doc.setFillColor(199,167,90);doc.rect(0,96,W,4,'F');
+  doc.setTextColor(234,217,165);doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.text('BUSINESS OPPORTUNITY DEVELOPMENT AGENCY  ·  COMPLIMENTARY CONTRACT OPPORTUNITY',L,34);
+  doc.setTextColor(255,255,255);doc.setFont('times','normal');doc.setFontSize(20);doc.splitTextToSize(o.title||'Government Contract Opportunity',R-L).slice(0,2).forEach((t,i)=>doc.text(t,L,60+i*22));
+  y=128;
+  if(business)para('Prepared for '+business,10,4);
+  head('Opportunity Details');
+  [['Agency',o.agency_name],['Solicitation',o.solicitation_number],['Response Deadline',date(o.response_deadline)],['Location',o.place_of_performance],['NAICS',o.naics]].filter(r=>r[1]).forEach(([k,v])=>{need(18);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(100,116,139);doc.text(k.toUpperCase(),L,y);doc.setFont('helvetica','normal');doc.setTextColor(15,23,42);doc.splitTextToSize(String(v),R-L-150).forEach((t,i)=>{if(i)need(14);doc.text(t,L+150,y);y+=14});y+=2});
+  head('Scope of Work');para(o.scope_summary||'See the official solicitation for the complete scope.');
+  head('Official Solicitation');para('The issuing authority is the source of truth. Review all solicitation documents, amendments, forms, instructions, and submission requirements at:');
+  if(o.authoritative_url){doc.setTextColor(15,42,106);doc.setFontSize(10);need(16);doc.textWithLink(o.authoritative_url.slice(0,95),L,y,{url:o.authoritative_url});y+=18}
+  const pages=doc.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(120,130,145);doc.text('Business Opportunity Development Agency · A property of Apropos Group LLC · aproposopportunity.org',L,H-30);doc.text('Page '+i+' of '+pages,R,H-30,{align:'right'})}
+  doc.save(((o.solicitation_number||o.title||'Contract').replace(/[^A-Za-z0-9-]+/g,'_').slice(0,60))+'_Contract_Opportunity.pdf');
 }
 
 async function load(){
@@ -220,7 +255,8 @@ async function load(){
     const certs=(p.certifications||[]).slice(0,10);
     const mail=p.public_contact_email?'mailto:'+encodeURIComponent(p.public_contact_email):'';
 
-    const opportunityHtml=opportunityCard(p.claimed_opportunity);
+    const opportunityHtml=opportunityCard(p.claimed_opportunity,d.owner);
+    const cardUrl=location.origin+'/vendor/'+encodeURIComponent(p.slug);
     const services=(p.products_services||[]).filter(Boolean);
     const contactHtml=(p.public_contact_email||p.phone||services.length||p.hours_of_operation)
       ?'<div class="panel contact-panel"><div class="eyebrow">Contact &amp; Services</div><div class="contact-grid">'
@@ -231,7 +267,9 @@ async function load(){
       :'';
     // Vendor Card window for the owner (per Jeff 2026-10-13): preferred contact information form.
     const ownerForm=d.owner
-      ?'<div class="panel owner-panel" id="ownerPanel"><div class="eyebrow">Your Vendor Card</div><h2>Add your preferred contact information</h2>'
+      ?'<div class="panel owner-panel" id="ownerPanel"><div class="eyebrow">Your Vendor Card</div>'
+        +'<div class="card-url"><span>Here&rsquo;s your Vendor Card URL:</span><a href="'+esc(cardUrl)+'" id="cardUrl">'+esc(cardUrl)+'</a><button class="button-outline copy-btn" type="button" id="copyUrl">Copy</button></div>'
+        +'<h2>Add your preferred contact information</h2>'
         +'<form id="contactForm" class="contact-form">'
         +'<label>Business Email<input id="cf_email" type="email" autocomplete="email" value="'+esc(p.public_contact_email||'')+'"></label>'
         +'<label>Business Contact Phone Number<input id="cf_phone" type="tel" autocomplete="tel" value="'+esc(p.phone||'')+'"></label>'
@@ -249,23 +287,25 @@ async function load(){
       +'</section>'
       +'<section class="body">'
       +ownerForm
-      +contactHtml
       +opportunityHtml
-      +'<div class="panel"><div class="eyebrow">Your FREE Business Tools</div><div class="sub">Provided by the Business Opportunity Development Agency.</div>'
-      +'<div class="tool-grid">'
-      +'<a class="tool-card" href="/vendor-licensed-search"><strong>Custom Contract Search Dashboard</strong><span>Full access to every open government contract in the repository. Free -- claiming your Vendor Card is not required to search.</span></a>'
-      +'<a class="tool-card" href="/vendor-workspace"><strong>Edit Vendor Card</strong><span>You have access to edit your business\'s presence. Your Vendor Card is visible to other Contractors and to Government Buyers.</span></a>'
-      +'</div></div>'
-      +'<div class="panel"><div class="eyebrow">Business Snapshot</div>'
-      +(caps.length?'<div class="snapshot-block"><small>Capabilities</small><div class="snapshot-tags">'+caps.map(x=>'<span class="tag">'+esc(x)+'</span>').join('')+'</div></div>':'')
-      +(certs.length?'<div class="snapshot-block"><small>Certifications &amp; Designations</small><div class="snapshot-tags">'+certs.map(x=>'<span class="tag cert">'+esc(x)+'</span>').join('')+'</div></div>':'')
-      +(p.sam_registration_status||p.uei?'<div class="snapshot-block"><small>Registration</small><div class="snapshot-facts" style="flex-direction:row;gap:24px;flex-wrap:wrap">'+fact2('SAM Status',p.sam_registration_status)+fact2('UEI',p.uei)+'</div></div>':'')
-      +'</div>'
+      +contactHtml
+      // Owner-only tools. The contract search dashboard was removed (not free, per Jeff 2026-10-13).
+      +(d.owner?'<div class="panel"><div class="eyebrow">Your Business Tools</div><div class="sub">Provided by the Business Opportunity Development Agency.</div>'
+        +'<div class="tool-grid">'
+        +'<a class="tool-card" href="/vendor-workspace"><strong>Edit Vendor Card</strong><span>You have access to edit your business\'s presence. Your Vendor Card is visible to other Contractors and to Government Buyers.</span></a>'
+        +'</div></div>':'')
+      // Business Snapshot shows only when there is registration or capability data to show.
+      +(caps.length||certs.length||p.sam_registration_status||p.uei?'<div class="panel"><div class="eyebrow">Business Snapshot</div>'
+        +(caps.length?'<div class="snapshot-block"><small>Capabilities</small><div class="snapshot-tags">'+caps.map(x=>'<span class="tag">'+esc(x)+'</span>').join('')+'</div></div>':'')
+        +(certs.length?'<div class="snapshot-block"><small>Certifications &amp; Designations</small><div class="snapshot-tags">'+certs.map(x=>'<span class="tag cert">'+esc(x)+'</span>').join('')+'</div></div>':'')
+        +(p.sam_registration_status||p.uei?'<div class="snapshot-block"><small>Registration</small><div class="snapshot-facts" style="flex-direction:row;gap:24px;flex-wrap:wrap">'+fact2('SAM Status',p.sam_registration_status)+fact2('UEI',p.uei)+'</div></div>':'')
+        +'</div>':'')
       +(d.owner?'':'<div class="claim-cta"><div><strong>Claim Your Business</strong><span>Confirm your Vendor Page and continue to your personalized Opportunity Dashboard.</span></div>'
       +'<button class="button" id="claimBizBtn">Claim Your Business →</button></div>')
-      +'<div class="engage"><div><strong>Connect with '+esc(p.business_name)+'.</strong><span>Customers, buyers, primes and teaming partners can engage directly with this business.</span></div>'
+      // Buyer-facing contact band: public visitors only.
+      +(d.owner?'':'<div class="engage"><div><strong>Connect with '+esc(p.business_name)+'.</strong><span>Customers, buyers, primes and teaming partners can engage directly with this business.</span></div>'
       +(mail?'<a class="button" href="'+mail+'">'+esc(p.customer_cta_label||'Contact This Business')+'</a>':(p.website?'<a class="button" href="'+esc(p.website)+'">Visit Business Website</a>':''))
-      +'</div>'
+      +'</div>')
       +'</section>'
       +'<footer class="footer"><strong>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</strong><br>A property of Apropos Group LLC</footer>'
       +'</article>'
@@ -277,6 +317,20 @@ async function load(){
       +'<button class="button-outline" id="cancelClaimBtn">Cancel</button>'
       +'</div></div>';
 
+    document.getElementById('copyUrl')?.addEventListener('click',async e=>{
+      try{await navigator.clipboard.writeText(cardUrl);e.currentTarget.textContent='Copied'}catch{e.currentTarget.textContent='Select & copy'}
+    });
+    document.getElementById('downloadPdf')?.addEventListener('click',async e=>{
+      const btn=e.currentTarget,m=document.getElementById('oppMsg');btn.disabled=true;btn.textContent='PREPARING PDF…';
+      try{await downloadContractPdf(p.claimed_opportunity||{},p.business_name);m.textContent='Your contract PDF has been downloaded.';m.className='cf-msg ok'}
+      catch(err){m.textContent=err.message||'The PDF could not be created. Please try again.';m.className='cf-msg bad'}
+      finally{btn.disabled=false;btn.textContent='Download Contract (PDF)'}
+    });
+    document.getElementById('printContract')?.addEventListener('click',()=>{
+      const m=document.getElementById('oppMsg');document.body.classList.add('print-contract');
+      window.addEventListener('afterprint',()=>{document.body.classList.remove('print-contract');m.textContent='Your contract was sent to print.';m.className='cf-msg ok'},{once:true});
+      window.print();
+    });
     const cf=document.getElementById('contactForm');
     if(cf){
       if(new URLSearchParams(location.search).get('setup'))document.getElementById('ownerPanel').scrollIntoView({block:'start'});
@@ -292,8 +346,15 @@ async function load(){
             hours_of_operation:document.getElementById('cf_hours').value.trim()})});
           const x=await r.json().catch(()=>({}));
           if(!r.ok||!x.ok)throw new Error(x.error||'Your details could not be saved. Please try again.');
-          msg.textContent='Saved. Your Vendor Card is updated.';msg.className='cf-msg ok';
-          setTimeout(load,700);
+          // Saving is the last step on the card: continue to the opportunity survey, which leads
+          // to the next-step offers (Jeff, 2026-10-13).
+          const o=p.claimed_opportunity||{};
+          sessionStorage.setItem('aboaOpportunityContext',JSON.stringify({type:'state-local',title:o.title||'',notice_id:o.solicitation_number||'',agency:o.agency_name||'',solicitation_number:o.solicitation_number||''}));
+          let claim={};try{claim=JSON.parse(sessionStorage.getItem('aboaOpportunityClaim')||'{}')}catch{}
+          if(!claim.business_name)sessionStorage.setItem('aboaOpportunityClaim',JSON.stringify({...claim,business_name:p.business_name}));
+          msg.textContent='Saved. Your Vendor Card is updated. One quick question next…';msg.className='cf-msg ok';
+          setTimeout(()=>location.assign('/opportunity-survey?action=vendor-card'),1200);
+          return;
         }catch(err){msg.textContent=err.message;msg.className='cf-msg bad'}
         finally{btn.disabled=false;btn.textContent='Save to My Vendor Card'}
       });

@@ -835,21 +835,21 @@ export default async (req) => {
 
       const contract = await lookupNaicsMatchedContract(match.opportunity_id);
       const opportunity = outreachOpportunitySnapshot(match, contract);
-      // Unpublished until the claimant chooses "Claim your FREE BUSINESS VENDOR CARD".
+      // Claim lands directly on the Vendor Card (Jeff, 2026-10-13), so claiming publishes it and
+      // records the registry consent stated on the claim form.
       let { profile, created } = await findOrCreateProfile({
         businessName, claimId: null, claimantEmail: email,
-        publishOnCreate: false, opportunity, contractorType: 'licensed'
+        publishOnCreate: true, opportunity, contractorType: 'licensed'
       });
       if (!profile) return json({ok:false,error:'Vendor Page could not be provisioned.'},500);
 
-      const patch = { updated_at: new Date().toISOString() };
+      const now = new Date().toISOString();
+      const patch = { updated_at: now, is_published: true, registry_consent_at: profile.registry_consent_at || now };
       if (!profile.uei && match.contractor_uei) patch.uei = clean(match.contractor_uei, 32);
       if (!profile.state && match.contractor_state) patch.state = clean(match.contractor_state, 80);
-      if (Object.keys(patch).length > 1) {
-        const rows = await db('boda_vendor_profiles','PATCH',
-          `?id=eq.${encodeURIComponent(profile.id)}`, patch, 'return=representation');
-        if (rows?.[0]) profile = rows[0];
-      }
+      const patched = await db('boda_vendor_profiles','PATCH',
+        `?id=eq.${encodeURIComponent(profile.id)}`, patch, 'return=representation');
+      if (patched?.[0]) profile = patched[0];
 
       const rawSession = token();
       await db('boda_vendor_sessions','POST','',[{
