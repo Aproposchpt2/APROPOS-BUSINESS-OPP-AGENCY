@@ -153,6 +153,17 @@ h2{font:400 29px/1.15 var(--serif);color:#fff;margin:7px 0 13px}
 .contact-form .button{grid-column:1/-1;justify-self:start}
 .cf-msg{grid-column:1/-1;font-size:13px}.cf-msg.ok{color:var(--gold2)}.cf-msg.bad{color:#ff9999}
 @media(max-width:700px){.contact-grid,.contact-form{grid-template-columns:1fr}.contact-form .button{justify-self:stretch}}
+[hidden]{display:none!important}
+.survey-panel{border-color:rgba(199,167,90,.45)}
+.rate{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rate legend{width:100%;margin-bottom:8px;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.rate-opt{flex-direction:row!important}.rate-opt input{position:absolute;opacity:0;pointer-events:none}
+.rate-opt span{display:grid;place-items:center;width:46px;height:46px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:#fff;font-size:16px;font-weight:700;letter-spacing:0;cursor:pointer}
+.rate-opt input:checked+span{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.rate-opt input:focus-visible+span{outline:2px solid var(--gold2);outline-offset:2px}
+.rate-key{margin:-4px 0 0;font-size:11px;color:rgba(255,255,255,.5)}
+.editor-offer{padding:6px 2px}.editor-offer p{color:rgba(255,255,255,.72);font-size:13px;line-height:1.65;margin:0 0 16px}
+.offer-price{font:400 2.4rem var(--serif);color:#fff;margin:0 0 8px}.offer-price span{font:500 14px var(--sans);color:rgba(255,255,255,.6)}
 .card-url{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:10px 0 18px;padding:12px 14px;border-radius:10px;background:rgba(2,11,24,.35);font-size:13px;color:rgba(255,255,255,.7)}
 .card-url a{color:var(--gold2);text-decoration:underline;word-break:break-all}
 .card-url .copy-btn{width:auto;margin:0;padding:8px 12px}
@@ -289,11 +300,20 @@ async function load(){
       +ownerForm
       +opportunityHtml
       +contactHtml
-      // Owner-only tools. The contract search dashboard was removed (not free, per Jeff 2026-10-13).
-      +(d.owner?'<div class="panel"><div class="eyebrow">Your Business Tools</div><div class="sub">Provided by the Business Opportunity Development Agency.</div>'
-        +'<div class="tool-grid">'
-        +'<a class="tool-card" href="/vendor-workspace"><strong>Edit Vendor Card</strong><span>You have access to edit your business\'s presence. Your Vendor Card is visible to other Contractors and to Government Buyers.</span></a>'
-        +'</div></div>':'')
+      // Owner-only approach survey, then the Vendor Card Editor subscription (Jeff, 2026-10-13).
+      +(d.owner?'<div class="panel survey-panel" id="surveyPanel"><div class="eyebrow">Your Feedback</div><h2>SHARE YOUR OPINION OF OUR APPROACH</h2>'
+        +'<form id="approachSurvey" class="contact-form">'
+        +'<fieldset class="rate wide"><legend>Rate our Approach</legend>'+[1,2,3,4,5].map(n=>'<label class="rate-opt"><input type="radio" name="approach" value="'+n+'" required><span>'+n+'</span></label>').join('')+'</fieldset>'
+        +'<fieldset class="rate wide"><legend>Rate the current procurement process</legend>'+[1,2,3,4,5].map(n=>'<label class="rate-opt"><input type="radio" name="process" value="'+n+'" required><span>'+n+'</span></label>').join('')+'</fieldset>'
+        +'<p class="rate-key wide">1 = Poor &nbsp;·&nbsp; 5 = Excellent</p>'
+        +'<label class="wide">Any additional comment?<textarea id="sv_comment" rows="3" maxlength="2000"></textarea></label>'
+        +'<button class="button" type="submit" id="sv_submit">Submit</button><div id="sv_msg" class="cf-msg" role="status" aria-live="polite"></div>'
+        +'</form>'
+        +'<div id="editorOffer" class="editor-offer" hidden><div class="eyebrow">Thank you for your feedback</div><h2>Vendor Card Editor</h2>'
+        +'<div class="offer-price">$19.99<span>/month</span></div>'
+        +'<p>Your Vendor Card is live at no cost. Subscribe to the Vendor Card Editor to update your headline, about, capabilities, NAICS, certifications, logo, and contact details any time.</p>'
+        +'<a class="button" href="https://ai4-product-purchasing.ai4businesses.org/boda-vendor-card" target="_blank" rel="noopener">Subscribe — $19.99/mo</a></div>'
+        +'</div>':'')
       // Business Snapshot shows only when there is registration or capability data to show.
       +(caps.length||certs.length||p.sam_registration_status||p.uei?'<div class="panel"><div class="eyebrow">Business Snapshot</div>'
         +(caps.length?'<div class="snapshot-block"><small>Capabilities</small><div class="snapshot-tags">'+caps.map(x=>'<span class="tag">'+esc(x)+'</span>').join('')+'</div></div>':'')
@@ -331,6 +351,23 @@ async function load(){
       window.addEventListener('afterprint',()=>{document.body.classList.remove('print-contract');m.textContent='Your contract was sent to print.';m.className='cf-msg ok'},{once:true});
       window.print();
     });
+    const sv=document.getElementById('approachSurvey');
+    if(sv){
+      if(sessionStorage.getItem('bodaApproachSurvey')===p.slug){sv.hidden=true;document.getElementById('editorOffer').hidden=false}
+      sv.addEventListener('submit',async e=>{
+        e.preventDefault();
+        const pick=n=>sv.querySelector('input[name="'+n+'"]:checked')?.value,btn=document.getElementById('sv_submit'),msg=document.getElementById('sv_msg');
+        if(!pick('approach')||!pick('process')){msg.textContent='Please choose a rating for both questions.';msg.className='cf-msg bad';return}
+        btn.disabled=true;btn.textContent='SUBMITTING…';msg.textContent='';msg.className='cf-msg';
+        try{
+          const r=await fetch('/api/vendor-presence?action=survey',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({rating:Number(pick('approach')),process_rating:Number(pick('process')),comment:document.getElementById('sv_comment').value.trim(),action:'approach-survey'})});
+          const x=await r.json().catch(()=>({}));
+          if(!r.ok||!x.ok)throw new Error(x.error||'Your feedback could not be saved. Please try again.');
+          try{sessionStorage.setItem('bodaApproachSurvey',p.slug)}catch{}
+          sv.hidden=true;const offer=document.getElementById('editorOffer');offer.hidden=false;offer.scrollIntoView({behavior:'smooth',block:'center'});
+        }catch(err){msg.textContent=err.message;msg.className='cf-msg bad';btn.disabled=false;btn.textContent='Submit'}
+      });
+    }
     const cf=document.getElementById('contactForm');
     if(cf){
       if(new URLSearchParams(location.search).get('setup'))document.getElementById('ownerPanel').scrollIntoView({block:'start'});
@@ -346,14 +383,8 @@ async function load(){
             hours_of_operation:document.getElementById('cf_hours').value.trim()})});
           const x=await r.json().catch(()=>({}));
           if(!r.ok||!x.ok)throw new Error(x.error||'Your details could not be saved. Please try again.');
-          // Saving is the last step on the card: continue to the opportunity survey, which leads
-          // to the next-step offers (Jeff, 2026-10-13).
-          const o=p.claimed_opportunity||{};
-          sessionStorage.setItem('aboaOpportunityContext',JSON.stringify({type:'state-local',title:o.title||'',notice_id:o.solicitation_number||'',agency:o.agency_name||'',solicitation_number:o.solicitation_number||''}));
-          let claim={};try{claim=JSON.parse(sessionStorage.getItem('aboaOpportunityClaim')||'{}')}catch{}
-          if(!claim.business_name)sessionStorage.setItem('aboaOpportunityClaim',JSON.stringify({...claim,business_name:p.business_name}));
-          msg.textContent='Saved. Your Vendor Card is updated. One quick question next…';msg.className='cf-msg ok';
-          setTimeout(()=>location.assign('/opportunity-survey?action=vendor-card'),1200);
+          msg.textContent='Saved. Your Vendor Card is updated.';msg.className='cf-msg ok';
+          setTimeout(load,900);
           return;
         }catch(err){msg.textContent=err.message;msg.className='cf-msg bad'}
         finally{btn.disabled=false;btn.textContent='Save to My Vendor Card'}
