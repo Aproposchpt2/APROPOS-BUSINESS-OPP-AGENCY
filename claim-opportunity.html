@@ -82,15 +82,9 @@ window.trackOpportunityEvent = function (name, service, done) {
 </section>
 <section class="card">
 <form id="emailStep" novalidate>
-<div class="field"><label for="startEmail">Enter your email address</label><input id="startEmail" type="email" autocomplete="email" inputmode="email" required aria-describedby="startHint"><small id="startHint" class="field-hint">Use the email address your invitation was sent to. We&apos;ll email you a 6-digit code.</small></div>
-<button type="submit">SEND MY CLAIM CODE</button>
+<div class="field"><label for="startEmail">Enter your email address</label><input id="startEmail" type="email" autocomplete="email" inputmode="email" required aria-describedby="startHint"><small id="startHint" class="field-hint">Use the email address your invitation was sent to.</small></div>
+<button type="submit">CONTINUE</button>
 <div class="status" role="status" aria-live="polite"></div>
-</form>
-<form id="codeStep" hidden novalidate>
-<div class="field"><label for="claimCode">Enter the 6-digit code</label><input id="claimCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required aria-describedby="codeHint"><small id="codeHint" class="field-hint">If <strong id="sentTo"></strong> received a complimentary opportunity, the code is on its way. It expires in 10 minutes.</small></div>
-<button type="submit">VERIFY CODE</button>
-<div class="status" role="status" aria-live="polite"></div>
-<p class="links"><button type="button" class="linkbtn" id="resendCode">Resend code</button> · <button type="button" class="linkbtn" id="changeEmail">Use a different email</button></p>
 </form>
 <form id="claim" hidden>
 <div class="grid">
@@ -110,44 +104,28 @@ window.trackOpportunityEvent = function (name, service, done) {
 const form=document.getElementById('claim'),statusEl=document.getElementById('status'),q=new URLSearchParams(location.search);
 const prefill={ref:(q.get('ref')||'').trim().toUpperCase(),business:(q.get('business')||'').trim(),email:(q.get('email')||'').trim(),name:(q.get('name')||'').trim()};
 const $=id=>document.getElementById(id);
-const emailStep=$('emailStep'),codeStep=$('codeStep');
-let claimToken='',claimEmail='';
+const emailStep=$('emailStep');
 function say(scope,msg,kind){const el=scope.querySelector('.status');el.textContent=msg||'';el.className='status'+(msg?' '+(kind||'error'):'')}
 async function post(action,body){const r=await fetch('/api/vendor-presence?action='+action,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok)throw new Error(d.error||'Something went wrong. Please try again.');return d}
-function showOnly(el){[emailStep,codeStep,form].forEach(x=>{x.hidden=x!==el})}
+function showOnly(el){[emailStep,form].forEach(x=>{x.hidden=x!==el})}
 
-// Email-first claim: email -> 6-digit code -> prefilled claim form.
-async function requestCode(){
-  const btn=emailStep.querySelector('button[type=submit]');btn.disabled=true;
-  try{await post('claim-code',{email:claimEmail});$('sentTo').textContent=claimEmail;showOnly(codeStep);say(codeStep,'');$('claimCode').value='';$('claimCode').focus()}
-  catch(err){say(emailStep,err.message)}
-  finally{btn.disabled=false}
-}
-emailStep.addEventListener('submit',e=>{
+// Email-first claim (Jeff, 2026-10-13): email -> prefilled claim form -> Claim -> workspace.
+emailStep.addEventListener('submit',async e=>{
   e.preventDefault();say(emailStep,'');
-  claimEmail=$('startEmail').value.trim().toLowerCase();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(claimEmail)){say(emailStep,'Enter a valid email address.');return}
-  requestCode();
-});
-codeStep.addEventListener('submit',async e=>{
-  e.preventDefault();say(codeStep,'');
-  const code=$('claimCode').value.replace(/\D/g,'');
-  if(code.length!==6){say(codeStep,'Enter the 6-digit code from your email.');return}
-  const btn=codeStep.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='VERIFYING…';
+  const email=$('startEmail').value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){say(emailStep,'Enter a valid email address.');return}
+  const btn=emailStep.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='FINDING YOUR OPPORTUNITY…';
   try{
-    const d=await post('claim-code-verify',{email:claimEmail,code});
-    claimToken=d.claim_token;
+    const d=await post('claim-lookup',{email});
     $('name').value=d.prefill.name||'';
     $('business').value=d.prefill.business_name;$('business').readOnly=true;
     $('email').value=d.prefill.email;$('email').readOnly=true;
     $('reference').value=d.prefill.opportunity_reference;$('reference').readOnly=true;
     $('emailHint').hidden=true;$('federalLink').hidden=true;
-    showOnly(form);say(form,'Email verified. Review your details and claim your opportunity.','ok');
-  }catch(err){say(codeStep,err.message)}
-  finally{btn.disabled=false;btn.textContent='VERIFY CODE'}
+    showOnly(form);say(form,'We found your complimentary opportunity. Review your details and claim it.','ok');
+  }catch(err){say(emailStep,err.message)}
+  finally{btn.disabled=false;btn.textContent='CONTINUE'}
 });
-$('resendCode').addEventListener('click',()=>{say(codeStep,'');requestCode().then(()=>say(codeStep,'A new code is on its way.','ok'))});
-$('changeEmail').addEventListener('click',()=>{showOnly(emailStep);$('startEmail').focus()});
 $('showFederal').addEventListener('click',()=>{showOnly(form);$('federalLink').hidden=true;$('name').focus()});
 
 // Links carrying a federal NG- reference keep the direct claim form; everything else starts
@@ -173,13 +151,13 @@ form.addEventListener('submit',async e=>{
      // BCP-sourced complimentary opportunities are matched, staged, and stored
      // directly in bcp_outreach_match_ready (same Supabase project as this
      // site) -- a single direct lookup, no marketplace proxy hop needed.
-     // Requires the claim token from the email-code step.
-     if(!claimToken)throw new Error('Enter your email above to receive a claim code first.');
-     const r=await fetch('/api/vendor-presence?action=claim-outreach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({opportunity_reference:ref,business_name:payload.business_name,name:payload.name,email:payload.email,claim_token:claimToken})});
+     const r=await fetch('/api/vendor-presence?action=claim-outreach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({opportunity_reference:ref,business_name:payload.business_name,name:payload.name,email:payload.email})});
      const d=await r.json();
      if(!r.ok||!d.ok)throw new Error(d.error||'Claim could not be completed.');
+     // Claim -> contract workspace (Print / Download) -> Claim your FREE BUSINESS VENDOR CARD.
      sessionStorage.setItem('aboaVendorSlug',d.profile.slug);
-     window.trackOpportunityEvent('generate_lead', 'contract_claim', function () { location.assign('/vendor/'+encodeURIComponent(d.profile.slug)); });
+     sessionStorage.setItem('aboaOpportunityType','bcp');
+     window.trackOpportunityEvent('generate_lead', 'contract_claim', function () { location.assign('/opportunity-workspace'); });
      return;
    }
    const r=await fetch('/api/opportunity-gateway?action=claim&type='+encodeURIComponent(type),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});

@@ -139,6 +139,20 @@ h2{font:400 29px/1.15 var(--serif);color:#fff;margin:7px 0 13px}
 .snapshot-tags{display:flex;flex-wrap:wrap;gap:8px}
 .tag{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:11px;color:rgba(255,255,255,.85);white-space:nowrap}
 .tag.cert{background:rgba(199,167,90,.12);border-color:var(--gold);color:var(--gold2);font-weight:700}
+.panel+.panel,.panel+.opportunity,.opportunity+.panel{margin-top:18px}
+.contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:8px}
+.contact-grid .fact{border-bottom:0;padding:0}.contact-grid a{color:var(--gold2);text-decoration:underline}
+.owner-panel{border-color:var(--gold);background:rgba(199,167,90,.07)}
+.owner-panel h2{margin-bottom:16px}
+.contact-form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.contact-form label{display:flex;flex-direction:column;gap:7px;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.contact-form label span{text-transform:none;letter-spacing:0;font-weight:500}
+.contact-form .wide{grid-column:1/-1}
+.contact-form input,.contact-form textarea{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;border-radius:8px;padding:12px;font:inherit;font-size:14px;letter-spacing:0;text-transform:none;font-weight:400;outline:none;resize:vertical}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--gold)}
+.contact-form .button{grid-column:1/-1;justify-self:start}
+.cf-msg{grid-column:1/-1;font-size:13px}.cf-msg.ok{color:var(--gold2)}.cf-msg.bad{color:#ff9999}
+@media(max-width:700px){.contact-grid,.contact-form{grid-template-columns:1fr}.contact-form .button{justify-self:stretch}}
 .footer{
   text-align:center;padding:18px;background:rgba(2,11,24,.3);color:rgba(255,255,255,.45);
   font-size:9px;letter-spacing:.04em;border-top:1px solid rgba(255,255,255,.1)
@@ -207,6 +221,25 @@ async function load(){
     const mail=p.public_contact_email?'mailto:'+encodeURIComponent(p.public_contact_email):'';
 
     const opportunityHtml=opportunityCard(p.claimed_opportunity);
+    const services=(p.products_services||[]).filter(Boolean);
+    const contactHtml=(p.public_contact_email||p.phone||services.length||p.hours_of_operation)
+      ?'<div class="panel contact-panel"><div class="eyebrow">Contact &amp; Services</div><div class="contact-grid">'
+        +(p.public_contact_email?'<div class="fact"><small>Business Email</small><strong><a href="mailto:'+esc(p.public_contact_email)+'">'+esc(p.public_contact_email)+'</a></strong></div>':'')
+        +(p.phone?'<div class="fact"><small>Business Phone</small><strong><a href="tel:'+esc(String(p.phone).replace(/[^0-9+]/g,''))+'">'+esc(p.phone)+'</a></strong></div>':'')
+        +(p.hours_of_operation?'<div class="fact"><small>Hours of Operation</small><strong style="white-space:pre-line">'+esc(p.hours_of_operation)+'</strong></div>':'')
+        +'</div>'+(services.length?'<div class="snapshot-block"><small>Services</small><div class="snapshot-tags">'+services.map(x=>'<span class="tag">'+esc(x)+'</span>').join('')+'</div></div>':'')+'</div>'
+      :'';
+    // Vendor Card window for the owner (per Jeff 2026-10-13): preferred contact information form.
+    const ownerForm=d.owner
+      ?'<div class="panel owner-panel" id="ownerPanel"><div class="eyebrow">Your Vendor Card</div><h2>Add your preferred contact information</h2>'
+        +'<form id="contactForm" class="contact-form">'
+        +'<label>Business Email<input id="cf_email" type="email" autocomplete="email" value="'+esc(p.public_contact_email||'')+'"></label>'
+        +'<label>Business Contact Phone Number<input id="cf_phone" type="tel" autocomplete="tel" value="'+esc(p.phone||'')+'"></label>'
+        +'<label class="wide">Services <span>(one per line)</span><textarea id="cf_services" rows="4">'+esc(services.join('\n'))+'</textarea></label>'
+        +'<label class="wide">Hours of Operation<textarea id="cf_hours" rows="3" placeholder="Mon–Fri 8:00 AM – 5:00 PM">'+esc(p.hours_of_operation||'')+'</textarea></label>'
+        +'<button class="button" type="submit" id="cf_save">Save to My Vendor Card</button><div id="cf_msg" class="cf-msg" role="status" aria-live="polite"></div>'
+        +'</form></div>'
+      :'';
 
     app.innerHTML='<article class="card">'
       +'<section class="hero"><div class="agency">Business Opportunity Development Agency &middot; Vendor Presence</div>'
@@ -215,6 +248,8 @@ async function load(){
       +'<div class="status">'+(p.sam_registration_status?'<div class="pill">SAM '+esc(p.sam_registration_status)+'</div>':'')+(caps.length?'<div class="pill">Capability Profile Active</div>':'')+'</div>'
       +'</section>'
       +'<section class="body">'
+      +ownerForm
+      +contactHtml
       +opportunityHtml
       +'<div class="panel"><div class="eyebrow">Your FREE Business Tools</div><div class="sub">Provided by the Business Opportunity Development Agency.</div>'
       +'<div class="tool-grid">'
@@ -226,8 +261,8 @@ async function load(){
       +(certs.length?'<div class="snapshot-block"><small>Certifications &amp; Designations</small><div class="snapshot-tags">'+certs.map(x=>'<span class="tag cert">'+esc(x)+'</span>').join('')+'</div></div>':'')
       +(p.sam_registration_status||p.uei?'<div class="snapshot-block"><small>Registration</small><div class="snapshot-facts" style="flex-direction:row;gap:24px;flex-wrap:wrap">'+fact2('SAM Status',p.sam_registration_status)+fact2('UEI',p.uei)+'</div></div>':'')
       +'</div>'
-      +'<div class="claim-cta"><div><strong>Claim Your Business</strong><span>Confirm your Vendor Page and continue to your personalized Opportunity Dashboard.</span></div>'
-      +'<button class="button" id="claimBizBtn">Claim Your Business →</button></div>'
+      +(d.owner?'':'<div class="claim-cta"><div><strong>Claim Your Business</strong><span>Confirm your Vendor Page and continue to your personalized Opportunity Dashboard.</span></div>'
+      +'<button class="button" id="claimBizBtn">Claim Your Business →</button></div>')
       +'<div class="engage"><div><strong>Connect with '+esc(p.business_name)+'.</strong><span>Customers, buyers, primes and teaming partners can engage directly with this business.</span></div>'
       +(mail?'<a class="button" href="'+mail+'">'+esc(p.customer_cta_label||'Contact This Business')+'</a>':(p.website?'<a class="button" href="'+esc(p.website)+'">Visit Business Website</a>':''))
       +'</div>'
@@ -242,8 +277,29 @@ async function load(){
       +'<button class="button-outline" id="cancelClaimBtn">Cancel</button>'
       +'</div></div>';
 
+    const cf=document.getElementById('contactForm');
+    if(cf){
+      if(new URLSearchParams(location.search).get('setup'))document.getElementById('ownerPanel').scrollIntoView({block:'start'});
+      cf.addEventListener('submit',async e=>{
+        e.preventDefault();
+        const btn=document.getElementById('cf_save'),msg=document.getElementById('cf_msg');
+        btn.disabled=true;btn.textContent='SAVING…';msg.textContent='';msg.className='cf-msg';
+        try{
+          const r=await fetch('/api/vendor-presence?action=contact-save',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({
+            public_contact_email:document.getElementById('cf_email').value.trim(),
+            phone:document.getElementById('cf_phone').value.trim(),
+            products_services:document.getElementById('cf_services').value,
+            hours_of_operation:document.getElementById('cf_hours').value.trim()})});
+          const x=await r.json().catch(()=>({}));
+          if(!r.ok||!x.ok)throw new Error(x.error||'Your details could not be saved. Please try again.');
+          msg.textContent='Saved. Your Vendor Card is updated.';msg.className='cf-msg ok';
+          setTimeout(load,700);
+        }catch(err){msg.textContent=err.message;msg.className='cf-msg bad'}
+        finally{btn.disabled=false;btn.textContent='Save to My Vendor Card'}
+      });
+    }
     const overlay=document.getElementById('claimModalOverlay');
-    document.getElementById('claimBizBtn').addEventListener('click',()=>overlay.classList.add('open'));
+    document.getElementById('claimBizBtn')?.addEventListener('click',()=>overlay.classList.add('open'));
     document.getElementById('cancelClaimBtn').addEventListener('click',()=>overlay.classList.remove('open'));
     document.getElementById('confirmClaimBtn').addEventListener('click',async()=>{
       const statusEl=document.getElementById('claimModalStatus');
