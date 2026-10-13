@@ -697,7 +697,7 @@ export default async (req) => {
 
       const intendedEmail = clean(match.representative_email, 180).toLowerCase();
       if (!intendedEmail || intendedEmail !== email)
-        return json({ok:false,error:'The business email does not match the contract introduction.'},403);
+        return json({ok:false,error:'The business email does not match the contract introduction. Use the email address this invitation was sent to.'},403);
 
       const contract = await lookupNaicsMatchedContract(match.opportunity_id);
       const opportunity = outreachOpportunitySnapshot(match, contract);
