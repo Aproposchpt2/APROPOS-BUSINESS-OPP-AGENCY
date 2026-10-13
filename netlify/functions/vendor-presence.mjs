@@ -1,5 +1,5 @@
 // Redeploy trigger: SUPABASE_URL and SUPABASE_SERVICE_KEY env vars were corrected 2026-09-22.
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, randomBytes, randomInt } from 'node:crypto';
 
 const json = (body, status = 200, headers = {}) =>
   new Response(JSON.stringify(body), {
@@ -471,6 +471,54 @@ async function sendVerification({ businessName, claimantName, email, rawToken })
   }
 }
 
+// Email-first claim (Jeff, 2026-10-13): the claimant enters only their email, receives a
+// one-time 6-digit code, and on verifying it the form is prefilled from their outreach match.
+// Receiving mail at the invited address is the proof of identity, so a publicly listed email
+// alone can never claim a business. Responses never reveal whether an email was invited.
+const CLAIM_CODE_TTL_MS = 10 * 60 * 1000;
+const CLAIM_TOKEN_TTL_MS = 30 * 60 * 1000;
+const CLAIM_CODE_MAX_ATTEMPTS = 5;
+const CLAIM_CODES_PER_HOUR = 5;
+const codeHash = (email, code) => hash(`boda-claim:${email}:${code}`);
+
+async function releasedMatchForEmail(email) {
+  const rows = await db('bcp_outreach_match_ready', 'GET',
+    `?select=id,representative_name,contractor_name,representative_email,email_opportunity_reference,email_status,email_e2e_tested_at,email_sent_at` +
+    `&representative_email=ilike.${encodeURIComponent(email.replace(/[%*_]/g, ''))}&email_opportunity_reference=not.is.null&order=email_sent_at.desc.nullslast,updated_at.desc&limit=10`);
+  return (rows || []).find(m =>
+    clean(m.representative_email, 180).toLowerCase() === email &&
+    (m.email_status === 'SENT' || (m.email_status === 'STAGED' && m.email_e2e_tested_at))) || null;
+}
+
+async function sendClaimCode(email, code) {
+  const apiKey = Netlify.env.get('RESEND_API_KEY');
+  const from = Netlify.env.get('RESEND_FROM_EMAIL');
+  if (!apiKey || !from) throw new Error('Verification email service is unavailable.');
+  const html = `
+  <div style="font-family:Arial,sans-serif;color:#14233a;max-width:640px;margin:auto">
+    <div style="background:#081a31;color:white;padding:28px;border-bottom:4px solid #c7a75a">
+      <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#ead9a5">Business Opportunity Development Agency</div>
+      <h1 style="font-family:Georgia,serif;font-weight:500;margin:10px 0 0">Your claim code</h1>
+    </div>
+    <div style="padding:28px;border:1px solid #d6e1e9;border-top:0;background:#f8fcff">
+      <p>Enter this code on the claim page to continue claiming your complimentary contract opportunity:</p>
+      <p style="font-size:34px;font-weight:700;letter-spacing:.3em;margin:22px 0;color:#081a31">${code}</p>
+      <p style="font-size:12px;color:#657489">This code expires in 10 minutes. If you did not request it, no action is required.</p>
+    </div>
+    <p style="font-size:11px;color:#718094">Business Opportunity Development Agency<br>A property of Apropos Group LLC</p>
+  </div>`;
+  const r = await fetch('https://api.resend.com/emails', {
+    method:'POST',
+    headers:{ authorization:`Bearer ${apiKey}`, 'content-type':'application/json' },
+    body:JSON.stringify({ from, to:[email], subject:`Your claim code: ${code}`, html,
+      text:`Your Business Opportunity Development Agency claim code is ${code}. It expires in 10 minutes. If you did not request it, no action is required.` })
+  });
+  if (!r.ok) {
+    console.error('claim code email failed', r.status, await r.text());
+    throw new Error('The code email could not be sent. Please try again.');
+  }
+}
+
 export default async (req) => {
   try {
     const url = new URL(req.url);
@@ -673,6 +721,56 @@ export default async (req) => {
     // fetched from the (now retired) marketplace.aproposgroupllc.com site.
     // This is one direct read against bcp_outreach_match_ready, which already
     // carries the contractor identity and the contract in a single row.
+    if (req.method === 'POST' && action === 'claim-code') {
+      const input = await req.json().catch(()=>({}));
+      const email = clean(input.email, 180).toLowerCase();
+      if (!emailOk(email)) return json({ok:false,error:'Enter a valid email address.'},400);
+      const sent = {ok:true,message:'If this email received a complimentary opportunity, a 6-digit code is on its way.'};
+      const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      const recent = await db('boda_claim_codes','GET',
+        `?select=id&email=eq.${encodeURIComponent(email)}&created_at=gt.${encodeURIComponent(since)}`);
+      if ((recent?.length || 0) >= CLAIM_CODES_PER_HOUR) return json(sent);
+      const match = await releasedMatchForEmail(email);
+      if (!match) return json(sent);
+      const code = String(randomInt(0, 1000000)).padStart(6, '0');
+      await db('boda_claim_codes','POST','',[{
+        email, match_id:match.id, code_hash:codeHash(email, code),
+        expires_at:new Date(Date.now() + CLAIM_CODE_TTL_MS).toISOString()
+      }]);
+      await sendClaimCode(email, code);
+      return json(sent);
+    }
+
+    if (req.method === 'POST' && action === 'claim-code-verify') {
+      const input = await req.json().catch(()=>({}));
+      const email = clean(input.email, 180).toLowerCase();
+      const code = clean(input.code, 12).replace(/\D/g, '');
+      const invalid = json({ok:false,error:'That code is incorrect or has expired. Request a new code and try again.'},400);
+      if (!emailOk(email) || code.length !== 6) return invalid;
+      const rows = await db('boda_claim_codes','GET',
+        `?select=*&email=eq.${encodeURIComponent(email)}&verified_at=is.null&order=created_at.desc&limit=1`);
+      const row = rows?.[0];
+      if (!row || new Date(row.expires_at) <= new Date() || row.attempts >= CLAIM_CODE_MAX_ATTEMPTS) return invalid;
+      if (row.code_hash !== codeHash(email, code)) {
+        await db('boda_claim_codes','PATCH',`?id=eq.${encodeURIComponent(row.id)}`,{attempts:row.attempts + 1});
+        return invalid;
+      }
+      const matches = await db('bcp_outreach_match_ready','GET',
+        `?select=representative_name,contractor_name,email_opportunity_reference&id=eq.${encodeURIComponent(row.match_id)}&limit=1`);
+      const match = matches?.[0];
+      if (!match) return invalid;
+      const claimToken = token();
+      await db('boda_claim_codes','PATCH',`?id=eq.${encodeURIComponent(row.id)}`,{
+        verified_at:new Date().toISOString(), claim_token_hash:hash(claimToken)
+      });
+      return json({ok:true, claim_token:claimToken, prefill:{
+        name:clean(match.representative_name, 140),
+        business_name:clean(match.contractor_name, 180),
+        email,
+        opportunity_reference:clean(match.email_opportunity_reference, 32)
+      }});
+    }
+
     if (req.method === 'POST' && action === 'claim-outreach') {
       const input = await req.json().catch(()=>({}));
       const reference = clean(input.opportunity_reference, 32).toUpperCase();
@@ -699,6 +797,15 @@ export default async (req) => {
       if (!intendedEmail || intendedEmail !== email)
         return json({ok:false,error:'The business email does not match the contract introduction. Use the email address this invitation was sent to.'},403);
 
+      // Proof the claimant received mail at the invited address (email-first code flow).
+      const claimToken = clean(input.claim_token, 200);
+      const verified = claimToken ? await db('boda_claim_codes','GET',
+        `?select=id,match_id,email,verified_at&claim_token_hash=eq.${encodeURIComponent(hash(claimToken))}&consumed_at=is.null&limit=1`) : null;
+      const proof = verified?.[0];
+      if (!proof || proof.match_id !== match.id || proof.email !== email ||
+          Date.now() - new Date(proof.verified_at).getTime() > CLAIM_TOKEN_TTL_MS)
+        return json({ok:false,error:'Please verify your email with a claim code first.'},403);
+
       const contract = await lookupNaicsMatchedContract(match.opportunity_id);
       const opportunity = outreachOpportunitySnapshot(match, contract);
       let { profile, created } = await findOrCreateProfile({
@@ -722,6 +829,7 @@ export default async (req) => {
         token_hash:hash(rawSession),
         expires_at:new Date(Date.now()+1000*60*60*24*30).toISOString()
       }]);
+      await db('boda_claim_codes','PATCH',`?id=eq.${encodeURIComponent(proof.id)}`,{consumed_at:new Date().toISOString()});
       return json({ok:true,profile:{business_name:profile.business_name,slug:profile.slug},created},200,{
         'set-cookie':`boda_vendor_session=${encodeURIComponent(rawSession)}; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000; Path=/`
       });
