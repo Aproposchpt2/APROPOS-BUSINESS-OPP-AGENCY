@@ -659,13 +659,14 @@ export default async (req) => {
       const profile = await sessionProfile(req);
       if (!profile) return json({ok:false,error:'Session required.'},401);
       const input = await req.json().catch(()=>({}));
-      const rating = Number(input.rating);
+      const score = v => { const n = Number(v); return Number.isInteger(n) && n >= 1 && n <= 5 ? n : null; };
       const comment = clean(input.comment, 2000);
       const surveyAction = clean(input.action, 40);
       await db('boda_vendor_surveys','POST','',[{
         profile_id: profile.id,
         business_name: profile.business_name,
-        rating: Number.isInteger(rating) && rating >= 1 && rating <= 5 ? rating : null,
+        rating: score(input.rating),
+        process_rating: score(input.process_rating),
         comment,
         action: surveyAction || null
       }], 'return=minimal');
