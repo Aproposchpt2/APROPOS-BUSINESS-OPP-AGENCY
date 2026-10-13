@@ -490,6 +490,25 @@ async function releasedMatchForEmail(email) {
 }
 
 // Best-effort notice to the invited address; a failed send never blocks the claim.
+// Owner alerts (Jeff, 2026-10-13): one plain email per claim and per approach survey.
+// Best-effort; never blocks the claimant.
+const OWNER_ALERT_EMAIL = 'jmitchell@aproposgroupllc.com';
+async function notifyOwner(subject, lines, replyTo) {
+  try {
+    const apiKey = Netlify.env.get('RESEND_API_KEY');
+    const from = Netlify.env.get('RESEND_FROM_EMAIL');
+    if (!apiKey || !from) return;
+    const r = await fetch('https://api.resend.com/emails', {
+      method:'POST',
+      headers:{ authorization:`Bearer ${apiKey}`, 'content-type':'application/json' },
+      body:JSON.stringify({ from, to:[OWNER_ALERT_EMAIL], subject, text:lines.filter(Boolean).join('\n'),
+        ...(replyTo && emailOk(replyTo) ? { reply_to: replyTo } : {}) }),
+      signal:AbortSignal.timeout(8000)
+    });
+    if (!r.ok) console.error('owner alert failed', r.status, await r.text());
+  } catch (e) { console.error('owner alert failed', e?.message); }
+}
+
 async function sendClaimNotice(email, businessName, title) {
   try {
     const apiKey = Netlify.env.get('RESEND_API_KEY');
@@ -670,6 +689,16 @@ export default async (req) => {
         comment,
         action: surveyAction || null
       }], 'return=minimal');
+      if (surveyAction === 'approach-survey') {
+        await notifyOwner(`Survey response: ${profile.business_name}`, [
+          'A claimant answered "Share your opinion of our approach".', '',
+          `Business: ${profile.business_name}`,
+          `Rate our Approach: ${score(input.rating) ?? '—'} / 5`,
+          `Rate the current procurement process: ${score(input.process_rating) ?? '—'} / 5`,
+          `Comment: ${comment || '(none)'}`,
+          `Vendor Card: https://aproposopportunity.org/vendor/${profile.slug}`,
+        ], profile.owner_email);
+      }
       return json({ok:true});
     }
 
@@ -858,7 +887,18 @@ export default async (req) => {
         token_hash:hash(rawSession),
         expires_at:new Date(Date.now()+1000*60*60*24*30).toISOString()
       }]);
-      await sendClaimNotice(email, match.contractor_name, match.contract_title);
+      await Promise.all([
+        sendClaimNotice(email, match.contractor_name, match.contract_title),
+        notifyOwner(`New claim: ${match.contractor_name}`, [
+          'A complimentary opportunity was just claimed on aproposopportunity.org.', '',
+          `Business: ${match.contractor_name}`,
+          `Claimed by: ${claimantName} <${email}>`,
+          `Opportunity: ${match.contract_title || ''}`,
+          `Agency: ${match.agency_name || ''}`,
+          `Opportunity Reference: ${reference}`,
+          `Vendor Card: https://aproposopportunity.org/vendor/${profile.slug}`,
+        ], email),
+      ]);
       return json({ok:true,profile:{business_name:profile.business_name,slug:profile.slug},created},200,{
         'set-cookie':`boda_vendor_session=${encodeURIComponent(rawSession)}; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000; Path=/`
       });
