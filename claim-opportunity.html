@@ -16,6 +16,11 @@ main{max-width:1120px;margin:auto;padding:64px 24px 90px}.intro{color:#fff;max-w
 .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:36px}.statement{font-family:var(--serif);font-size:clamp(1.8rem,3vw,3rem);line-height:1.05;color:var(--gold2);margin-bottom:12px;font-weight:500}.subcopy{color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:26px}.trust{background:rgba(199,167,90,.1);border-left:3px solid var(--gold);padding:18px 20px;margin-bottom:26px;line-height:1.65;color:rgba(255,255,255,.85)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.field label{display:block;margin-bottom:8px;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5)}.field input{width:100%;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;border-radius:8px;padding:14px 13px;font:inherit;font-size:1rem;outline:none}.field input:focus{border-color:var(--gold)}.field input[readonly]{background:rgba(255,255,255,.03);color:rgba(255,255,255,.5)}
 .field-hint{display:block;margin-top:7px;font-size:.78rem;line-height:1.45;color:rgba(255,255,255,.55)}
+.status.ok{display:block;background:rgba(199,167,90,.12);color:#ead9a5;border-left:3px solid var(--gold)}
+.links{margin:18px 0 0;font-size:.8rem;color:rgba(255,255,255,.4)}
+button.linkbtn{width:auto;min-height:0;margin:0;padding:0;background:none;border:0;border-radius:0;color:var(--gold);font-size:.8rem;font-weight:600;letter-spacing:0;text-transform:none;text-decoration:underline;cursor:pointer}
+#claimCode{letter-spacing:.4em;font-size:1.3rem}
+[hidden]{display:none!important}
 button{margin-top:26px;min-height:54px;border:none;border-radius:9px;background:linear-gradient(180deg,#d8bd79,#c39c47);color:#081a31;padding:14px 24px;font:inherit;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.status{margin-top:18px;padding:14px 16px;display:none}.status.error{display:block;background:rgba(139,30,30,.2);color:#ff9999;border-left:3px solid #ff6666}.fine{font-size:.76rem;color:rgba(255,255,255,.5);line-height:1.7;margin:18px 0 0}
 .footer{text-align:center;padding:30px 20px 50px;color:rgba(255,255,255,.4);font-size:.67rem;border-top:1px solid rgba(199,167,90,.15);margin-top:40px}
 @media(max-width:680px){main{padding:46px 16px 70px}.card{padding:24px 20px}.grid{grid-template-columns:1fr}.intro h1{font-size:clamp(3rem,14vw,4.9rem)}button{width:100%}}
@@ -76,10 +81,18 @@ window.trackOpportunityEvent = function (name, service, done) {
 <p>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY is dedicated to expanding economic opportunity by helping businesses identify, pursue, and participate in opportunities that can contribute to their growth and strengthen the communities they serve.</p>
 </section>
 <section class="card">
-<div class="statement">REAL CONTRACT OPPORTUNITIES. REAL REVENUE POTENTIAL.</div>
-<p class="subcopy">Apropos identifies real contract opportunities with revenue potential and delivers them directly to businesses — as a complimentary service</p>
-<div class="trust"><strong>No purchase is required.</strong><br>Your Opportunity Reference securely routes you to the contract prepared for your business.</div>
-<form id="claim">
+<form id="emailStep" novalidate>
+<div class="field"><label for="startEmail">Enter your email address</label><input id="startEmail" type="email" autocomplete="email" inputmode="email" required aria-describedby="startHint"><small id="startHint" class="field-hint">Use the email address your invitation was sent to. We&apos;ll email you a 6-digit code.</small></div>
+<button type="submit">SEND MY CLAIM CODE</button>
+<div class="status" role="status" aria-live="polite"></div>
+</form>
+<form id="codeStep" hidden novalidate>
+<div class="field"><label for="claimCode">Enter the 6-digit code</label><input id="claimCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required aria-describedby="codeHint"><small id="codeHint" class="field-hint">If <strong id="sentTo"></strong> received a complimentary opportunity, the code is on its way. It expires in 10 minutes.</small></div>
+<button type="submit">VERIFY CODE</button>
+<div class="status" role="status" aria-live="polite"></div>
+<p class="links"><button type="button" class="linkbtn" id="resendCode">Resend code</button> · <button type="button" class="linkbtn" id="changeEmail">Use a different email</button></p>
+</form>
+<form id="claim" hidden>
 <div class="grid">
 <div class="field"><label for="name">Your Name</label><input id="name" name="name" autocomplete="name" required></div>
 <div class="field"><label for="business">Business Name</label><input id="business" name="business_name" autocomplete="organization" required></div>
@@ -88,18 +101,64 @@ window.trackOpportunityEvent = function (name, service, done) {
 </div>
 <button type="submit">CLAIM YOUR COMPLIMENTARY CONTRACT OPPORTUNITY</button>
 <div id="status" class="status" role="status" aria-live="polite"></div>
-<p class="fine">If your business, email, or Opportunity Reference was included in your Apropos link, those details are prefilled automatically. Server-side verification protects access to your workspace.</p>
 </form>
+<p class="links" id="federalLink"><button type="button" class="linkbtn" id="showFederal">Have a federal Opportunity Reference (NG-)?</button></p>
 </section>
 </main>
 <script>
 'use strict';
 const form=document.getElementById('claim'),statusEl=document.getElementById('status'),q=new URLSearchParams(location.search);
 const prefill={ref:(q.get('ref')||'').trim().toUpperCase(),business:(q.get('business')||'').trim(),email:(q.get('email')||'').trim(),name:(q.get('name')||'').trim()};
-if(prefill.ref){const x=document.getElementById('reference');x.value=prefill.ref;x.readOnly=true}
-if(prefill.business)document.getElementById('business').value=prefill.business;
-if(prefill.email)document.getElementById('email').value=prefill.email;
-if(prefill.name)document.getElementById('name').value=prefill.name;
+const $=id=>document.getElementById(id);
+const emailStep=$('emailStep'),codeStep=$('codeStep');
+let claimToken='',claimEmail='';
+function say(scope,msg,kind){const el=scope.querySelector('.status');el.textContent=msg||'';el.className='status'+(msg?' '+(kind||'error'):'')}
+async function post(action,body){const r=await fetch('/api/vendor-presence?action='+action,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok)throw new Error(d.error||'Something went wrong. Please try again.');return d}
+function showOnly(el){[emailStep,codeStep,form].forEach(x=>{x.hidden=x!==el})}
+
+// Email-first claim: email -> 6-digit code -> prefilled claim form.
+async function requestCode(){
+  const btn=emailStep.querySelector('button[type=submit]');btn.disabled=true;
+  try{await post('claim-code',{email:claimEmail});$('sentTo').textContent=claimEmail;showOnly(codeStep);say(codeStep,'');$('claimCode').value='';$('claimCode').focus()}
+  catch(err){say(emailStep,err.message)}
+  finally{btn.disabled=false}
+}
+emailStep.addEventListener('submit',e=>{
+  e.preventDefault();say(emailStep,'');
+  claimEmail=$('startEmail').value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(claimEmail)){say(emailStep,'Enter a valid email address.');return}
+  requestCode();
+});
+codeStep.addEventListener('submit',async e=>{
+  e.preventDefault();say(codeStep,'');
+  const code=$('claimCode').value.replace(/\D/g,'');
+  if(code.length!==6){say(codeStep,'Enter the 6-digit code from your email.');return}
+  const btn=codeStep.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='VERIFYING…';
+  try{
+    const d=await post('claim-code-verify',{email:claimEmail,code});
+    claimToken=d.claim_token;
+    $('name').value=d.prefill.name||'';
+    $('business').value=d.prefill.business_name;$('business').readOnly=true;
+    $('email').value=d.prefill.email;$('email').readOnly=true;
+    $('reference').value=d.prefill.opportunity_reference;$('reference').readOnly=true;
+    $('emailHint').hidden=true;$('federalLink').hidden=true;
+    showOnly(form);say(form,'Email verified. Review your details and claim your opportunity.','ok');
+  }catch(err){say(codeStep,err.message)}
+  finally{btn.disabled=false;btn.textContent='VERIFY CODE'}
+});
+$('resendCode').addEventListener('click',()=>{say(codeStep,'');requestCode().then(()=>say(codeStep,'A new code is on its way.','ok'))});
+$('changeEmail').addEventListener('click',()=>{showOnly(emailStep);$('startEmail').focus()});
+$('showFederal').addEventListener('click',()=>{showOnly(form);$('federalLink').hidden=true;$('name').focus()});
+
+// Links carrying a federal NG- reference keep the direct claim form; everything else starts
+// with the email step (an AP- link just prefills the email).
+if(/^NG-/.test(prefill.ref)){
+  $('reference').value=prefill.ref;$('reference').readOnly=true;
+  if(prefill.business)$('business').value=prefill.business;
+  if(prefill.email)$('email').value=prefill.email;
+  if(prefill.name)$('name').value=prefill.name;
+  showOnly(form);$('federalLink').hidden=true;
+}else if(prefill.email){$('startEmail').value=prefill.email}
 
 form.addEventListener('submit',async e=>{
  e.preventDefault();statusEl.className='status';statusEl.textContent='';
@@ -114,7 +173,9 @@ form.addEventListener('submit',async e=>{
      // BCP-sourced complimentary opportunities are matched, staged, and stored
      // directly in bcp_outreach_match_ready (same Supabase project as this
      // site) -- a single direct lookup, no marketplace proxy hop needed.
-     const r=await fetch('/api/vendor-presence?action=claim-outreach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({opportunity_reference:ref,business_name:payload.business_name,name:payload.name,email:payload.email})});
+     // Requires the claim token from the email-code step.
+     if(!claimToken)throw new Error('Enter your email above to receive a claim code first.');
+     const r=await fetch('/api/vendor-presence?action=claim-outreach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({opportunity_reference:ref,business_name:payload.business_name,name:payload.name,email:payload.email,claim_token:claimToken})});
      const d=await r.json();
      if(!r.ok||!d.ok)throw new Error(d.error||'Claim could not be completed.');
      sessionStorage.setItem('aboaVendorSlug',d.profile.slug);
@@ -163,6 +224,7 @@ form.addEventListener('submit',async e=>{
    btn.disabled=false;btn.textContent='CLAIM YOUR COMPLIMENTARY CONTRACT OPPORTUNITY';
  }
 });
+</script>
 <script>
 const _bt=document.getElementById('bodaToggle'),_bn=document.getElementById('bodaNav');if(_bt&&_bn){_bt.addEventListener('click',()=>{const o=_bn.classList.toggle('open');_bt.setAttribute('aria-expanded',o);document.body.classList.toggle('nav-open',o);});}
 </script>
