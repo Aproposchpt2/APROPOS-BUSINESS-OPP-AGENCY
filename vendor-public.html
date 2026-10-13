@@ -302,7 +302,7 @@ async function load(){
       +opportunityHtml
       +contactHtml
       // Owner-only approach survey, then the Vendor Card Editor subscription (Jeff, 2026-10-13).
-      +(d.owner?'<div class="panel survey-panel" id="surveyPanel"><div class="eyebrow">Your Feedback</div><h2>SHARE YOUR OPINION OF OUR APPROACH</h2>'
+      +(d.owner?'<div class="panel survey-panel" id="surveyPanel"><div id="surveyHead"><div class="eyebrow">Your Feedback</div><h2>SHARE YOUR OPINION OF OUR APPROACH</h2></div>'
         +'<form id="approachSurvey" class="contact-form">'
         +'<fieldset class="rate wide"><legend>Rate our Approach</legend>'+[1,2,3,4,5].map(n=>'<label class="rate-opt"><input type="radio" name="approach" value="'+n+'" required><span>'+n+'</span></label>').join('')+'</fieldset>'
         +'<fieldset class="rate wide"><legend>Rate the current procurement process</legend>'+[1,2,3,4,5].map(n=>'<label class="rate-opt"><input type="radio" name="process" value="'+n+'" required><span>'+n+'</span></label>').join('')+'</fieldset>'
@@ -354,7 +354,8 @@ async function load(){
     });
     const sv=document.getElementById('approachSurvey');
     if(sv){
-      if(sessionStorage.getItem('bodaApproachSurvey')===p.slug){sv.hidden=true;document.getElementById('editorOffer').hidden=false}
+      // Once submitted, the panel shows only the Vendor Card Editor offer (survey heading hidden too).
+      if(sessionStorage.getItem('bodaApproachSurvey')===p.slug){sv.hidden=true;document.getElementById('surveyHead').hidden=true;document.getElementById('editorOffer').hidden=false}
       sv.addEventListener('submit',async e=>{
         e.preventDefault();
         const pick=n=>sv.querySelector('input[name="'+n+'"]:checked')?.value,btn=document.getElementById('sv_submit'),msg=document.getElementById('sv_msg');
@@ -365,7 +366,7 @@ async function load(){
           const x=await r.json().catch(()=>({}));
           if(!r.ok||!x.ok)throw new Error(x.error||'Your feedback could not be saved. Please try again.');
           try{sessionStorage.setItem('bodaApproachSurvey',p.slug)}catch{}
-          sv.hidden=true;const offer=document.getElementById('editorOffer');offer.hidden=false;offer.scrollIntoView({behavior:'smooth',block:'center'});
+          sv.hidden=true;document.getElementById('surveyHead').hidden=true;const offer=document.getElementById('editorOffer');offer.hidden=false;offer.scrollIntoView({behavior:'smooth',block:'center'});
         }catch(err){msg.textContent=err.message;msg.className='cf-msg bad';btn.disabled=false;btn.textContent='Submit'}
       });
     }
