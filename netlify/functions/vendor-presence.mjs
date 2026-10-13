@@ -1,5 +1,5 @@
 // Redeploy trigger: SUPABASE_URL and SUPABASE_SERVICE_KEY env vars were corrected 2026-09-22.
-import { createHash, randomBytes, randomInt } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 
 const json = (body, status = 200, headers = {}) =>
   new Response(JSON.stringify(body), {
@@ -83,10 +83,13 @@ async function lookupOutreachMatch(reference) {
   return rows?.[0] || null;
 }
 
+// bcp_outreach_match_ready.opportunity_id references cbrief_contract_opportunities (verified
+// 2026-10-13: 83/83 match rows resolve there, 0 in bcp_naics_matched_contracts).
+const CONTRACT_SELECT = 'id,title,description,scope_summary,plain_language_summary,fulfillment_requirements,agency_name,department_name,source_opportunity_id,solicitation_number,state,city,place_of_performance,closes_at,naics_codes,nigp_codes,estimated_value_min,estimated_value_max,set_aside_type,authoritative_detail_url,authoritative_response_url';
 async function lookupNaicsMatchedContract(opportunityId) {
   if (!opportunityId) return null;
-  const rows = await db('bcp_naics_matched_contracts', 'GET',
-    `?id=eq.${encodeURIComponent(opportunityId)}&select=description,scope_summary,plain_language_summary,place_of_performance&limit=1`);
+  const rows = await db('cbrief_contract_opportunities', 'GET',
+    `?id=eq.${encodeURIComponent(opportunityId)}&select=${CONTRACT_SELECT}&limit=1`);
   return rows?.[0] || null;
 }
 
@@ -114,7 +117,8 @@ function outreachOpportunitySnapshot(match, contract) {
   // (fallbackComplimentaryFromRepository, below) -- lets it hide the
   // generic "search yourself" CTA only when a real match was already
   // delivered, per Jeff 2026-09-29.
-  return cleaned ? { ...cleaned, source: 'bcp' } : cleaned;
+  // match_id/contract_id let the claim workspace reload the full contract for this profile.
+  return cleaned ? { ...cleaned, source: 'bcp', match_id: match.id, contract_id: match.opportunity_id || null } : cleaned;
 }
 
 // Cloned from RFCP-V2 (rfcp.aproposgroupllc.com) netlify/functions/demo-pipeline.js --
@@ -471,15 +475,10 @@ async function sendVerification({ businessName, claimantName, email, rawToken })
   }
 }
 
-// Email-first claim (Jeff, 2026-10-13): the claimant enters only their email, receives a
-// one-time 6-digit code, and on verifying it the form is prefilled from their outreach match.
-// Receiving mail at the invited address is the proof of identity, so a publicly listed email
-// alone can never claim a business. Responses never reveal whether an email was invited.
-const CLAIM_CODE_TTL_MS = 10 * 60 * 1000;
-const CLAIM_TOKEN_TTL_MS = 30 * 60 * 1000;
-const CLAIM_CODE_MAX_ATTEMPTS = 5;
-const CLAIM_CODES_PER_HOUR = 5;
-const codeHash = (email, code) => hash(`boda-claim:${email}:${code}`);
+// Email-first claim (Jeff, 2026-10-13, UX first): the claimant enters only their email and the
+// claim form is prefilled from their outreach match -- no code step, by owner decision.
+// Safeguards that add no steps: the Vendor Card stays unpublished until the claimant chooses
+// "Claim your FREE BUSINESS VENDOR CARD", and the invited address is emailed a claim notice.
 
 async function releasedMatchForEmail(email) {
   const rows = await db('bcp_outreach_match_ready', 'GET',
@@ -490,33 +489,58 @@ async function releasedMatchForEmail(email) {
     (m.email_status === 'SENT' || (m.email_status === 'STAGED' && m.email_e2e_tested_at))) || null;
 }
 
-async function sendClaimCode(email, code) {
-  const apiKey = Netlify.env.get('RESEND_API_KEY');
-  const from = Netlify.env.get('RESEND_FROM_EMAIL');
-  if (!apiKey || !from) throw new Error('Verification email service is unavailable.');
-  const html = `
+// Best-effort notice to the invited address; a failed send never blocks the claim.
+async function sendClaimNotice(email, businessName, title) {
+  try {
+    const apiKey = Netlify.env.get('RESEND_API_KEY');
+    const from = Netlify.env.get('RESEND_FROM_EMAIL');
+    if (!apiKey || !from) return;
+    const safe = v => String(v ?? '').replace(/[<>&]/g, '');
+    const html = `
   <div style="font-family:Arial,sans-serif;color:#14233a;max-width:640px;margin:auto">
     <div style="background:#081a31;color:white;padding:28px;border-bottom:4px solid #c7a75a">
       <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#ead9a5">Business Opportunity Development Agency</div>
-      <h1 style="font-family:Georgia,serif;font-weight:500;margin:10px 0 0">Your claim code</h1>
+      <h1 style="font-family:Georgia,serif;font-weight:500;margin:10px 0 0">Your opportunity has been claimed</h1>
     </div>
     <div style="padding:28px;border:1px solid #d6e1e9;border-top:0;background:#f8fcff">
-      <p>Enter this code on the claim page to continue claiming your complimentary contract opportunity:</p>
-      <p style="font-size:34px;font-weight:700;letter-spacing:.3em;margin:22px 0;color:#081a31">${code}</p>
-      <p style="font-size:12px;color:#657489">This code expires in 10 minutes. If you did not request it, no action is required.</p>
+      <p>The complimentary contract opportunity for <strong>${safe(businessName)}</strong> was claimed on aproposopportunity.org:</p>
+      <p><strong>${safe(title)}</strong></p>
+      <p style="font-size:12px;color:#657489">If you did not claim it, reply to this email and we will secure your listing.</p>
     </div>
     <p style="font-size:11px;color:#718094">Business Opportunity Development Agency<br>A property of Apropos Group LLC</p>
   </div>`;
-  const r = await fetch('https://api.resend.com/emails', {
-    method:'POST',
-    headers:{ authorization:`Bearer ${apiKey}`, 'content-type':'application/json' },
-    body:JSON.stringify({ from, to:[email], subject:`Your claim code: ${code}`, html,
-      text:`Your Business Opportunity Development Agency claim code is ${code}. It expires in 10 minutes. If you did not request it, no action is required.` })
-  });
-  if (!r.ok) {
-    console.error('claim code email failed', r.status, await r.text());
-    throw new Error('The code email could not be sent. Please try again.');
-  }
+    const r = await fetch('https://api.resend.com/emails', {
+      method:'POST',
+      headers:{ authorization:`Bearer ${apiKey}`, 'content-type':'application/json' },
+      body:JSON.stringify({ from, to:[email], reply_to:'jmitchell@aproposgroupllc.com',
+        subject:`Your opportunity has been claimed — ${safe(businessName)}`, html,
+        text:`The complimentary contract opportunity for ${businessName} (${title}) was claimed on aproposopportunity.org. If you did not claim it, reply to this email and we will secure your listing.` }),
+      signal:AbortSignal.timeout(8000)
+    });
+    if (!r.ok) console.error('claim notice email failed', r.status, await r.text());
+  } catch (e) { console.error('claim notice email failed', e?.message); }
+}
+
+function workspaceOpportunity(contract, snapshot) {
+  const c = contract || {};
+  return {
+    id: c.id || snapshot?.contract_id || '',
+    title: c.title || snapshot?.title || 'Government Contract Opportunity',
+    agency_name: c.agency_name || snapshot?.agency_name || '',
+    solicitation_number: c.solicitation_number || c.source_opportunity_id || snapshot?.solicitation_number || '',
+    response_deadline: c.closes_at || snapshot?.response_deadline || null,
+    place_of_performance: c.place_of_performance || snapshot?.place_of_performance || '',
+    city: c.city || '', state: c.state || snapshot?.state || '',
+    plain_language_summary: c.plain_language_summary || '',
+    scope_summary: c.description || c.scope_summary || snapshot?.scope_summary || '',
+    fulfillment_requirements: Array.isArray(c.fulfillment_requirements) ? c.fulfillment_requirements : [],
+    set_aside_type: c.set_aside_type || '',
+    estimated_value_min: c.estimated_value_min ?? null,
+    estimated_value_max: c.estimated_value_max ?? null,
+    naics_codes: c.naics_codes || (snapshot?.naics ? [snapshot.naics] : []),
+    nigp_codes: c.nigp_codes || [],
+    authoritative_url: c.authoritative_detail_url || c.authoritative_response_url || snapshot?.authoritative_url || ''
+  };
 }
 
 export default async (req) => {
@@ -683,8 +707,11 @@ export default async (req) => {
       const slug = clean(url.searchParams.get('slug'),100);
       if (!slug) return json({ok:false,error:'Profile not found.'},404);
       const rows = await db('boda_vendor_profiles','GET',
-        `?select=business_name,slug,headline,about,logo_url,website,phone,city,state,uei,sam_registration_status,service_area,naics,certifications,core_capabilities,products_services,past_performance,teaming_interests,social_links,capability_statement_url,public_contact_email,customer_cta_label,customer_cta_url,is_published,claimed_opportunity&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true&limit=1`);
-      return rows?.length ? json({ok:true,profile:rows[0]}) : json({ok:false,error:'Profile not found.'},404);
+        `?select=business_name,slug,headline,about,logo_url,website,phone,city,state,uei,sam_registration_status,service_area,naics,certifications,core_capabilities,products_services,past_performance,teaming_interests,social_links,capability_statement_url,public_contact_email,customer_cta_label,customer_cta_url,is_published,claimed_opportunity,hours_of_operation&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true&limit=1`);
+      if (!rows?.length) return json({ok:false,error:'Profile not found.'},404);
+      // owner=true lets the card show its owner the free contact form (no other private data).
+      const viewer = await sessionProfile(req).catch(() => null);
+      return json({ok:true,profile:rows[0],owner:Boolean(viewer && viewer.slug === rows[0].slug)});
     }
 
     if (req.method === 'POST' && action === 'submit-claim') {
@@ -721,54 +748,63 @@ export default async (req) => {
     // fetched from the (now retired) marketplace.aproposgroupllc.com site.
     // This is one direct read against bcp_outreach_match_ready, which already
     // carries the contractor identity and the contract in a single row.
-    if (req.method === 'POST' && action === 'claim-code') {
+    // Claim step 1 (owner-approved 2026-10-13, UX first): email in, prefilled claim form out.
+    if (req.method === 'POST' && action === 'claim-lookup') {
       const input = await req.json().catch(()=>({}));
       const email = clean(input.email, 180).toLowerCase();
       if (!emailOk(email)) return json({ok:false,error:'Enter a valid email address.'},400);
-      const sent = {ok:true,message:'If this email received a complimentary opportunity, a 6-digit code is on its way.'};
-      const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-      const recent = await db('boda_claim_codes','GET',
-        `?select=id&email=eq.${encodeURIComponent(email)}&created_at=gt.${encodeURIComponent(since)}`);
-      if ((recent?.length || 0) >= CLAIM_CODES_PER_HOUR) return json(sent);
       const match = await releasedMatchForEmail(email);
-      if (!match) return json(sent);
-      const code = String(randomInt(0, 1000000)).padStart(6, '0');
-      await db('boda_claim_codes','POST','',[{
-        email, match_id:match.id, code_hash:codeHash(email, code),
-        expires_at:new Date(Date.now() + CLAIM_CODE_TTL_MS).toISOString()
-      }]);
-      await sendClaimCode(email, code);
-      return json(sent);
-    }
-
-    if (req.method === 'POST' && action === 'claim-code-verify') {
-      const input = await req.json().catch(()=>({}));
-      const email = clean(input.email, 180).toLowerCase();
-      const code = clean(input.code, 12).replace(/\D/g, '');
-      const invalid = json({ok:false,error:'That code is incorrect or has expired. Request a new code and try again.'},400);
-      if (!emailOk(email) || code.length !== 6) return invalid;
-      const rows = await db('boda_claim_codes','GET',
-        `?select=*&email=eq.${encodeURIComponent(email)}&verified_at=is.null&order=created_at.desc&limit=1`);
-      const row = rows?.[0];
-      if (!row || new Date(row.expires_at) <= new Date() || row.attempts >= CLAIM_CODE_MAX_ATTEMPTS) return invalid;
-      if (row.code_hash !== codeHash(email, code)) {
-        await db('boda_claim_codes','PATCH',`?id=eq.${encodeURIComponent(row.id)}`,{attempts:row.attempts + 1});
-        return invalid;
-      }
-      const matches = await db('bcp_outreach_match_ready','GET',
-        `?select=representative_name,contractor_name,email_opportunity_reference&id=eq.${encodeURIComponent(row.match_id)}&limit=1`);
-      const match = matches?.[0];
-      if (!match) return invalid;
-      const claimToken = token();
-      await db('boda_claim_codes','PATCH',`?id=eq.${encodeURIComponent(row.id)}`,{
-        verified_at:new Date().toISOString(), claim_token_hash:hash(claimToken)
-      });
-      return json({ok:true, claim_token:claimToken, prefill:{
+      if (!match) return json({ok:false,error:'We could not find a complimentary opportunity for this email address. Use the email address your invitation was sent to.'},404);
+      return json({ok:true, prefill:{
         name:clean(match.representative_name, 140),
         business_name:clean(match.contractor_name, 180),
         email,
         opportunity_reference:clean(match.email_opportunity_reference, 32)
       }});
+    }
+
+    // Claim workspace: the contract claimed by this session's business.
+    if (req.method === 'GET' && action === 'claim-workspace') {
+      const profile = await sessionProfile(req);
+      if (!profile) return json({ok:false,error:'Your claim session has expired. Return to the claim page to continue.'},401);
+      const snap = profile.claimed_opportunity && typeof profile.claimed_opportunity === 'object' ? profile.claimed_opportunity : null;
+      if (!snap) return json({ok:false,error:'No claimed contract opportunity was found for your business.'},404);
+      const contract = snap.contract_id ? await lookupNaicsMatchedContract(snap.contract_id) : null;
+      return json({ok:true,
+        access:{ business_name:profile.business_name, slug:profile.slug, is_published:Boolean(profile.is_published) },
+        opportunity:workspaceOpportunity(contract, snap)});
+    }
+
+    // "Claim your FREE BUSINESS VENDOR CARD": publish the card and record the listing consent.
+    if (req.method === 'POST' && action === 'vendor-card-claim') {
+      const profile = await sessionProfile(req);
+      if (!profile) return json({ok:false,error:'Your claim session has expired. Return to the claim page to continue.'},401);
+      const at = new Date().toISOString();
+      const rows = await db('boda_vendor_profiles','PATCH',`?id=eq.${encodeURIComponent(profile.id)}`,
+        { is_published:true, registry_consent_at:profile.registry_consent_at || at, updated_at:at }, 'return=representation');
+      const p = rows?.[0] || profile;
+      return json({ok:true, profile:{ slug:p.slug, business_name:p.business_name }});
+    }
+
+    // Free Vendor Card contact form: Business Email | Phone | Services | Hours of Operation.
+    if (req.method === 'POST' && action === 'contact-save') {
+      const profile = await sessionProfile(req);
+      if (!profile) return json({ok:false,error:'Your session has expired. Return to the claim page to continue.'},401);
+      const input = await req.json().catch(()=>({}));
+      const email = clean(input.public_contact_email, 180);
+      if (email && !emailOk(email)) return json({ok:false,error:'Enter a valid business email address.'},400);
+      const services = (Array.isArray(input.products_services) ? input.products_services : String(input.products_services || '').split(/\r?\n/))
+        .map(x => clean(x, 220)).filter(Boolean).slice(0, 20);
+      const patch = {
+        public_contact_email: email || profile.public_contact_email,
+        phone: clean(input.phone, 80),
+        products_services: services,
+        hours_of_operation: clean(input.hours_of_operation, 300),
+        updated_at: new Date().toISOString()
+      };
+      const rows = await db('boda_vendor_profiles','PATCH',`?id=eq.${encodeURIComponent(profile.id)}`, patch, 'return=representation');
+      const p = rows?.[0] || { ...profile, ...patch };
+      return json({ok:true, contact:{ public_contact_email:p.public_contact_email, phone:p.phone, products_services:p.products_services, hours_of_operation:p.hours_of_operation }});
     }
 
     if (req.method === 'POST' && action === 'claim-outreach') {
@@ -797,20 +833,12 @@ export default async (req) => {
       if (!intendedEmail || intendedEmail !== email)
         return json({ok:false,error:'The business email does not match the contract introduction. Use the email address this invitation was sent to.'},403);
 
-      // Proof the claimant received mail at the invited address (email-first code flow).
-      const claimToken = clean(input.claim_token, 200);
-      const verified = claimToken ? await db('boda_claim_codes','GET',
-        `?select=id,match_id,email,verified_at&claim_token_hash=eq.${encodeURIComponent(hash(claimToken))}&consumed_at=is.null&limit=1`) : null;
-      const proof = verified?.[0];
-      if (!proof || proof.match_id !== match.id || proof.email !== email ||
-          Date.now() - new Date(proof.verified_at).getTime() > CLAIM_TOKEN_TTL_MS)
-        return json({ok:false,error:'Please verify your email with a claim code first.'},403);
-
       const contract = await lookupNaicsMatchedContract(match.opportunity_id);
       const opportunity = outreachOpportunitySnapshot(match, contract);
+      // Unpublished until the claimant chooses "Claim your FREE BUSINESS VENDOR CARD".
       let { profile, created } = await findOrCreateProfile({
         businessName, claimId: null, claimantEmail: email,
-        publishOnCreate: true, opportunity, contractorType: 'licensed'
+        publishOnCreate: false, opportunity, contractorType: 'licensed'
       });
       if (!profile) return json({ok:false,error:'Vendor Page could not be provisioned.'},500);
 
@@ -829,7 +857,7 @@ export default async (req) => {
         token_hash:hash(rawSession),
         expires_at:new Date(Date.now()+1000*60*60*24*30).toISOString()
       }]);
-      await db('boda_claim_codes','PATCH',`?id=eq.${encodeURIComponent(proof.id)}`,{consumed_at:new Date().toISOString()});
+      await sendClaimNotice(email, match.contractor_name, match.contract_title);
       return json({ok:true,profile:{business_name:profile.business_name,slug:profile.slug},created},200,{
         'set-cookie':`boda_vendor_session=${encodeURIComponent(rawSession)}; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000; Path=/`
       });
