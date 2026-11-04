@@ -951,7 +951,7 @@ function registryConfirmPage({ token: rawToken = '', businessName = '', expired 
       <p class="note">You can edit or remove your card at any time with a code sent to your business email.</p>`;
   return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${expired ? 'Link Expired' : 'Confirm Your Vendor Card'} | BODA</title>
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;font-weight:400!important}
 body{margin:0;min-height:100vh;display:flex;flex-direction:column;background:#080808;color:#f8f7f3;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
 header{padding:20px clamp(16px,4vw,40px);border-bottom:1px solid #3b3324}
 .brand{color:#f8f7f3;text-decoration:none;letter-spacing:.12em;font-weight:600}
