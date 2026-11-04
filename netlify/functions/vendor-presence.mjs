@@ -965,7 +965,7 @@ export default async (req) => {
       const raw = url.searchParams.get('token') || '';
       if (!/^[A-Za-z0-9_-]{43}$/.test(raw)) return new Response('Invalid confirmation link.',{status:400});
       return new Response(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Confirm your free Vendor Card</title><main><h1>Confirm your free Vendor Card</h1><p>Confirm to add your business listing to the BODA Business Registry.</p><form method="post" action="/api/vendor-presence?action=registry-confirm"><input type="hidden" name="token" value="${raw}"><button type="submit">Confirm and publish</button></form></main></html>`,
-        {headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','referrer-policy':'no-referrer','x-robots-tag':'noindex'}});
+        {headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','referrer-policy':'same-origin','x-robots-tag':'noindex'}});
     }
 
     const registryConfirmation = req.method === 'POST' && action === 'registry-confirm';
