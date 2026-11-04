@@ -1,91 +1,30 @@
-# BUSINESS OPPORTUNITY DEVELOPMENT AGENCY
+# Business Opportunity Development Agency (BODA)
 
-> Developing Businesses. Creating Opportunities. Strengthening Communities.
+BODA is operated by Apropos Group LLC, an independent private business and not a government agency.
 
-BUSINESS OPPORTUNITY DEVELOPMENT AGENCY is operated by Apropos Group LLC. Apropos Group LLC is an independent private company, and BUSINESS OPPORTUNITY DEVELOPMENT AGENCY is not a government agency.
+Canonical homepage: https://boda.aproposgroupllc.com/
 
-## Primary Operating Model — Opportunity Outreach Program
+## Mission
+Developing business opportunities through intelligent technology.
 
-The Opportunity Outreach Program is BODA's proactive approach to the procurement process.
+Technology partner: STELLAR INTELLIGENT SOFTWARE DEVELOPERS — CUSTOM BUSINESS SYSTEMS.
 
-Rather than requiring businesses to spend valuable time searching for every opportunity themselves, BODA starts with the contractor's capability profile and service location, compares that information with contract opportunities in its repository, identifies potential matches, and contacts the business directly.
+PRODUCTIVITY · EXTENDED COVERAGE · PROFITABILITY
 
-The program sequence is:
+## Business Systems
+- Customer Care Center: https://ccc.stellaruc.com
+- Sales Specialist: https://sales.stellaruc.com
+- Support Specialist: https://specialist.stellaruc.com
+- Property Management Assistant: https://pma.stellaruc.com
+- Business Infrastructure as a Service: https://biaas.stellaruc.com
+- Custom Business Systems: https://stellaruc.com
 
-1. Review a contractor's business capability profile and service location.
-2. Compare the profile with contract opportunities in the BODA repository.
-3. Identify a potential contract match based on the work requirements, business capabilities, and service location.
-4. Send the complimentary contract opportunity to the contractor by email.
-5. Invite the business to participate in the procurement outreach initiative.
-6. Provide participating businesses complimentary advertising space on the BUSINESS OPPORTUNITY DEVELOPMENT AGENCY website.
-7. Help create a more efficient connection between buyers and capable service providers.
+## Complimentary Contract Opportunity Discovery
+https://bdms.aproposgroupllc.com
+The BDMS search service is a separate operational system. BODA does not guarantee contract eligibility or awards.
 
-There is no charge to participate in the introductory Opportunity Outreach Program or to receive the complimentary advertising space described by the program.
+## Consultation
+https://calendar.app.google/DNAMvEyWbg2jfxaN8
 
-Opportunity matching is a discovery and outreach function. A match does not establish eligibility, qualification, responsiveness, responsibility, or guarantee a contract award. Businesses must review the complete solicitation and authoritative procurement source before deciding whether to pursue an opportunity.
-
-Canonical program page: https://aproposopportunity.org/opportunity-outreach-program
-
-## Current Public Services
-
-- Opportunity Outreach Program
-- Complimentary contract opportunity matching and delivery
-- Complimentary advertising space for participating businesses
-- Contract Search Services
-- Contract Technical Assistance
-- Contract Preparedness Services
-- Business Development Marketing Engine
-
-## Contract Search Services
-
-Contract Search Services support discovery of public-sector opportunities and review of the stated work against business capabilities, industry context, geography, and official requirements.
-
-Page: https://aproposopportunity.org/contract-search-services
-
-## Contract Technical Assistance
-
-Contract Technical Assistance helps businesses understand procurement terminology, identify readiness questions, review important requirements, and determine practical next steps before pursuing an opportunity.
-
-Page: https://aproposopportunity.org/contract-technical-assistance
-
-## Contract Preparedness Services
-
-Contract Preparedness Services provide a resource pathway for businesses that may need bonding or surety resources, licensing and permits, business insurance, financing or working capital resources, certifications and registrations, proposal development support, or other contract-readiness assistance.
-
-The Agency serves as a resource and referral connector. Third-party providers are independent unless expressly stated otherwise. Businesses evaluate provider qualifications, terms, pricing, eligibility, and suitability directly with the provider.
-
-Page: https://aproposopportunity.org/contract-preparedness
-
-## Business Development Marketing Engine
-
-The Business Development Marketing Engine is a managed business-development campaign service designed to help businesses expand market reach, execute outreach, capture responses, and move qualified opportunities into the sales process.
-
-Page: https://aproposopportunity.org/business-development-marketing-engine
-
-## Core Positioning
-
-Opportunity Builds Business. Business Builds Community.
-
-BODA's procurement outreach approach is designed to create value for the participants in the procurement process:
-
-- Buyers gain another pathway for discovering businesses capable of satisfying procurement requirements.
-- Contractors receive relevant contract opportunities based on business capabilities and service locations.
-- Participating businesses receive complimentary advertising space to increase visibility.
-
-## Canonical Website
-
-https://aproposopportunity.org/
-
-## Key Public Pages
-
-- Opportunity Outreach Program: https://aproposopportunity.org/opportunity-outreach-program
-- About: https://aproposopportunity.org/about
-- Contract Search Services: https://aproposopportunity.org/contract-search-services
-- Contract Technical Assistance: https://aproposopportunity.org/contract-technical-assistance
-- Contract Preparedness Services: https://aproposopportunity.org/contract-preparedness
-- Business Development Marketing Engine: https://aproposopportunity.org/business-development-marketing-engine
-- Contact: https://aproposopportunity.org/#contact
-
-## Contact
-
-Website inquiries are accepted through the Contact the Agency form at https://aproposopportunity.org/#contact.
+## Proposed Service — Not Operational
+Business Formation & State Filing Services — COMING SOON — REGULATORY REVIEW. No filing orders accepted.
