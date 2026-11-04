@@ -81,12 +81,12 @@
 
 [[redirects]]
   from = "/services"
-  to = "/#services"
+  to = "/#solutions"
   status = 301
 
 [[redirects]]
   from = "/services.html"
-  to = "/#services"
+  to = "/#solutions"
   status = 301
 
 [[redirects]]
