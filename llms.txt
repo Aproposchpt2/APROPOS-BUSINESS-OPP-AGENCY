@@ -2,7 +2,7 @@
 
 BODA is operated by Apropos Group LLC, an independent private business and not a government agency.
 
-Canonical homepage: https://boda.aproposgroupllc.com/
+Canonical homepage: https://aproposopportunity.org/
 
 ## Mission
 Developing business opportunities through intelligent technology.

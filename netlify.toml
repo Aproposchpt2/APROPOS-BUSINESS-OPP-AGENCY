@@ -10,6 +10,12 @@
   function = "contact-inject"
   path = "/index.html"
 
+# Keep the aggregate counter same-origin for previews and custom domains.
+[[redirects]]
+  from = "/api/boda-opportunity-counts"
+  to = "https://bcp.aproposgroupllc.com/.netlify/functions/boda-opportunity-counts"
+  status = 200
+
 [[redirects]]
   from = "/privacy"
   to = "/privacy.html"

@@ -3,10 +3,10 @@
   const number = document.getElementById('bodaImpactCount');
   const status = document.getElementById('bodaImpactStatus');
   if (!number || !status) return;
-  const url = 'https://bcp.aproposgroupllc.com/.netlify/functions/boda-opportunity-counts';
+  const url = '/api/boda-opportunity-counts';
   async function refresh() {
     try {
-      const response = await fetch(url, { mode: 'cors', cache: 'no-store' });
+      const response = await fetch(url, { cache: 'no-store' });
       if (!response.ok) throw new Error('Counts unavailable');
       const data = await response.json();
       if (!data.ok || !Number.isSafeInteger(data.unique_businesses) || data.unique_businesses < 0) throw new Error('Invalid count');
