@@ -11,8 +11,10 @@
 /* Shared styles used by the inquiry form injected at the edge. */
 :root{--navy-deep:var(--bg);--navy-mid:var(--panel);--gold-light:var(--gold);--serif:Georgia,serif}
 .hero-message{max-width:900px;margin:0 0 24px;color:var(--gold);font-size:clamp(1.05rem,2.5vw,1.75rem);font-weight:750;line-height:1.35}
-.resource-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:36px}
-@media(max-width:560px){.resource-grid{grid-template-columns:1fr}}
+.resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.resource-grid h2{font-size:clamp(1.35rem,2.2vw,1.8rem);margin:0 0 12px}
+.resource-grid .btn{align-self:flex-start}
+@media(max-width:800px){.resource-grid{grid-template-columns:1fr}.resource-grid .card{min-height:0}}
 .shell{max-width:1200px;margin:auto;padding:0 24px}
 section{scroll-margin-top:90px}
 h1{overflow-wrap:anywhere}
@@ -48,21 +50,23 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
 </head><body>
 <header><div class="wrap nav"><a class="logo" href="/">BODA<span>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</span></a><nav aria-label="Primary navigation"><a href="#solutions">Solutions</a><a href="#opportunities">Free Business Resources</a><a href="#assessment">Business Assessment</a><a href="#future">Coming Soon</a><a href="#contact">Contact</a><a href="https://calendar.app.google/DNAMvEyWbg2jfxaN8">Consultation</a></nav></div></header>
 <main><div class="hero"><div class="wrap"><h1>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</h1><p class="hero-message">PROVIDING BUSINESSES WITH CONTRACT ACCESS, VISIBILITY, AND INTELLIGENT BUSINESS SYSTEMS</p><p class="lead">Connecting businesses with intelligent technology that strengthens operations, expands customer engagement and helps people focus on the work that matters most.</p><div class="partner"><strong>STELLAR INTELLIGENT SOFTWARE DEVELOPERS</strong><span>CUSTOM BUSINESS SYSTEMS</span></div><div class="values">PRODUCTIVITY · EXTENDED COVERAGE · PROFITABILITY</div><div class="actions"><a class="btn primary" href="#solutions">Explore Business Systems</a><a class="btn" href="https://calendar.app.google/DNAMvEyWbg2jfxaN8">Schedule a Consultation</a></div></div></div>
-<section id="opportunities">
+<section id="opportunities" aria-label="Business resources">
   <div class="wrap">
-    <div class="eyebrow">Free business resources</div>
-    <h2>Helping businesses find opportunities and get discovered</h2>
-    <p class="lead">BODA helps businesses find federal and state contract opportunities and build visibility through a free Business Profile Ad.</p>
     <div class="resource-grid">
       <article class="card">
-        <h3>Federal and State Contract Opportunities</h3>
-        <p>Search public contract opportunities for free through the BDMS Business Contract Search Portal. Confirm eligibility and deadlines with the issuing agency.</p>
-        <a class="link" href="https://bdms.aproposgroupllc.com/">Search Free Contract Opportunities →</a>
+        <h2>Free Access to Federal and State Contracts</h2>
+        <p>Search federal and state contract opportunities for free through the BDMS Business Contract Search Portal.</p>
+        <a class="btn primary" href="https://bdms.aproposgroupllc.com/">Search Contracts →</a>
       </article>
       <article class="card">
-        <h3>Free Business Profile Ad</h3>
-        <p>Get a free Vendor Card in the BODA Business Registry so people can find your business, visit your website, and contact you.</p>
-        <a class="link" href="/free-vendor-card.html">Request Your Free Vendor Card →</a>
+        <h2>Business Profile Vendor Card</h2>
+        <p>Get a free Business Profile Ad in the BODA Business Registry so people can find your business, visit your website, and contact you.</p>
+        <a class="btn primary" href="/free-vendor-card.html">Request Your Free Vendor Card →</a>
+      </article>
+      <article class="card">
+        <h2>Custom Intelligent Business Systems</h2>
+        <p>Explore STELLAR’s custom business systems for free and see how they can improve productivity and extend service coverage.</p>
+        <a class="btn primary" href="https://stellaruc.com/">Explore STELLAR →</a>
       </article>
     </div>
     <p><a id="claimOpportunityCta" href="/claim">Claim a referred opportunity</a></p>
