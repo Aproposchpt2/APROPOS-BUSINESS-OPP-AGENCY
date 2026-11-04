@@ -591,6 +591,12 @@ const minutesFromNow = minutes => new Date(Date.now() + minutes * 60 * 1000).toI
 const textList = (value, maxItems, maxLength) => (Array.isArray(value) ? value : String(value ?? '').split(/\r?\n/))
   .map(item => clean(item, maxLength)).filter(Boolean).slice(0, maxItems);
 
+const cardServices = value => (Array.isArray(value) ? value : String(value ?? '').split(/\r?\n/))
+  .map(item => (item && typeof item === 'object'
+    ? { name: clean(item.name, 120), details: clean(item.details, 1000) }
+    : { name: clean(item, 120), details: '' }))
+  .filter(service => service.name).slice(0, 20);
+
 async function isRegistryCard(profile) {
   if (!profile?.claim_id) return false;
   const rows = await db('boda_vendor_claims', 'GET', `?select=source&id=eq.${encodeURIComponent(profile.claim_id)}&limit=1`);
@@ -725,7 +731,7 @@ const editableCard = p => ({
   email: p.owner_email || '',
   show_email: Boolean(p.public_contact_email),
   about: p.about || '',
-  services: p.products_services || [],
+  services: cardServices(p.products_services),
   naics: p.naics || [],
   hours_of_operation: p.hours_of_operation || '',
   city: p.city || '',
@@ -746,7 +752,7 @@ async function cardEdit(req, url, action) {
       return json({ ok: false, error: 'Invalid request.' }, 403, noStore);
     }
     const raw = await req.text();
-    if (raw.length > 12000) return json({ ok: false, error: 'Submission is too large.' }, 413, noStore);
+    if (raw.length > 40000) return json({ ok: false, error: 'Submission is too large.' }, 413, noStore);
     let input = {};
     try { input = raw ? JSON.parse(raw) : {}; } catch { return json({ ok: false, error: 'Invalid submission.' }, 400, noStore); }
 
@@ -811,7 +817,7 @@ async function cardEdit(req, url, action) {
         phone,
         public_contact_email: input.show_email ? profile.owner_email : '',
         about: clean(input.about, 1000),
-        products_services: textList(input.services, 20, 120),
+        products_services: cardServices(input.services),
         naics,
         hours_of_operation: clean(input.hours_of_operation, 500),
         city: clean(input.city, 120),

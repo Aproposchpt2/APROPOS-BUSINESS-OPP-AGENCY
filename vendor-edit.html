@@ -25,6 +25,9 @@
     button.plain { background: transparent; color: #d7b76d; border: 1px solid #817454; }
     button:disabled { opacity: .65; cursor: wait; }
     :focus-visible { outline: 3px solid #d7b76d; outline-offset: 3px; }
+    .services-editor { margin-bottom: 1rem; }
+    .service-row { border: 1px solid #3b3324; padding: 1rem; margin: .75rem 0; }
+    .service-row label:last-of-type { margin-bottom: .5rem; }
     [hidden] { display: none !important; }
     .status { min-height: 1.6em; margin: .75rem 0 0; }
     footer { font-size: .85rem; color: #c9c1ad; margin-top: 2rem; }
@@ -63,7 +66,12 @@
     <h2>Add More About Your Business</h2>
     <p class="hint">These are optional. Anything you add here appears on your public card.</p>
     <label>Description <textarea name="about" maxlength="1000"></textarea></label>
-    <label>Business Services <span class="hint">One per line.</span><textarea name="services"></textarea></label>
+    <div class="services-editor">
+      <strong>Business Services</strong>
+      <span class="hint">Add each service and the details customers see when they click it.</span>
+      <div id="service-rows"></div>
+      <button type="button" class="plain" id="add-service">+ Add a Service</button>
+    </div>
     <label>NAICS Codes <span class="hint">One per line, for example 238220.</span><textarea name="naics"></textarea></label>
     <label>Hours of Operation <textarea name="hours_of_operation" maxlength="500" placeholder="Mon–Fri 8:00 AM – 5:00 PM"></textarea></label>
     <div class="row">
@@ -134,6 +142,56 @@
     });
   }
 
+  const serviceRows = document.getElementById('service-rows');
+  const addService = document.getElementById('add-service');
+  const MAX_SERVICES = 20;
+
+  function addServiceRow(service = { name: '', details: '' }) {
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    const nameLabel = document.createElement('label');
+    nameLabel.textContent = 'Service Name ';
+    const name = document.createElement('input');
+    name.maxLength = 120;
+    name.className = 'service-name';
+    name.value = service.name;
+    nameLabel.append(name);
+    const detailsLabel = document.createElement('label');
+    detailsLabel.textContent = 'Service Details ';
+    const details = document.createElement('textarea');
+    details.maxLength = 1000;
+    details.className = 'service-details';
+    details.value = service.details;
+    detailsLabel.append(details);
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'plain';
+    remove.textContent = 'Remove';
+    remove.addEventListener('click', () => {
+      row.remove();
+      addService.hidden = false;
+    });
+    row.append(nameLabel, detailsLabel, remove);
+    serviceRows.append(row);
+    addService.hidden = serviceRows.children.length >= MAX_SERVICES;
+    return name;
+  }
+
+  function setServices(services) {
+    serviceRows.replaceChildren();
+    services.forEach(service => addServiceRow(service));
+    if (!services.length) addServiceRow();
+  }
+
+  function readServices() {
+    return [...serviceRows.children].map(row => ({
+      name: row.querySelector('.service-name').value.trim(),
+      details: row.querySelector('.service-details').value.trim()
+    })).filter(service => service.name || service.details);
+  }
+
+  addService.addEventListener('click', () => addServiceRow().focus());
+
   function fillCard(card) {
     const f = forms.card.elements;
     f.business_name.value = card.business_name;
@@ -141,7 +199,7 @@
     f.phone.value = card.phone;
     f.show_email.checked = card.show_email;
     f.about.value = card.about;
-    f.services.value = card.services.join('\n');
+    setServices(card.services);
     f.naics.value = card.naics.join('\n');
     f.hours_of_operation.value = card.hours_of_operation;
     f.city.value = card.city;
@@ -179,13 +237,14 @@
 
   submitWith(forms.card, async () => {
     const f = forms.card.elements;
+    if (readServices().some(service => !service.name)) throw new Error('Add a name for each service that has details.');
     const { card } = await call('card-save', {
       business_name: f.business_name.value,
       website: f.website.value,
       phone: f.phone.value,
       show_email: f.show_email.checked,
       about: f.about.value,
-      services: f.services.value,
+      services: readServices(),
       naics: f.naics.value,
       hours_of_operation: f.hours_of_operation.value,
       city: f.city.value,
