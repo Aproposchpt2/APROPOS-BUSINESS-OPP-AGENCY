@@ -565,7 +565,7 @@ function workspaceOpportunity(contract, snapshot) {
 
 async function registryIntake(req) {
   const origin = req.headers.get('origin');
-  if (origin !== 'https://bdms.aproposgroupllc.com') {
+  if (!['https://bdms.aproposgroupllc.com', 'https://aproposopportunity.org'].includes(origin)) {
     return json({ok:false,error:'Invalid request origin.'},403);
   }
   const headers = {
@@ -594,9 +594,9 @@ async function registryIntake(req) {
         || phone.replace(/\D/g,'').length < 7 || input?.registry_consent !== true) {
       return json({ok:false,error:'Complete every field with valid business details and confirm publication consent.'},400,headers);
     }
-    const source = 'bdms_business_registry';
+    const source = origin === 'https://aproposopportunity.org' ? 'boda_business_registry' : 'bdms_business_registry';
     const recent = await db('boda_vendor_claims','GET',
-      `?select=id&source=eq.${source}&claimant_email=eq.${encodeURIComponent(email)}&created_at=gt.${encodeURIComponent(new Date(Date.now()-10*60*1000).toISOString())}&limit=1`);
+      `?select=id&source=in.(bdms_business_registry,boda_business_registry)&claimant_email=eq.${encodeURIComponent(email)}&created_at=gt.${encodeURIComponent(new Date(Date.now()-10*60*1000).toISOString())}&limit=1`);
     const message = 'Check your business email for a link to confirm your free Vendor Card.';
     if (recent?.length) return json({ok:true,message},200,headers);
 
@@ -670,7 +670,8 @@ export default async (req) => {
         `?select=*&verification_token_hash=eq.${encodeURIComponent(hash(raw))}&status=eq.PENDING&verification_expires_at=gt.${encodeURIComponent(new Date().toISOString())}&limit=1`);
       if (!claims?.length) return new Response(null,{status:302,headers:{location:'/vendor-claim?status=expired'}});
       const claim = claims[0];
-      if (registryConfirmation !== (claim.source === 'bdms_business_registry')) {
+      const registryClaim = ['bdms_business_registry', 'boda_business_registry'].includes(claim.source);
+      if (registryConfirmation !== registryClaim) {
         return new Response(null,{status:303,headers:{location:'/vendor-claim?status=invalid'}});
       }
 
@@ -679,7 +680,7 @@ export default async (req) => {
         const rows = await db('boda_vendor_profiles','GET',`?select=*&id=eq.${encodeURIComponent(claim.profile_id)}&limit=1`);
         profile = rows?.[0];
       }
-      if (!profile && claim.source === 'bdms_business_registry') {
+      if (!profile && registryClaim) {
         profile = await publishRegistryProfile(claim);
       }
       if (!profile) {
@@ -693,7 +694,7 @@ export default async (req) => {
         status:'VERIFIED', verified_at:new Date().toISOString(),
         profile_id:profile.id, updated_at:new Date().toISOString(),
         verification_token_hash:null,
-        ...(claim.source === 'bdms_business_registry' ? { registry_details:null } : {})
+        ...(registryClaim ? { registry_details:null } : {})
       });
 
       const rawSession = token();
