@@ -50,11 +50,12 @@
     <label>Business Email <input name="business_email" type="email" autocomplete="email" maxlength="180" required></label>
     <label>Business Website <input name="business_website" type="url" autocomplete="url" maxlength="500" value="https://" required></label>
     <label>Business Phone <input name="business_phone" type="tel" autocomplete="tel" maxlength="40" required></label>
-    <label class="consent"><input name="registry_consent" type="checkbox" required> I authorize BODA to publish my business name, website, and phone number in the Business Registry.</label>
+    <label class="consent"><input name="registry_consent" type="checkbox" required> I authorize BODA to publish my business name, website, phone, email.</label>
     <p>We use your business email to confirm your request. See our <a href="/privacy">Privacy Policy</a>.</p>
     <button type="submit">Submit</button>
     <p id="vendor-card-status" role="status"></p>
   </form>
+  <p>Already have a Vendor Card? <a href="/vendor-edit">Edit your card</a>.</p>
 </main>
 <script>
   const form = document.getElementById('vendor-card-form');
