@@ -69,7 +69,7 @@
     <label>Description <textarea name="about" maxlength="1000"></textarea></label>
     <div class="services-editor">
       <strong>Business Services</strong>
-      <span class="hint">Add each service and the details customers see when they click it.</span>
+      <span class="hint">Add each service or product, with one section to promote it. Customers see your promotion when they click it.</span>
       <div id="service-rows"></div>
       <button type="button" class="plain" id="add-service">+ Add a Service</button>
     </div>
@@ -158,10 +158,11 @@
     name.value = service.name;
     nameLabel.append(name);
     const detailsLabel = document.createElement('label');
-    detailsLabel.textContent = 'Service Details ';
+    detailsLabel.textContent = 'Promote This Service ';
     const details = document.createElement('textarea');
     details.maxLength = 1000;
     details.className = 'service-details';
+    details.placeholder = 'Tell customers why to choose this service, or share a current offer.';
     details.value = service.details;
     detailsLabel.append(details);
     const remove = document.createElement('button');
@@ -238,7 +239,7 @@
 
   submitWith(forms.card, async () => {
     const f = forms.card.elements;
-    if (readServices().some(service => !service.name)) throw new Error('Add a name for each service that has details.');
+    if (readServices().some(service => !service.name)) throw new Error('Add a name for each service that has a promotion.');
     const { card } = await call('card-save', {
       business_name: f.business_name.value,
       website: f.website.value,
