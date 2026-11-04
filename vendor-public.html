@@ -190,6 +190,9 @@ body.registry-page .rc-layout .rc-service{font-family:var(--serif)}
 .rc-pre{display:inline!important;margin:0!important;color:inherit!important;font:inherit!important;letter-spacing:0!important;text-transform:none!important;white-space:pre-line}
 .rc-settings{display:block;margin-top:24px;padding:12px 16px;border:1px solid var(--gold);border-radius:8px;color:var(--gold2);font-size:15px;font-weight:700;text-align:center;text-decoration:none}
 .rc-settings:hover{background:rgba(199,167,90,.12)}
+.rc-signout{display:block;width:100%;margin-top:10px;padding:6px;border:0;background:transparent;color:var(--gold2);font:15px var(--sans);text-decoration:underline;cursor:pointer}
+.rc-signout[hidden]{display:none}
+.rc-signout:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
 .rc-source{margin:16px 0 0;color:rgba(255,255,255,.62);font-size:13px}
 .rc-center{display:flex;flex-direction:column;min-width:0;padding:36px clamp(20px,4vw,56px);background:#151515}
 .rc-center h2{margin:0 0 24px;color:var(--gold2);font:600 clamp(36px,4.5vw,56px)/1.1 var(--serif)}
@@ -339,6 +342,7 @@ function renderRegistryCard(p){
     +(naics.length?row('NAICS Codes',naics.map(esc).join(', ')):'')
     +'</div>'
     +'<a class="rc-settings" href="'+editUrl+'">Settings</a>'
+    +'<button type="button" class="rc-signout" id="rcSignOut" hidden>Sign out</button>'
     +'<p class="rc-source">Business Registry listing. Information provided by the business owner.</p>'
     +'</aside>'
     +'<main class="rc-center"><h2>Business Services</h2>'
@@ -352,16 +356,8 @@ function renderRegistryCard(p){
     +'<h3 id="rcDrawerTitle"></h3><p class="rc-details"></p>'
     +'<p class="rc-status" id="rcViewStatus" role="status"></p>'
     +'<div class="rc-drawer-actions">'+contactLinks+'</div>'
-    +'<button type="button" class="rc-edit-link" id="rcEditOpen">Edit</button>'
+    +'<button type="button" class="rc-edit-link" id="rcEditOpen" hidden>Edit</button>'
     +'</div>'
-    +'<form id="rcAuth" hidden>'
-    +'<h3>Confirm you own this card</h3>'
-    +'<p id="rcAuthHelp">Enter your business email and we will send you a one-time code.</p>'
-    +'<label>Business Email<input id="rcAuthEmail" type="email" autocomplete="email" maxlength="180" required></label>'
-    +'<label id="rcAuthCodeWrap" hidden>Code<input id="rcAuthCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6"></label>'
-    +'<p class="rc-status" id="rcAuthStatus" role="status"></p>'
-    +'<div class="rc-edit-buttons"><button type="submit" class="rc-btn gold" id="rcAuthSubmit">Send Code</button><button type="button" class="rc-btn" id="rcAuthCancel">Cancel</button></div>'
-    +'</form>'
     +'<form id="rcEdit" hidden>'
     +'<h3>Edit this service</h3>'
     +'<label>Service Name<input id="rcEditName" maxlength="120" required></label>'
@@ -374,16 +370,19 @@ function renderRegistryCard(p){
   const drawer=document.getElementById('rcDrawer');
   const buttons=[...app.querySelectorAll('.rc-service')];
   const el=id=>document.getElementById(id);
-  const panes={view:el('rcView'),auth:el('rcAuth'),edit:el('rcEdit')};
+  const panes={view:el('rcView'),edit:el('rcEdit')};
   const promoFallback='Contact this business for more details about this service.';
   let active=null;
   let activeIndex=null;
-  let email='';
   const showPane=name=>Object.entries(panes).forEach(([key,pane])=>{pane.hidden=key!==name});
   const cardCall=async(action,body)=>{
     const response=await fetch('/api/vendor-presence?action='+action,{method:body?'POST':'GET',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'});
     const data=await response.json().catch(()=>({}));
-    return {ok:response.ok&&Boolean(data.ok),data};
+    return {ok:response.ok&&Boolean(data.ok),status:response.status,data};
+  };
+  const setOwner=owner=>{
+    el('rcEditOpen').hidden=!owner;
+    el('rcSignOut').hidden=!owner;
   };
   const showView=()=>{
     const s=services[activeIndex];
@@ -391,29 +390,10 @@ function renderRegistryCard(p){
     drawer.querySelector('.rc-details').textContent=s.details||promoFallback;
     showPane('view');
   };
-  const showEdit=()=>{
-    const s=services[activeIndex];
-    el('rcEditName').value=s.name;
-    el('rcEditPromo').value=s.details;
-    el('rcEditStatus').textContent='';
-    showPane('edit');
-    el('rcEditPromo').focus();
-  };
-  const resetAuth=()=>{
-    panes.auth.reset();
-    email='';
-    el('rcAuthCodeWrap').hidden=true;
-    el('rcAuthCode').required=false;
-    el('rcAuthEmail').readOnly=false;
-    el('rcAuthSubmit').textContent='Send Code';
-    el('rcAuthHelp').textContent='Enter your business email and we will send you a one-time code.';
-    el('rcAuthStatus').textContent='';
-  };
   const close=()=>{
     drawer.hidden=true;
     document.body.classList.remove('rc-drawer-open');
     buttons.forEach(b=>{b.setAttribute('aria-expanded','false');b.classList.remove('active')});
-    resetAuth();
     if(active){active.focus();active=null}
     activeIndex=null;
   };
@@ -424,53 +404,21 @@ function renderRegistryCard(p){
     button.classList.add('active');
     active=button;
     activeIndex=Number(button.dataset.i);
-    resetAuth();
     el('rcViewStatus').textContent='';
     showView();
     drawer.hidden=false;
     document.body.classList.add('rc-drawer-open');
     drawer.focus();
   }));
-  el('rcEditOpen').addEventListener('click',async()=>{
+  el('rcEditOpen').addEventListener('click',()=>{
+    const s=services[activeIndex];
     el('rcViewStatus').textContent='';
-    let session={ok:false};
-    try{session=await cardCall('card-get')}catch{}
-    if(session.ok&&session.data.card?.slug===p.slug){showEdit();return}
-    resetAuth();
-    showPane('auth');
-    el('rcAuthEmail').focus();
+    el('rcEditName').value=s.name;
+    el('rcEditPromo').value=s.details;
+    el('rcEditStatus').textContent='';
+    showPane('edit');
+    el('rcEditPromo').focus();
   });
-  panes.auth.addEventListener('submit',async event=>{
-    event.preventDefault();
-    const submit=el('rcAuthSubmit');
-    submit.disabled=true;
-    el('rcAuthStatus').textContent='Working…';
-    try{
-      if(el('rcAuthCodeWrap').hidden){
-        email=el('rcAuthEmail').value.trim();
-        const sent=await cardCall('card-code-request',{email,card:p.slug});
-        if(!sent.ok)throw new Error(sent.data.error||'The code could not be sent. Please try again.');
-        el('rcAuthCodeWrap').hidden=false;
-        el('rcAuthCode').required=true;
-        el('rcAuthEmail').readOnly=true;
-        submit.textContent='Continue';
-        el('rcAuthStatus').textContent=sent.data.message;
-        el('rcAuthCode').focus();
-      }else{
-        const verified=await cardCall('card-code-verify',{email,code:el('rcAuthCode').value.trim()});
-        if(!verified.ok)throw new Error(verified.data.error||'That code is not valid.');
-        const session=await cardCall('card-get');
-        if(!session.ok||session.data.card?.slug!==p.slug)throw new Error('That email does not own this card.');
-        resetAuth();
-        showEdit();
-      }
-    }catch(error){
-      el('rcAuthStatus').textContent=error.message;
-    }finally{
-      submit.disabled=false;
-    }
-  });
-  el('rcAuthCancel').addEventListener('click',()=>{resetAuth();showView()});
   panes.edit.addEventListener('submit',async event=>{
     event.preventDefault();
     const save=el('rcEditSave');
@@ -478,6 +426,10 @@ function renderRegistryCard(p){
     el('rcEditStatus').textContent='Saving…';
     try{
       const saved=await cardCall('card-service-save',{index:activeIndex,name:el('rcEditName').value.trim(),details:el('rcEditPromo').value.trim()});
+      if(saved.status===401){
+        setOwner(false);
+        throw new Error('Your sign-in has ended. Your changes were not saved. Select Settings to sign in again.');
+      }
       if(!saved.ok)throw new Error(saved.data.error||'Your changes could not be saved. Please try again.');
       services.splice(0,services.length,...saved.data.services);
       buttons[activeIndex].querySelector('span').textContent=services[activeIndex].name;
@@ -490,9 +442,17 @@ function renderRegistryCard(p){
       save.disabled=false;
     }
   });
-  el('rcEditCancel').addEventListener('click',()=>{showView();el('rcEditOpen').focus()});
+  el('rcEditCancel').addEventListener('click',()=>{showView();el('rcEditOpen').hidden?drawer.focus():el('rcEditOpen').focus()});
+  el('rcSignOut').addEventListener('click',async()=>{
+    try{await cardCall('card-sign-out',{})}catch{}
+    if(activeIndex!==null&&!drawer.hidden)showView();
+    setOwner(false);
+  });
   drawer.querySelector('.rc-close').addEventListener('click',close);
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!drawer.hidden)close()});
+  const checkOwner=()=>cardCall('card-owner&card='+encodeURIComponent(p.slug)).then(r=>setOwner(Boolean(r.data.owner))).catch(()=>setOwner(false));
+  checkOwner();
+  window.addEventListener('pageshow',e=>{if(e.persisted)checkOwner()});
 }
 
 async function load(){
