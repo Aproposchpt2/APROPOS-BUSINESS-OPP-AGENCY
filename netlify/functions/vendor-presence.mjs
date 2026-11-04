@@ -929,6 +929,45 @@ async function registryIntake(req) {
   }
 }
 
+function registryConfirmPage({ token: rawToken = '', businessName = '', expired = false }, status = 200) {
+  const safe = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const body = expired
+    ? `<h1>This link has expired</h1>
+      <p>Confirmation links work once and expire after 30 minutes. Request your free Vendor Card again and we'll send you a new link.</p>
+      <a class="button" href="/free-vendor-card">Request Your Free Vendor Card</a>`
+    : `<h1>Confirm your free Vendor Card</h1>
+      <p class="name">${safe(businessName)}</p>
+      <p>Confirm to publish your business name, website, phone, and email in the BODA Business Registry.</p>
+      <form method="post" action="/api/vendor-presence?action=registry-confirm">
+        <input type="hidden" name="token" value="${safe(rawToken)}">
+        <button class="button" type="submit">Confirm and Publish</button>
+      </form>
+      <p class="note">You can edit or remove your card at any time with a code sent to your business email.</p>`;
+  return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${expired ? 'Link Expired' : 'Confirm Your Vendor Card'} | BODA</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;background:#080808;color:#f8f7f3;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+header{padding:20px clamp(16px,4vw,40px);border-bottom:1px solid #3b3324}
+.brand{color:#f8f7f3;text-decoration:none;letter-spacing:.12em;font-weight:600}
+.brand small{display:block;margin-top:2px;color:#d7b76d;font-size:.68rem;letter-spacing:.12em}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px}
+.panel{width:min(100%,34rem);background:#151515;border:1px solid #3b3324;border-top:3px solid #d7b76d;padding:clamp(24px,5vw,40px)}
+h1{margin:0 0 16px;font:500 clamp(1.8rem,5vw,2.4rem)/1.15 Georgia,"Times New Roman",serif}
+p{margin:0 0 16px;color:#c8c3b9}
+.name{color:#d7b76d;font-size:1.15rem;font-weight:600}
+.button{display:inline-block;margin-top:8px;padding:14px 22px;border:1px solid #d7b76d;background:#d7b76d;color:#080808;font:inherit;font-size:.9rem;font-weight:750;text-decoration:none;cursor:pointer}
+.button:hover{filter:brightness(1.15)}
+:focus-visible{outline:3px solid #d7b76d;outline-offset:3px}
+.note{margin:20px 0 0;font-size:.85rem}
+footer{padding:20px clamp(16px,4vw,40px);border-top:1px solid #3b3324;color:#c8c3b9;font-size:.85rem}
+footer a{color:#d7b76d}
+</style></head><body>
+<header><a class="brand" href="/">BODA<small>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</small></a></header>
+<main><div class="panel">${body}</div></main>
+<footer>© 2026 Apropos Group LLC. <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></footer>
+</body></html>`, {status, headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','referrer-policy':'same-origin','x-robots-tag':'noindex'}});
+}
+
 async function publishRegistryProfile(claim) {
   const { business_name:businessName, claimant_email:email, registry_details:details } = claim;
   if (!details) throw new Error('Business Registry details are missing.');
@@ -963,9 +1002,11 @@ export default async (req) => {
 
     if (req.method === 'GET' && action === 'registry-confirm') {
       const raw = url.searchParams.get('token') || '';
-      if (!/^[A-Za-z0-9_-]{43}$/.test(raw)) return new Response('Invalid confirmation link.',{status:400});
-      return new Response(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Confirm your free Vendor Card</title><main><h1>Confirm your free Vendor Card</h1><p>Confirm to add your business listing to the BODA Business Registry.</p><form method="post" action="/api/vendor-presence?action=registry-confirm"><input type="hidden" name="token" value="${raw}"><button type="submit">Confirm and publish</button></form></main></html>`,
-        {headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','referrer-policy':'same-origin','x-robots-tag':'noindex'}});
+      if (!/^[A-Za-z0-9_-]{43}$/.test(raw)) return registryConfirmPage({expired:true},400);
+      const pending = await db('boda_vendor_claims','GET',
+        `?select=business_name,source&verification_token_hash=eq.${encodeURIComponent(hash(raw))}&status=eq.PENDING&verification_expires_at=gt.${encodeURIComponent(new Date().toISOString())}&limit=1`);
+      if (!REGISTRY_SOURCES.includes(pending?.[0]?.source)) return registryConfirmPage({expired:true},410);
+      return registryConfirmPage({token:raw,businessName:pending[0].business_name});
     }
 
     const registryConfirmation = req.method === 'POST' && action === 'registry-confirm';
@@ -977,6 +1018,7 @@ export default async (req) => {
       if (!raw) return new Response(null,{status:302,headers:{location:'/vendor-claim?status=invalid'}});
       const claims = await db('boda_vendor_claims','GET',
         `?select=*&verification_token_hash=eq.${encodeURIComponent(hash(raw))}&status=eq.PENDING&verification_expires_at=gt.${encodeURIComponent(new Date().toISOString())}&limit=1`);
+      if (!claims?.length && registryConfirmation) return registryConfirmPage({expired:true},410);
       if (!claims?.length) return new Response(null,{status:302,headers:{location:'/vendor-claim?status=expired'}});
       const claim = claims[0];
       const registryClaim = ['bdms_business_registry', 'boda_business_registry'].includes(claim.source);
