@@ -109,10 +109,7 @@
     card: document.getElementById('card-form'),
     change: document.getElementById('email-change-form')
   };
-  const pageParams = new URLSearchParams(location.search);
-  const cardSlug = pageParams.get('card') || '';
-  const serviceParam = pageParams.get('service');
-  let openServiceIndex = serviceParam !== null && /^\d+$/.test(serviceParam) ? Number(serviceParam) : null;
+  const cardSlug = new URLSearchParams(location.search).get('card') || '';
   let email = '';
 
   const statusOf = form => form.querySelector('.status');
@@ -215,14 +212,6 @@
     document.getElementById('view-card').href = '/vendor/' + encodeURIComponent(card.slug);
     document.getElementById('view-card').hidden = !card.is_published;
     show('card', 'change');
-    if (openServiceIndex !== null) {
-      const box = serviceRows.children[openServiceIndex]?.querySelector('.service-details');
-      openServiceIndex = null;
-      if (box) {
-        box.scrollIntoView({ block: 'center' });
-        box.focus();
-      }
-    }
   }
 
   submitWith(forms.email, async () => {
