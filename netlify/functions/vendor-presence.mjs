@@ -442,24 +442,25 @@ async function uniqueSlug(name) {
   return `${base}-${randomBytes(3).toString('hex')}`;
 }
 
-async function sendVerification({ businessName, claimantName, email, rawToken }) {
+async function sendVerification({ businessName, claimantName, email, rawToken, registry = false }) {
   const apiKey = Netlify.env.get('RESEND_API_KEY');
   const from = Netlify.env.get('RESEND_FROM_EMAIL');
   if (!apiKey || !from) throw new Error('Verification email service is unavailable.');
   const origin = 'https://aproposopportunity.org';
-  const verifyUrl = `${origin}/api/vendor-presence?action=verify&token=${encodeURIComponent(rawToken)}`;
-  const subject = `Verify your business claim — ${businessName}`;
+  const verifyUrl = `${origin}/api/vendor-presence?action=${registry ? 'registry-confirm' : 'verify'}&token=${encodeURIComponent(rawToken)}`;
+  const heading = registry ? 'Verify your Business Registry listing' : 'Verify your business claim';
+  const subject = `${heading} — ${businessName}`;
   const html = `
   <div style="font-family:Arial,sans-serif;color:#14233a;max-width:640px;margin:auto">
     <div style="background:#081a31;color:white;padding:28px;border-bottom:4px solid #c7a75a">
       <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#ead9a5">Business Opportunity Development Agency</div>
-      <h1 style="font-family:Georgia,serif;font-weight:500;margin:10px 0 0">Verify your business claim</h1>
+      <h1 style="font-family:Georgia,serif;font-weight:500;margin:10px 0 0">${heading}</h1>
     </div>
     <div style="padding:28px;border:1px solid #d6e1e9;border-top:0;background:#f8fcff">
       <p>Hello ${claimantName.replace(/[<>&]/g,'')},</p>
-      <p>A claim was submitted for <strong>${businessName.replace(/[<>&]/g,'')}</strong>.</p>
+      <p>${registry ? "A free Vendor Card was requested for" : "A claim was submitted for"} <strong>${businessName.replace(/[<>&]/g,'')}</strong>.</p>
       <p>Only an authorized representative of the business can edit its Business Opportunity Development Agency Vendor Page.</p>
-      <p style="margin:26px 0"><a href="${verifyUrl}" style="display:inline-block;background:#c7a75a;color:#081a31;padding:13px 20px;text-decoration:none;font-weight:700">Verify Business Claim</a></p>
+      <p style="margin:26px 0"><a href="${verifyUrl}" style="display:inline-block;background:#c7a75a;color:#081a31;padding:13px 20px;text-decoration:none;font-weight:700">${heading}</a></p>
       <p style="font-size:12px;color:#657489">This verification link expires in 30 minutes. If you did not submit this claim, no action is required.</p>
     </div>
     <p style="font-size:11px;color:#718094">Business Opportunity Development Agency<br>A property of Apropos Group LLC</p>
@@ -562,23 +563,124 @@ function workspaceOpportunity(contract, snapshot) {
   };
 }
 
+async function registryIntake(req) {
+  const origin = req.headers.get('origin');
+  if (origin !== 'https://bdms.aproposgroupllc.com') {
+    return json({ok:false,error:'Invalid request origin.'},403);
+  }
+  const headers = {
+    'access-control-allow-origin': origin,
+    'access-control-allow-methods': 'POST, OPTIONS',
+    'access-control-allow-headers': 'Content-Type',
+    'cache-control': 'no-store',
+    vary: 'Origin'
+  };
+  if (req.method === 'OPTIONS') return new Response(null,{status:204,headers});
+  if (req.method !== 'POST') return json({ok:false,error:'POST only.'},405,headers);
+  try {
+    const raw = await req.text();
+    if (raw.length > 4096) return json({ok:false,error:'Submission is too large.'},413,headers);
+    const input = JSON.parse(raw);
+    const first = clean(input?.first_name,70);
+    const last = clean(input?.last_name,70);
+    const businessName = clean(input?.business_name,180);
+    const email = clean(input?.business_email,180).toLowerCase();
+    const phone = clean(input?.business_phone,40);
+    const websiteInput = clean(input?.business_website,500);
+    let website;
+    try { website = new URL(websiteInput); } catch { /* Validated below. */ }
+    if (!first || !last || businessName.length < 2 || !emailOk(email)
+        || !website || !['https:', 'http:'].includes(website.protocol) || website.username || website.password
+        || phone.replace(/\D/g,'').length < 7 || input?.registry_consent !== true) {
+      return json({ok:false,error:'Complete every field with valid business details and confirm publication consent.'},400,headers);
+    }
+    const source = 'bdms_business_registry';
+    const recent = await db('boda_vendor_claims','GET',
+      `?select=id&source=eq.${source}&claimant_email=eq.${encodeURIComponent(email)}&created_at=gt.${encodeURIComponent(new Date(Date.now()-10*60*1000).toISOString())}&limit=1`);
+    const message = 'Check your business email for a link to confirm your free Vendor Card.';
+    if (recent?.length) return json({ok:true,message},200,headers);
+
+    const rawToken = token();
+    const claimantName = `${first} ${last}`;
+    const rows = await db('boda_vendor_claims','POST','',[{
+      business_name:businessName, claimant_name:claimantName, claimant_email:email, source,
+      verification_token_hash:hash(rawToken),
+      verification_expires_at:new Date(Date.now()+30*60*1000).toISOString(),
+      registry_details:{website:website.href,phone}
+    }],'return=representation');
+    try {
+      await sendVerification({businessName,claimantName,email,rawToken,registry:true});
+    } catch (error) {
+      await db('boda_vendor_claims','DELETE',`?id=eq.${encodeURIComponent(rows[0].id)}&status=eq.PENDING`);
+      throw error;
+    }
+    return json({ok:true,message},200,headers);
+  } catch (error) {
+    if (error instanceof SyntaxError) return json({ok:false,error:'Invalid submission.'},400,headers);
+    console.error('Business Registry intake failed');
+    return json({ok:false,error:'The Vendor Card request could not be processed. Please try again.'},503,headers);
+  }
+}
+
+async function publishRegistryProfile(claim) {
+  const { business_name:businessName, claimant_email:email, registry_details:details } = claim;
+  if (!details) throw new Error('Business Registry details are missing.');
+  const [existing] = await db('boda_vendor_profiles','GET',
+    `?select=id&owner_email=eq.${encodeURIComponent(email)}&business_name=eq.${encodeURIComponent(businessName)}&limit=1`);
+  const at = new Date().toISOString();
+  if (existing) {
+    const [profile] = await db('boda_vendor_profiles','PATCH',`?id=eq.${encodeURIComponent(existing.id)}`,
+      {is_published:true, registry_consent_at:at, updated_at:at},'return=representation');
+    return profile;
+  }
+  const slug = `${slugify(businessName)}-${hash(JSON.stringify([businessName,email])).slice(0,16)}`;
+  const [created] = await db('boda_vendor_profiles','POST','?on_conflict=slug',[{
+    claim_id:claim.id, business_name:businessName, slug, owner_email:email,
+    website:details.website, phone:details.phone, is_published:true, registry_consent_at:at
+  }],'resolution=ignore-duplicates,return=representation');
+  if (created) return created;
+  const [profile] = await db('boda_vendor_profiles','GET',
+    `?select=id&slug=eq.${encodeURIComponent(slug)}&owner_email=eq.${encodeURIComponent(email)}&limit=1`);
+  if (!profile) throw new Error('Business Registry listing could not be saved.');
+  return profile;
+}
+
 export default async (req) => {
   try {
     const url = new URL(req.url);
     const action = clean(url.searchParams.get('action'), 50);
 
-    if (req.method === 'GET' && action === 'verify') {
-      const raw = clean(url.searchParams.get('token'), 200);
+    if (action === 'registry-intake') return await registryIntake(req);
+
+    if (req.method === 'GET' && action === 'registry-confirm') {
+      const raw = url.searchParams.get('token') || '';
+      if (!/^[A-Za-z0-9_-]{43}$/.test(raw)) return new Response('Invalid confirmation link.',{status:400});
+      return new Response(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Confirm your free Vendor Card</title><main><h1>Confirm your free Vendor Card</h1><p>Confirm to add your business listing to the BODA Business Registry.</p><form method="post" action="/api/vendor-presence?action=registry-confirm"><input type="hidden" name="token" value="${raw}"><button type="submit">Confirm and publish</button></form></main></html>`,
+        {headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','referrer-policy':'no-referrer','x-robots-tag':'noindex'}});
+    }
+
+    const registryConfirmation = req.method === 'POST' && action === 'registry-confirm';
+    if (registryConfirmation || (req.method === 'GET' && action === 'verify')) {
+      if (registryConfirmation && req.headers.get('origin') !== url.origin) {
+        return json({ok:false,error:'Invalid request origin.'},403);
+      }
+      const raw = clean(registryConfirmation ? (await req.formData()).get('token') : url.searchParams.get('token'), 200);
       if (!raw) return new Response(null,{status:302,headers:{location:'/vendor-claim?status=invalid'}});
       const claims = await db('boda_vendor_claims','GET',
         `?select=*&verification_token_hash=eq.${encodeURIComponent(hash(raw))}&status=eq.PENDING&verification_expires_at=gt.${encodeURIComponent(new Date().toISOString())}&limit=1`);
       if (!claims?.length) return new Response(null,{status:302,headers:{location:'/vendor-claim?status=expired'}});
       const claim = claims[0];
+      if (registryConfirmation !== (claim.source === 'bdms_business_registry')) {
+        return new Response(null,{status:303,headers:{location:'/vendor-claim?status=invalid'}});
+      }
 
       let profile;
       if (claim.profile_id) {
         const rows = await db('boda_vendor_profiles','GET',`?select=*&id=eq.${encodeURIComponent(claim.profile_id)}&limit=1`);
         profile = rows?.[0];
+      }
+      if (!profile && claim.source === 'bdms_business_registry') {
+        profile = await publishRegistryProfile(claim);
       }
       if (!profile) {
         ({ profile } = await findOrCreateProfile({
@@ -590,7 +692,8 @@ export default async (req) => {
       await db('boda_vendor_claims','PATCH',`?id=eq.${encodeURIComponent(claim.id)}`,{
         status:'VERIFIED', verified_at:new Date().toISOString(),
         profile_id:profile.id, updated_at:new Date().toISOString(),
-        verification_token_hash:null
+        verification_token_hash:null,
+        ...(claim.source === 'bdms_business_registry' ? { registry_details:null } : {})
       });
 
       const rawSession = token();
@@ -600,7 +703,7 @@ export default async (req) => {
         expires_at:new Date(Date.now()+1000*60*60*24*30).toISOString()
       }]);
       return new Response(null,{
-        status:302,
+        status:registryConfirmation ? 303 : 302,
         headers:{
           location:'/vendor-workspace?verified=1',
           'set-cookie':`boda_vendor_session=${encodeURIComponent(rawSession)}; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000; Path=/`
