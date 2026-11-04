@@ -60,7 +60,7 @@ const contactSection = `
     <div class="contact-copy reveal">
       <div class="eyebrow">Contact the Agency</div>
       <h2 class="section-title" id="contact-title">Start an inquiry.</h2>
-      <p>Whether you are a business seeking procurement intelligence, an organization exploring partnership, or a supporter interested in advancing business opportunity, we welcome the conversation.</p>
+      <p>Tell us about your business needs, partnership interests, or questions about BODA resources.</p>
       <p class="contact-note">Your inquiry is sent directly to the Agency for review.</p>
     </div>
 
