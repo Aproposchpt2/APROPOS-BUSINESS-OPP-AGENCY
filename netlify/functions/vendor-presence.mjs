@@ -743,6 +743,11 @@ const editableCard = p => ({
 async function cardEdit(req, url, action) {
   const noStore = { 'cache-control': 'no-store' };
   try {
+    // Tells a card page whether this browser is signed in as that card's owner. Visitors simply get false.
+    if (req.method === 'GET' && action === 'card-owner') {
+      const edit = editCookieToken(req) ? await editSession(req) : null;
+      return json({ ok: true, owner: Boolean(edit && edit.profile.slug === clean(url.searchParams.get('card'), 120)) }, 200, noStore);
+    }
     if (req.method === 'GET' && action === 'card-get') {
       const edit = await editSession(req);
       if (!edit) return json({ ok: false, error: 'Enter your email to get a code.' }, 401, noStore);
