@@ -170,6 +170,42 @@ h2{font:400 29px/1.15 var(--serif);color:#fff;margin:7px 0 13px}
 .card-url .copy-btn{width:auto;margin:0;padding:8px 12px}
 .opp-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}.opp-actions .button-outline{width:auto;margin:0}
 /* Print Contract prints only the contract card on white paper. */
+body.registry-page{display:block;padding:var(--boda-hh,72px) 0 0}
+#app.registry-wide{width:100%;max-width:none}
+.rc-notice{padding:14px 28px;background:rgba(199,167,90,.14);border-bottom:1px solid rgba(199,167,90,.35);font-size:15px}
+.rc-notice a,.rc-contact a{color:var(--gold2);text-decoration:underline;overflow-wrap:anywhere}
+.rc-layout{display:grid;grid-template-columns:340px minmax(0,1fr);min-height:calc(100vh - var(--boda-hh,72px))}
+.rc-side{display:flex;flex-direction:column;padding:32px 28px;background:#1b1b1b;border-right:1px solid rgba(199,167,90,.25)}
+.rc-side .logo{width:72px;height:72px;font-size:24px}
+.rc-side h1{margin:18px 0 4px;color:#fff;font:600 32px/1.12 var(--serif);overflow-wrap:anywhere}
+.rc-loc{margin:0;color:var(--gold2);font-size:15px}
+.rc-about{margin:16px 0 0;color:#ded9cf;font-size:15px;line-height:1.55;white-space:pre-line;overflow-wrap:anywhere}
+.rc-contact{margin-top:22px;border-top:1px solid rgba(255,255,255,.12)}
+.rc-row{padding:13px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.rc-row span{display:block;margin-bottom:3px;color:rgba(255,255,255,.62);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.rc-row div{color:#fff;font-size:15px;overflow-wrap:anywhere}
+.rc-pre{display:inline!important;margin:0!important;color:inherit!important;font:inherit!important;letter-spacing:0!important;text-transform:none!important;white-space:pre-line}
+.rc-settings{display:block;margin-top:24px;padding:12px 16px;border:1px solid var(--gold);border-radius:8px;color:var(--gold2);font-size:15px;font-weight:700;text-align:center;text-decoration:none}
+.rc-settings:hover{background:rgba(199,167,90,.12)}
+.rc-source{margin:16px 0 0;color:rgba(255,255,255,.62);font-size:13px}
+.rc-center{display:flex;flex-direction:column;min-width:0;padding:36px clamp(20px,4vw,56px);background:#151515}
+.rc-center h2{margin:0 0 24px;color:var(--gold2);font:600 clamp(36px,4.5vw,56px)/1.1 var(--serif)}
+.rc-list{flex:1;display:flex;flex-direction:column;gap:16px;max-height:calc(100vh - var(--boda-hh,72px) - 160px);min-height:260px;overflow-y:auto;padding-right:8px}
+.rc-service{flex:none;display:flex;align-items:center;justify-content:space-between;gap:20px;width:100%;min-height:112px;padding:24px 28px;border:1px solid rgba(199,167,90,.3);border-left:5px solid var(--gold);border-radius:12px;background:rgba(255,255,255,.04);color:#fff;font:600 clamp(21px,2.2vw,28px)/1.25 var(--sans);text-align:left;cursor:pointer}
+.rc-service span{overflow-wrap:anywhere}
+.rc-service i{color:var(--gold);font-size:34px;font-style:normal;line-height:1}
+.rc-service:hover,.rc-service.active{background:rgba(199,167,90,.14);border-color:var(--gold)}
+.rc-service:focus-visible,.rc-close:focus-visible,.rc-settings:focus-visible,.rc-btn:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+.rc-empty{color:#ded9cf;font-size:18px}
+.rc-drawer{position:fixed;top:var(--boda-hh,72px);right:0;bottom:0;z-index:50;width:min(440px,100%);padding:34px 30px;overflow-y:auto;background:#1f1f1f;border-left:3px solid var(--gold);box-shadow:-18px 0 40px rgba(0,0,0,.45);outline:0}
+.rc-drawer[hidden]{display:none}
+.rc-drawer h3{margin:0 44px 16px 0;color:#fff;font:600 30px/1.15 var(--serif);overflow-wrap:anywhere}
+.rc-details{margin:0 0 26px;color:#ece8df;font-size:17px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}
+.rc-close{position:absolute;top:18px;right:18px;width:40px;height:40px;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:transparent;color:#fff;font-size:24px;line-height:1;cursor:pointer}
+.rc-drawer-actions{display:grid;gap:10px}
+.rc-btn{padding:13px 18px;border:1px solid var(--gold);border-radius:8px;color:var(--gold2);font-size:15px;font-weight:700;text-align:center;text-decoration:none}
+.rc-btn.gold{background:var(--gold);color:#151515}
+@media(max-width:860px){.rc-layout{grid-template-columns:1fr}.rc-side{border-right:0;border-bottom:1px solid rgba(199,167,90,.25);padding:24px 16px}.rc-center{padding:28px 16px}.rc-list{max-height:none;overflow:visible;padding-right:0}.rc-service{min-height:88px;padding:20px}.rc-drawer{width:100%;padding:28px 16px}}
 @media print{
   body.print-contract{background:#fff!important}
   body.print-contract .boda-header,body.print-contract .hero,body.print-contract .footer,body.print-contract .body>*:not(.opportunity),body.print-contract .opp-actions,body.print-contract #oppMsg,body.print-contract .modal-overlay{display:none!important}
@@ -258,32 +294,73 @@ async function downloadContractPdf(o,business){
 function renderRegistryCard(p){
   const app=document.getElementById('app');
   document.title=p.business_name+' | BODA Business Registry';
+  document.body.classList.add('registry-page');
+  app.classList.add('registry-wide');
   const loc=[p.city,p.state].filter(Boolean).join(', ');
   const site=/^https?:\/\//i.test(p.website||'')?p.website:'';
-  const fact=(label,value)=>'<div class="fact"><small>'+label+'</small><strong>'+value+'</strong></div>';
-  const tags=(items)=>'<div class="tags">'+items.map(x=>'<span class="tag">'+esc(x)+'</span>').join('')+'</div>';
-  const section=(title,body)=>'<div class="panel"><div class="eyebrow">'+title+'</div>'+body+'</div>';
-  const services=(p.products_services||[]).filter(Boolean);
+  const tel=p.phone?String(p.phone).replace(/[^0-9+]/g,''):'';
+  const services=(p.products_services||[]).map(s=>s&&typeof s==='object'?{name:s.name||'',details:s.details||''}:{name:String(s||''),details:''}).filter(s=>s.name);
   const naics=(p.naics||[]).filter(Boolean);
   const published=new URLSearchParams(location.search).get('published');
-  app.innerHTML='<article class="card">'
-    +'<section class="hero"><div class="agency">Business Opportunity Development Agency &middot; Business Registry</div>'
-    +'<div class="profile-head"><div class="logo">'+esc(initials(p.business_name))+'</div>'
-    +'<div><h1>'+esc(p.business_name)+'</h1>'+(loc?'<div class="sub">'+esc(loc)+'</div>':'')+'</div></div></section>'
-    +'<section class="body">'
-    +(published?'<div class="panel owner-panel"><strong>Your free Vendor Card is live.</strong> <a href="/vendor-edit?card='+encodeURIComponent(p.slug)+'" style="color:var(--gold2);text-decoration:underline">Add your services, hours and more</a>.</div>':'')
-    +section('Contact','<div class="contact-grid">'
-      +(site?fact('Website','<a href="'+esc(site)+'" rel="nofollow noopener" target="_blank">'+esc(site.replace(/^https?:\/\//i,'').replace(/\/$/,''))+'</a>'):'')
-      +(p.phone?fact('Phone','<a href="tel:'+esc(String(p.phone).replace(/[^0-9+]/g,''))+'">'+esc(p.phone)+'</a>'):'')
-      +(p.public_contact_email?fact('Email','<a href="mailto:'+esc(p.public_contact_email)+'">'+esc(p.public_contact_email)+'</a>'):'')
-      +(p.hours_of_operation?fact('Hours','<span style="white-space:pre-line">'+esc(p.hours_of_operation)+'</span>'):'')
-      +(p.service_area?fact('Service Area',esc(p.service_area)):'')
-      +'</div>')
-    +(p.about?section('About','<p style="white-space:pre-line">'+esc(p.about)+'</p>'):'')
-    +(services.length?section('Business Services',tags(services)):'')
-    +(naics.length?section('NAICS Codes',tags(naics)):'')
-    +'<p style="font-size:13px;margin-top:18px">Information provided by the business owner. <a href="/vendor-edit?card='+encodeURIComponent(p.slug)+'" style="color:var(--gold2);text-decoration:underline">Own this business? Edit this card</a>.</p>'
-    +'</section></article>';
+  const editUrl='/vendor-edit?card='+encodeURIComponent(p.slug);
+  const row=(label,value)=>'<div class="rc-row"><span>'+label+'</span><div>'+value+'</div></div>';
+  const websiteLink=site?'<a href="'+esc(site)+'" rel="nofollow noopener" target="_blank">'+esc(site.replace(/^https?:\/\//i,'').replace(/\/$/,''))+'</a>':'';
+  const contactLinks=(site?'<a class="rc-btn gold" href="'+esc(site)+'" rel="nofollow noopener" target="_blank">Visit Website</a>':'')
+    +(tel?'<a class="rc-btn" href="tel:'+esc(tel)+'">Call '+esc(p.phone)+'</a>':'')
+    +(p.public_contact_email?'<a class="rc-btn" href="mailto:'+esc(p.public_contact_email)+'">Email</a>':'');
+  app.innerHTML=(published?'<div class="rc-notice"><strong>Your free Vendor Card is live.</strong> <a href="'+editUrl+'">Add your services, hours and more in Settings</a>.</div>':'')
+    +'<div class="rc-layout">'
+    +'<aside class="rc-side">'
+    +'<div class="logo">'+esc(initials(p.business_name))+'</div>'
+    +'<h1>'+esc(p.business_name)+'</h1>'
+    +(loc?'<p class="rc-loc">'+esc(loc)+'</p>':'')
+    +(p.about?'<p class="rc-about">'+esc(p.about)+'</p>':'')
+    +'<div class="rc-contact">'
+    +(websiteLink?row('Website',websiteLink):'')
+    +(p.phone?row('Phone','<a href="tel:'+esc(tel)+'">'+esc(p.phone)+'</a>'):'')
+    +(p.public_contact_email?row('Email','<a href="mailto:'+esc(p.public_contact_email)+'">'+esc(p.public_contact_email)+'</a>'):'')
+    +(p.hours_of_operation?row('Hours','<span class="rc-pre">'+esc(p.hours_of_operation)+'</span>'):'')
+    +(p.service_area?row('Service Area',esc(p.service_area)):'')
+    +(naics.length?row('NAICS Codes',naics.map(esc).join(', ')):'')
+    +'</div>'
+    +'<a class="rc-settings" href="'+editUrl+'">Settings</a>'
+    +'<p class="rc-source">Business Registry listing. Information provided by the business owner.</p>'
+    +'</aside>'
+    +'<main class="rc-center"><h2>Business Services</h2>'
+    +(services.length
+      ?'<div class="rc-list">'+services.map((s,i)=>'<button type="button" class="rc-service" data-i="'+i+'" aria-expanded="false" aria-controls="rcDrawer"><span>'+esc(s.name)+'</span><i aria-hidden="true">&rsaquo;</i></button>').join('')+'</div>'
+      :'<p class="rc-empty">This business has not added its services yet.</p>')
+    +'</main>'
+    +'<aside class="rc-drawer" id="rcDrawer" role="dialog" aria-labelledby="rcDrawerTitle" tabindex="-1" hidden>'
+    +'<button type="button" class="rc-close" aria-label="Close details">&times;</button>'
+    +'<h3 id="rcDrawerTitle"></h3><p class="rc-details"></p>'
+    +'<div class="rc-drawer-actions">'+contactLinks+'</div>'
+    +'</aside>'
+    +'</div>';
+  const drawer=document.getElementById('rcDrawer');
+  const buttons=[...app.querySelectorAll('.rc-service')];
+  let active=null;
+  const close=()=>{
+    drawer.hidden=true;
+    document.body.classList.remove('rc-drawer-open');
+    buttons.forEach(b=>{b.setAttribute('aria-expanded','false');b.classList.remove('active')});
+    if(active){active.focus();active=null}
+  };
+  buttons.forEach(button=>button.addEventListener('click',()=>{
+    if(active===button){close();return}
+    const s=services[Number(button.dataset.i)];
+    buttons.forEach(b=>{b.setAttribute('aria-expanded','false');b.classList.remove('active')});
+    button.setAttribute('aria-expanded','true');
+    button.classList.add('active');
+    active=button;
+    document.getElementById('rcDrawerTitle').textContent=s.name;
+    drawer.querySelector('.rc-details').textContent=s.details||'Contact this business for more details about this service.';
+    drawer.hidden=false;
+    document.body.classList.add('rc-drawer-open');
+    drawer.focus();
+  }));
+  drawer.querySelector('.rc-close').addEventListener('click',close);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!drawer.hidden)close()});
 }
 
 async function load(){
