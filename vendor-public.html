@@ -206,6 +206,7 @@ body.registry-page .rc-layout .rc-service{font-family:var(--serif)}
 .rc-details{margin:0 0 26px;padding:22px 24px;border:1px solid rgba(199,167,90,.45);border-left:5px solid var(--gold);border-radius:12px;background:rgba(199,167,90,.1);color:#fff;font-size:18px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}
 .rc-close{position:absolute;top:18px;right:18px;width:40px;height:40px;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:transparent;color:#fff;font-size:24px;line-height:1;cursor:pointer}
 .rc-drawer-actions{display:grid;gap:10px}
+.rc-drawer-edit{display:block;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);color:var(--gold2);font-size:15px;text-align:center;text-decoration:underline}
 .rc-btn{padding:13px 18px;border:1px solid var(--gold);border-radius:8px;color:var(--gold2);font-size:15px;font-weight:700;text-align:center;text-decoration:none}
 .rc-btn.gold{background:var(--gold);color:#151515}
 @media(max-width:860px){.rc-layout{grid-template-columns:1fr}.rc-side{border-right:0;border-bottom:1px solid rgba(199,167,90,.25);padding:24px 16px}.rc-center{padding:28px 16px}.rc-list{max-height:none;overflow:visible;padding-right:0}.rc-service{min-height:88px;padding:20px}.rc-drawer{width:100%;padding:28px 16px}}
@@ -338,6 +339,7 @@ function renderRegistryCard(p){
     +'<button type="button" class="rc-close" aria-label="Close details">&times;</button>'
     +'<h3 id="rcDrawerTitle"></h3><p class="rc-details"></p>'
     +'<div class="rc-drawer-actions">'+contactLinks+'</div>'
+    +'<a class="rc-drawer-edit" id="rcDrawerEdit" href="'+editUrl+'">Edit this promotion</a>'
     +'</aside>'
     +'</div>';
   const drawer=document.getElementById('rcDrawer');
@@ -358,6 +360,7 @@ function renderRegistryCard(p){
     active=button;
     document.getElementById('rcDrawerTitle').textContent=s.name;
     drawer.querySelector('.rc-details').textContent=s.details||'Contact this business for more details about this service.';
+    document.getElementById('rcDrawerEdit').href=editUrl+'&service='+encodeURIComponent(button.dataset.i);
     drawer.hidden=false;
     document.body.classList.add('rc-drawer-open');
     drawer.focus();
