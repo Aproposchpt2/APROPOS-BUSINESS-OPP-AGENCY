@@ -829,6 +829,20 @@ async function cardEdit(req, url, action) {
       return json({ ok: true, card: editableCard(rows?.[0] || profile) }, 200, noStore);
     }
 
+    if (action === 'card-service-save') {
+      const services = cardServices(profile.products_services);
+      const index = input.index;
+      const name = clean(input.name, 120);
+      if (!Number.isInteger(index) || index < 0 || index >= services.length) {
+        return json({ ok: false, error: 'That service could not be found. Reload the page and try again.' }, 400, noStore);
+      }
+      if (!name) return json({ ok: false, error: 'Enter a service name.' }, 400, noStore);
+      services[index] = { name, details: clean(input.details, 1000) };
+      const rows = await db('boda_vendor_profiles', 'PATCH', `?id=eq.${encodeURIComponent(profile.id)}`,
+        { products_services: services, updated_at: now }, 'return=representation');
+      return json({ ok: true, services: cardServices(rows?.[0]?.products_services ?? services) }, 200, noStore);
+    }
+
     if (action === 'card-email-request') {
       const email = clean(input.new_email, 180).toLowerCase();
       if (!emailOk(email)) return json({ ok: false, error: 'Enter a valid business email.' }, 400, noStore);

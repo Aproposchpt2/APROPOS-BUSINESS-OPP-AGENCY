@@ -206,7 +206,18 @@ body.registry-page .rc-layout .rc-service{font-family:var(--serif)}
 .rc-details{margin:0 0 26px;padding:22px 24px;border:1px solid rgba(199,167,90,.45);border-left:5px solid var(--gold);border-radius:12px;background:rgba(199,167,90,.1);color:#fff;font-size:18px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}
 .rc-close{position:absolute;top:18px;right:18px;width:40px;height:40px;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:transparent;color:#fff;font-size:24px;line-height:1;cursor:pointer}
 .rc-drawer-actions{display:grid;gap:10px}
-.rc-drawer-edit{display:block;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);color:var(--gold2);font-size:15px;text-align:center;text-decoration:underline}
+.rc-edit-link{display:block;width:100%;margin-top:22px;padding:16px 0 0;border:0;border-top:1px solid rgba(255,255,255,.14);background:transparent;color:var(--gold2);font-size:15px;text-align:center;text-decoration:underline;cursor:pointer}
+.rc-drawer form label{display:block;margin-bottom:16px;color:#fff;font-size:15px}
+.rc-drawer form p{color:#ece8df;font-size:15px}
+.rc-drawer input,.rc-drawer textarea{display:block;width:100%;margin-top:6px;padding:11px 12px;border:1px solid rgba(199,167,90,.6);border-radius:8px;background:#111;color:#fff;font:16px/1.5 var(--sans)}
+.rc-drawer textarea{resize:vertical}
+.rc-drawer input:focus-visible,.rc-drawer textarea:focus-visible,.rc-edit-link:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+.rc-edit-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rc-edit-buttons .rc-btn{background:transparent;font:15px var(--sans);cursor:pointer}
+.rc-edit-buttons .rc-btn.gold{background:var(--gold);color:#151515}
+.rc-edit-buttons .rc-btn:disabled{opacity:.65;cursor:wait}
+.rc-status{min-height:1.4em;margin:0 0 14px;color:var(--gold2);font-size:15px}
+.rc-drawer [hidden]{display:none!important}
 .rc-btn{padding:13px 18px;border:1px solid var(--gold);border-radius:8px;color:var(--gold2);font-size:15px;font-weight:700;text-align:center;text-decoration:none}
 .rc-btn.gold{background:var(--gold);color:#151515}
 @media(max-width:860px){.rc-layout{grid-template-columns:1fr}.rc-side{border-right:0;border-bottom:1px solid rgba(199,167,90,.25);padding:24px 16px}.rc-center{padding:28px 16px}.rc-list{max-height:none;overflow:visible;padding-right:0}.rc-service{min-height:88px;padding:20px}.rc-drawer{width:100%;padding:28px 16px}}
@@ -337,34 +348,149 @@ function renderRegistryCard(p){
     +'</main>'
     +'<aside class="rc-drawer" id="rcDrawer" role="dialog" aria-labelledby="rcDrawerTitle" tabindex="-1" hidden>'
     +'<button type="button" class="rc-close" aria-label="Close details">&times;</button>'
+    +'<div id="rcView">'
     +'<h3 id="rcDrawerTitle"></h3><p class="rc-details"></p>'
+    +'<p class="rc-status" id="rcViewStatus" role="status"></p>'
     +'<div class="rc-drawer-actions">'+contactLinks+'</div>'
-    +'<a class="rc-drawer-edit" id="rcDrawerEdit" href="'+editUrl+'">Edit this promotion</a>'
+    +'<button type="button" class="rc-edit-link" id="rcEditOpen">Edit</button>'
+    +'</div>'
+    +'<form id="rcAuth" hidden>'
+    +'<h3>Confirm you own this card</h3>'
+    +'<p id="rcAuthHelp">Enter your business email and we will send you a one-time code.</p>'
+    +'<label>Business Email<input id="rcAuthEmail" type="email" autocomplete="email" maxlength="180" required></label>'
+    +'<label id="rcAuthCodeWrap" hidden>Code<input id="rcAuthCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6"></label>'
+    +'<p class="rc-status" id="rcAuthStatus" role="status"></p>'
+    +'<div class="rc-edit-buttons"><button type="submit" class="rc-btn gold" id="rcAuthSubmit">Send Code</button><button type="button" class="rc-btn" id="rcAuthCancel">Cancel</button></div>'
+    +'</form>'
+    +'<form id="rcEdit" hidden>'
+    +'<h3>Edit this service</h3>'
+    +'<label>Service Name<input id="rcEditName" maxlength="120" required></label>'
+    +'<label>Promote This Service<textarea id="rcEditPromo" rows="8" maxlength="1000" placeholder="Tell customers why to choose this service, or share a current offer."></textarea></label>'
+    +'<p class="rc-status" id="rcEditStatus" role="status"></p>'
+    +'<div class="rc-edit-buttons"><button type="submit" class="rc-btn gold" id="rcEditSave">Save</button><button type="button" class="rc-btn" id="rcEditCancel">Cancel</button></div>'
+    +'</form>'
     +'</aside>'
     +'</div>';
   const drawer=document.getElementById('rcDrawer');
   const buttons=[...app.querySelectorAll('.rc-service')];
+  const el=id=>document.getElementById(id);
+  const panes={view:el('rcView'),auth:el('rcAuth'),edit:el('rcEdit')};
+  const promoFallback='Contact this business for more details about this service.';
   let active=null;
+  let activeIndex=null;
+  let email='';
+  const showPane=name=>Object.entries(panes).forEach(([key,pane])=>{pane.hidden=key!==name});
+  const cardCall=async(action,body)=>{
+    const response=await fetch('/api/vendor-presence?action='+action,{method:body?'POST':'GET',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'});
+    const data=await response.json().catch(()=>({}));
+    return {ok:response.ok&&Boolean(data.ok),data};
+  };
+  const showView=()=>{
+    const s=services[activeIndex];
+    el('rcDrawerTitle').textContent=s.name;
+    drawer.querySelector('.rc-details').textContent=s.details||promoFallback;
+    showPane('view');
+  };
+  const showEdit=()=>{
+    const s=services[activeIndex];
+    el('rcEditName').value=s.name;
+    el('rcEditPromo').value=s.details;
+    el('rcEditStatus').textContent='';
+    showPane('edit');
+    el('rcEditPromo').focus();
+  };
+  const resetAuth=()=>{
+    panes.auth.reset();
+    email='';
+    el('rcAuthCodeWrap').hidden=true;
+    el('rcAuthCode').required=false;
+    el('rcAuthEmail').readOnly=false;
+    el('rcAuthSubmit').textContent='Send Code';
+    el('rcAuthHelp').textContent='Enter your business email and we will send you a one-time code.';
+    el('rcAuthStatus').textContent='';
+  };
   const close=()=>{
     drawer.hidden=true;
     document.body.classList.remove('rc-drawer-open');
     buttons.forEach(b=>{b.setAttribute('aria-expanded','false');b.classList.remove('active')});
+    resetAuth();
     if(active){active.focus();active=null}
+    activeIndex=null;
   };
   buttons.forEach(button=>button.addEventListener('click',()=>{
     if(active===button){close();return}
-    const s=services[Number(button.dataset.i)];
     buttons.forEach(b=>{b.setAttribute('aria-expanded','false');b.classList.remove('active')});
     button.setAttribute('aria-expanded','true');
     button.classList.add('active');
     active=button;
-    document.getElementById('rcDrawerTitle').textContent=s.name;
-    drawer.querySelector('.rc-details').textContent=s.details||'Contact this business for more details about this service.';
-    document.getElementById('rcDrawerEdit').href=editUrl+'&service='+encodeURIComponent(button.dataset.i);
+    activeIndex=Number(button.dataset.i);
+    resetAuth();
+    el('rcViewStatus').textContent='';
+    showView();
     drawer.hidden=false;
     document.body.classList.add('rc-drawer-open');
     drawer.focus();
   }));
+  el('rcEditOpen').addEventListener('click',async()=>{
+    el('rcViewStatus').textContent='';
+    let session={ok:false};
+    try{session=await cardCall('card-get')}catch{}
+    if(session.ok&&session.data.card?.slug===p.slug){showEdit();return}
+    resetAuth();
+    showPane('auth');
+    el('rcAuthEmail').focus();
+  });
+  panes.auth.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const submit=el('rcAuthSubmit');
+    submit.disabled=true;
+    el('rcAuthStatus').textContent='Working…';
+    try{
+      if(el('rcAuthCodeWrap').hidden){
+        email=el('rcAuthEmail').value.trim();
+        const sent=await cardCall('card-code-request',{email,card:p.slug});
+        if(!sent.ok)throw new Error(sent.data.error||'The code could not be sent. Please try again.');
+        el('rcAuthCodeWrap').hidden=false;
+        el('rcAuthCode').required=true;
+        el('rcAuthEmail').readOnly=true;
+        submit.textContent='Continue';
+        el('rcAuthStatus').textContent=sent.data.message;
+        el('rcAuthCode').focus();
+      }else{
+        const verified=await cardCall('card-code-verify',{email,code:el('rcAuthCode').value.trim()});
+        if(!verified.ok)throw new Error(verified.data.error||'That code is not valid.');
+        const session=await cardCall('card-get');
+        if(!session.ok||session.data.card?.slug!==p.slug)throw new Error('That email does not own this card.');
+        resetAuth();
+        showEdit();
+      }
+    }catch(error){
+      el('rcAuthStatus').textContent=error.message;
+    }finally{
+      submit.disabled=false;
+    }
+  });
+  el('rcAuthCancel').addEventListener('click',()=>{resetAuth();showView()});
+  panes.edit.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const save=el('rcEditSave');
+    save.disabled=true;
+    el('rcEditStatus').textContent='Saving…';
+    try{
+      const saved=await cardCall('card-service-save',{index:activeIndex,name:el('rcEditName').value.trim(),details:el('rcEditPromo').value.trim()});
+      if(!saved.ok)throw new Error(saved.data.error||'Your changes could not be saved. Please try again.');
+      services.splice(0,services.length,...saved.data.services);
+      buttons[activeIndex].querySelector('span').textContent=services[activeIndex].name;
+      showView();
+      el('rcViewStatus').textContent='Your changes are saved.';
+      el('rcEditOpen').focus();
+    }catch(error){
+      el('rcEditStatus').textContent=error.message;
+    }finally{
+      save.disabled=false;
+    }
+  });
+  el('rcEditCancel').addEventListener('click',()=>{showView();el('rcEditOpen').focus()});
   drawer.querySelector('.rc-close').addEventListener('click',close);
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!drawer.hidden)close()});
 }
