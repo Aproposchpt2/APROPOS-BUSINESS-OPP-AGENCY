@@ -170,7 +170,9 @@ h2{font:400 29px/1.15 var(--serif);color:#fff;margin:7px 0 13px}
 .card-url .copy-btn{width:auto;margin:0;padding:8px 12px}
 .opp-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}.opp-actions .button-outline{width:auto;margin:0}
 /* Print Contract prints only the contract card on white paper. */
-body.registry-page{display:block;padding:var(--boda-hh,72px) 0 0}
+body.registry-page{--serif:Georgia,serif;--sans:system-ui,-apple-system,"Segoe UI",sans-serif;display:block;padding:var(--boda-hh,72px) 0 0;font-family:var(--sans)}
+body.registry-page *{font-weight:400!important}
+body.registry-page .boda-header *,body.registry-page .rc-layout button,body.registry-page .rc-layout a{font-family:var(--sans)}
 #app.registry-wide{width:100%;max-width:none}
 .rc-notice{padding:14px 28px;background:rgba(199,167,90,.14);border-bottom:1px solid rgba(199,167,90,.35);font-size:15px}
 .rc-notice a,.rc-contact a{color:var(--gold2);text-decoration:underline;overflow-wrap:anywhere}
