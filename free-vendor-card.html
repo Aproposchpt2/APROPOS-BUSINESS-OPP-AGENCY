@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free Business Profile Ad &amp; Vendor Card | BODA</title>
+  <meta name="description" content="Request a free Vendor Card in the BODA Business Registry so people can find your business, visit your website, and contact you.">
+  <link rel="canonical" href="https://aproposopportunity.org/free-vendor-card">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Business Opportunity Development Agency">
+  <meta property="og:title" content="Free Business Profile Ad &amp; Vendor Card | BODA">
+  <meta property="og:description" content="Request a free Vendor Card in the BODA Business Registry so people can find your business, visit your website, and contact you.">
+  <meta property="og:url" content="https://aproposopportunity.org/free-vendor-card">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Free Business Profile Ad &amp; Vendor Card | BODA">
+  <meta name="twitter:description" content="Request a free Vendor Card in the BODA Business Registry so people can find your business, visit your website, and contact you.">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #f8f7f3; background: #080808; color-scheme: dark; font: 1rem/1.6 system-ui, sans-serif; }
+    main { width: min(100% - 2rem, 42rem); margin: 3rem auto; }
+    h1 { font: 600 clamp(2.2rem, 6vw, 3.4rem)/1.1 Georgia, serif; }
+    a { color: #d7b76d; }
+    form { background: #151515; border: 1px solid #3b3324; padding: clamp(1rem, 4vw, 2rem); }
+    fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .names { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    label, legend { font-weight: 650; }
+    label { display: block; margin-bottom: 1rem; }
+    input:not([type="checkbox"]) { display: block; width: 100%; margin-top: .25rem; padding: .65rem; border: 1px solid #817454; background: #080808; color: inherit; font: inherit; }
+    .consent { display: flex; align-items: baseline; gap: .6rem; font-weight: 400; }
+    button { padding: .75rem 1.3rem; border: 0; background: #d7b76d; color: #080808; font: inherit; font-weight: 750; cursor: pointer; }
+    button:disabled { opacity: .65; cursor: wait; }
+    :focus-visible { outline: 3px solid #d7b76d; outline-offset: 3px; }
+    @media (max-width: 480px) { .names { grid-template-columns: 1fr; gap: 0; } }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="/#opportunities">← Back to BODA Free Business Resources</a></p>
+  <h1>Free Business Profile Ad</h1>
+  <p>Complete the form to request your free Vendor Card in the BODA Business Registry. We’ll send a confirmation link to the business email address you provide. Confirm your request to publish your listing.</p>
+  <form id="vendor-card-form" method="post">
+    <fieldset>
+      <legend>Name</legend>
+      <div class="names">
+        <label>First name <input name="first_name" autocomplete="given-name" maxlength="70" required></label>
+        <label>Last name <input name="last_name" autocomplete="family-name" maxlength="70" required></label>
+      </div>
+    </fieldset>
+    <label>Business Name <input name="business_name" autocomplete="organization" maxlength="180" required></label>
+    <label>Business Email <input name="business_email" type="email" autocomplete="email" maxlength="180" required></label>
+    <label>Business Website <input name="business_website" type="url" autocomplete="url" maxlength="500" value="https://" required></label>
+    <label>Business Phone <input name="business_phone" type="tel" autocomplete="tel" maxlength="40" required></label>
+    <label class="consent"><input name="registry_consent" type="checkbox" required> I authorize BODA to publish my business name, website, and phone number in the Business Registry.</label>
+    <p>We use your business email to confirm your request. See our <a href="/privacy">Privacy Policy</a>.</p>
+    <button type="submit">Submit</button>
+    <p id="vendor-card-status" role="status"></p>
+  </form>
+</main>
+<script>
+  const form = document.getElementById('vendor-card-form');
+  const button = form.querySelector('button');
+  const status = document.getElementById('vendor-card-status');
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    data.registry_consent = form.elements.registry_consent.checked;
+    button.disabled = true;
+    status.textContent = 'Submitting…';
+    try {
+      const response = await fetch('/api/vendor-presence?action=registry-intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error);
+      status.textContent = result.message;
+      form.reset();
+    } catch (error) {
+      status.textContent = error instanceof TypeError || error instanceof SyntaxError
+        ? 'The Business Registry is currently unavailable. Please try again later.'
+        : error.message || 'Unable to submit your request. Please try again.';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
