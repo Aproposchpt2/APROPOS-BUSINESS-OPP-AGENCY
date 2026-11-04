@@ -214,6 +214,8 @@ body.registry-page .rc-layout .rc-service{font-family:var(--serif)}
 .rc-drawer form p{color:#ece8df;font-size:15px}
 .rc-drawer input,.rc-drawer textarea{display:block;width:100%;margin-top:6px;padding:11px 12px;border:1px solid rgba(199,167,90,.6);border-radius:8px;background:#111;color:#fff;font:16px/1.5 var(--sans)}
 .rc-drawer textarea{resize:vertical}
+.rc-drawer.rc-editing{width:min(620px,100%)}
+.rc-drawer #rcEditPromo{min-height:clamp(260px,52vh,520px)}
 .rc-drawer input:focus-visible,.rc-drawer textarea:focus-visible,.rc-edit-link:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
 .rc-edit-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .rc-edit-buttons .rc-btn{background:transparent;font:15px var(--sans);cursor:pointer}
@@ -374,7 +376,7 @@ function renderRegistryCard(p){
   const promoFallback='Contact this business for more details about this service.';
   let active=null;
   let activeIndex=null;
-  const showPane=name=>Object.entries(panes).forEach(([key,pane])=>{pane.hidden=key!==name});
+  const showPane=name=>{Object.entries(panes).forEach(([key,pane])=>{pane.hidden=key!==name});drawer.classList.toggle('rc-editing',name==='edit')};
   const cardCall=async(action,body)=>{
     const response=await fetch('/api/vendor-presence?action='+action,{method:body?'POST':'GET',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'});
     const data=await response.json().catch(()=>({}));
