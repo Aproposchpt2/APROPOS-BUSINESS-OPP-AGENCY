@@ -187,6 +187,17 @@
     Cache-Control = "private, no-store"
 
 [[redirects]]
+  from = "/vendor-edit"
+  to = "/vendor-edit.html"
+  status = 200
+
+[[headers]]
+  for = "/vendor-edit.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "private, no-store"
+
+[[redirects]]
   from = "/vendor-workspace"
   to = "/vendor-workspace.html"
   status = 200

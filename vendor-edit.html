@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Edit Your Vendor Card | BODA</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #080808; color: #f8f4e8; font: 16px/1.6 Arial, Helvetica, sans-serif; }
+    main { width: min(100% - 2rem, 42rem); margin: 3rem auto; }
+    h1 { font: 600 clamp(2.2rem, 6vw, 3.2rem)/1.1 Georgia, serif; margin: 1rem 0; }
+    h2 { font: 600 1.4rem/1.2 Georgia, serif; margin: 1.5rem 0 .75rem; color: #d7b76d; }
+    a { color: #d7b76d; }
+    form, .panel { background: #151515; border: 1px solid #3b3324; padding: clamp(1rem, 4vw, 2rem); margin-bottom: 1rem; }
+    label { display: block; margin-bottom: 1rem; font-weight: 650; }
+    input:not([type="checkbox"]), textarea { display: block; width: 100%; margin-top: .25rem; padding: .65rem; border: 1px solid #817454; background: #080808; color: inherit; font: inherit; }
+    textarea { min-height: 6rem; resize: vertical; }
+    .check { display: flex; align-items: baseline; gap: .6rem; font-weight: 400; }
+    .hint { display: block; font-weight: 400; font-size: .85rem; color: #c9c1ad; }
+    .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+    button { padding: .75rem 1.3rem; border: 0; background: #d7b76d; color: #080808; font: inherit; font-weight: 750; cursor: pointer; }
+    button.plain { background: transparent; color: #d7b76d; border: 1px solid #817454; }
+    button:disabled { opacity: .65; cursor: wait; }
+    :focus-visible { outline: 3px solid #d7b76d; outline-offset: 3px; }
+    [hidden] { display: none !important; }
+    .status { min-height: 1.6em; margin: .75rem 0 0; }
+    footer { font-size: .85rem; color: #c9c1ad; margin-top: 2rem; }
+    @media (max-width: 480px) { .row { grid-template-columns: 1fr; gap: 0; } }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="/#opportunities">← Back to BODA Free Business Resources</a></p>
+  <h1>Edit Your Vendor Card</h1>
+
+  <form id="email-form">
+    <p>Enter your business email and we'll send you a one-time code.</p>
+    <label>Business Email <input name="email" type="email" autocomplete="email" maxlength="180" required></label>
+    <button type="submit">Send Code</button>
+    <p class="status" role="status"></p>
+  </form>
+
+  <form id="code-form" hidden>
+    <p>Enter the 6-digit code we emailed you. It expires in 10 minutes.</p>
+    <label>Code <input name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label>
+    <div class="actions">
+      <button type="submit">Continue</button>
+      <button type="button" class="plain" id="code-back">Use a different email</button>
+    </div>
+    <p class="status" role="status"></p>
+  </form>
+
+  <form id="card-form" hidden>
+    <h2>Your Vendor Card</h2>
+    <label>Business Name <input name="business_name" autocomplete="organization" maxlength="180" required></label>
+    <label>Business Website <input name="website" type="url" autocomplete="url" maxlength="500" required></label>
+    <label>Business Phone <input name="phone" type="tel" autocomplete="tel" maxlength="40" required></label>
+    <label class="check"><input name="show_email" type="checkbox"> <span>Show my business email on my card: <strong id="current-email"></strong></span></label>
+
+    <h2>Add More About Your Business</h2>
+    <p class="hint">These are optional. Anything you add here appears on your public card.</p>
+    <label>Description <textarea name="about" maxlength="1000"></textarea></label>
+    <label>Business Services <span class="hint">One per line.</span><textarea name="services"></textarea></label>
+    <label>NAICS Codes <span class="hint">One per line, for example 238220.</span><textarea name="naics"></textarea></label>
+    <label>Hours of Operation <textarea name="hours_of_operation" maxlength="500" placeholder="Mon–Fri 8:00 AM – 5:00 PM"></textarea></label>
+    <div class="row">
+      <label>City <input name="city" autocomplete="address-level2" maxlength="120"></label>
+      <label>State <input name="state" autocomplete="address-level1" maxlength="80"></label>
+    </div>
+    <label>Service Area <input name="service_area" maxlength="200" placeholder="Las Vegas and Clark County"></label>
+    <label class="check"><input name="is_published" type="checkbox"> <span>Show my card publicly. Uncheck to take it off the Business Registry.</span></label>
+
+    <div class="actions">
+      <button type="submit">Save Changes</button>
+      <a id="view-card" href="/">View my card</a>
+      <button type="button" class="plain" id="sign-out">Sign out</button>
+    </div>
+    <p class="status" role="status"></p>
+  </form>
+
+  <form id="email-change-form" hidden>
+    <h2>Change Your Business Email</h2>
+    <p class="hint">We'll send a code to the new email. That email is then used for future changes.</p>
+    <label>New Business Email <input name="new_email" type="email" autocomplete="email" maxlength="180" required></label>
+    <label id="email-change-code" hidden>Code from the new email <input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6"></label>
+    <button type="submit">Send Code</button>
+    <p class="status" role="status"></p>
+  </form>
+
+  <footer>© 2026 Apropos Group LLC. <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></footer>
+</main>
+<script>
+(() => {
+  const forms = {
+    email: document.getElementById('email-form'),
+    code: document.getElementById('code-form'),
+    card: document.getElementById('card-form'),
+    change: document.getElementById('email-change-form')
+  };
+  const cardSlug = new URLSearchParams(location.search).get('card') || '';
+  let email = '';
+
+  const statusOf = form => form.querySelector('.status');
+  const show = (...names) => Object.entries(forms).forEach(([name, form]) => { form.hidden = !names.includes(name); });
+
+  async function call(action, body) {
+    const response = await fetch('/api/vendor-presence?action=' + action, {
+      method: body ? 'POST' : 'GET',
+      headers: body ? { 'Content-Type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined,
+      cache: 'no-store'
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) throw new Error(result.error || 'The Vendor Card service is unavailable. Please try again.');
+    return result;
+  }
+
+  function submitWith(form, handler) {
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const button = form.querySelector('button[type="submit"]');
+      button.disabled = true;
+      statusOf(form).textContent = 'Working…';
+      try {
+        await handler();
+      } catch (error) {
+        statusOf(form).textContent = error.message;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+
+  function fillCard(card) {
+    const f = forms.card.elements;
+    f.business_name.value = card.business_name;
+    f.website.value = card.website;
+    f.phone.value = card.phone;
+    f.show_email.checked = card.show_email;
+    f.about.value = card.about;
+    f.services.value = card.services.join('\n');
+    f.naics.value = card.naics.join('\n');
+    f.hours_of_operation.value = card.hours_of_operation;
+    f.city.value = card.city;
+    f.state.value = card.state;
+    f.service_area.value = card.service_area;
+    f.is_published.checked = card.is_published;
+    document.getElementById('current-email').textContent = card.email;
+    document.getElementById('view-card').href = '/vendor/' + encodeURIComponent(card.slug);
+    document.getElementById('view-card').hidden = !card.is_published;
+    show('card', 'change');
+  }
+
+  submitWith(forms.email, async () => {
+    email = forms.email.elements.email.value.trim();
+    const result = await call('card-code-request', { email, card: cardSlug });
+    statusOf(forms.email).textContent = '';
+    statusOf(forms.code).textContent = result.message;
+    show('code');
+    forms.code.elements.code.focus();
+  });
+
+  submitWith(forms.code, async () => {
+    await call('card-code-verify', { email, code: forms.code.elements.code.value.trim() });
+    forms.code.reset();
+    statusOf(forms.code).textContent = '';
+    const { card } = await call('card-get');
+    fillCard(card);
+  });
+
+  document.getElementById('code-back').addEventListener('click', () => {
+    forms.code.reset();
+    statusOf(forms.code).textContent = '';
+    show('email');
+  });
+
+  submitWith(forms.card, async () => {
+    const f = forms.card.elements;
+    const { card } = await call('card-save', {
+      business_name: f.business_name.value,
+      website: f.website.value,
+      phone: f.phone.value,
+      show_email: f.show_email.checked,
+      about: f.about.value,
+      services: f.services.value,
+      naics: f.naics.value,
+      hours_of_operation: f.hours_of_operation.value,
+      city: f.city.value,
+      state: f.state.value,
+      service_area: f.service_area.value,
+      is_published: f.is_published.checked
+    });
+    fillCard(card);
+    statusOf(forms.card).textContent = 'Your changes are saved.';
+  });
+
+  submitWith(forms.change, async () => {
+    const f = forms.change.elements;
+    const label = document.getElementById('email-change-code');
+    const newEmail = f.new_email.value.trim();
+    if (label.hidden) {
+      const result = await call('card-email-request', { new_email: newEmail });
+      label.hidden = false;
+      f.code.required = true;
+      forms.change.querySelector('button[type="submit"]').textContent = 'Confirm New Email';
+      statusOf(forms.change).textContent = result.message;
+      return;
+    }
+    const { card } = await call('card-email-verify', { new_email: newEmail, code: f.code.value.trim() });
+    forms.change.reset();
+    label.hidden = true;
+    f.code.required = false;
+    forms.change.querySelector('button[type="submit"]').textContent = 'Send Code';
+    fillCard(card);
+    statusOf(forms.change).textContent = 'Your business email is updated.';
+  });
+
+  document.getElementById('sign-out').addEventListener('click', async () => {
+    try { await call('card-sign-out', {}); } catch { /* The session ends on its own. */ }
+    forms.email.reset();
+    show('email');
+  });
+
+  call('card-get').then(({ card }) => fillCard(card)).catch(() => show('email'));
+})();
+</script>
+</body>
+</html>

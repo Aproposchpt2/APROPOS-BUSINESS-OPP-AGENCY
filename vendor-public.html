@@ -255,12 +255,44 @@ async function downloadContractPdf(o,business){
   doc.save(((o.solicitation_number||o.title||'Contract').replace(/[^A-Za-z0-9-]+/g,'_').slice(0,60))+'_Contract_Opportunity.pdf');
 }
 
+function renderRegistryCard(p){
+  const app=document.getElementById('app');
+  document.title=p.business_name+' | BODA Business Registry';
+  const loc=[p.city,p.state].filter(Boolean).join(', ');
+  const site=/^https?:\/\//i.test(p.website||'')?p.website:'';
+  const fact=(label,value)=>'<div class="fact"><small>'+label+'</small><strong>'+value+'</strong></div>';
+  const tags=(items)=>'<div class="tags">'+items.map(x=>'<span class="tag">'+esc(x)+'</span>').join('')+'</div>';
+  const section=(title,body)=>'<div class="panel"><div class="eyebrow">'+title+'</div>'+body+'</div>';
+  const services=(p.products_services||[]).filter(Boolean);
+  const naics=(p.naics||[]).filter(Boolean);
+  const published=new URLSearchParams(location.search).get('published');
+  app.innerHTML='<article class="card">'
+    +'<section class="hero"><div class="agency">Business Opportunity Development Agency &middot; Business Registry</div>'
+    +'<div class="profile-head"><div class="logo">'+esc(initials(p.business_name))+'</div>'
+    +'<div><h1>'+esc(p.business_name)+'</h1>'+(loc?'<div class="sub">'+esc(loc)+'</div>':'')+'</div></div></section>'
+    +'<section class="body">'
+    +(published?'<div class="panel owner-panel"><strong>Your free Vendor Card is live.</strong> <a href="/vendor-edit?card='+encodeURIComponent(p.slug)+'" style="color:var(--gold2);text-decoration:underline">Add your services, hours and more</a>.</div>':'')
+    +section('Contact','<div class="contact-grid">'
+      +(site?fact('Website','<a href="'+esc(site)+'" rel="nofollow noopener" target="_blank">'+esc(site.replace(/^https?:\/\//i,'').replace(/\/$/,''))+'</a>'):'')
+      +(p.phone?fact('Phone','<a href="tel:'+esc(String(p.phone).replace(/[^0-9+]/g,''))+'">'+esc(p.phone)+'</a>'):'')
+      +(p.public_contact_email?fact('Email','<a href="mailto:'+esc(p.public_contact_email)+'">'+esc(p.public_contact_email)+'</a>'):'')
+      +(p.hours_of_operation?fact('Hours','<span style="white-space:pre-line">'+esc(p.hours_of_operation)+'</span>'):'')
+      +(p.service_area?fact('Service Area',esc(p.service_area)):'')
+      +'</div>')
+    +(p.about?section('About','<p style="white-space:pre-line">'+esc(p.about)+'</p>'):'')
+    +(services.length?section('Business Services',tags(services)):'')
+    +(naics.length?section('NAICS Codes',tags(naics)):'')
+    +'<p style="font-size:13px;margin-top:18px">Information provided by the business owner. <a href="/vendor-edit?card='+encodeURIComponent(p.slug)+'" style="color:var(--gold2);text-decoration:underline">Own this business? Edit this card</a>.</p>'
+    +'</section></article>';
+}
+
 async function load(){
   try{
     const r=await fetch('/api/vendor-presence?action=public&slug='+encodeURIComponent(slug),{cache:'no-store'});
     const d=await r.json();
     if(!r.ok||!d.ok)throw new Error('This Vendor Page is not currently published.');
     const p=d.profile;
+    if(p.registry_card){renderRegistryCard(p);return;}
     document.title=p.business_name+' | Business Opportunity Development Agency';
     const loc=[p.city,p.state].filter(Boolean).join(', ');
     const caps=(p.core_capabilities||[]).slice(0,6);
