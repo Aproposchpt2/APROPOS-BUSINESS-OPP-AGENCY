@@ -566,6 +566,7 @@ function workspaceOpportunity(contract, snapshot) {
 // Free Vendor Cards built from the public intake forms. These cards hold only what the owner
 // entered, and every change needs a one-time code sent to the owner's business email.
 const REGISTRY_SOURCES = ['bdms_business_registry', 'boda_business_registry'];
+const REGISTRY_INTAKE_MAX_PER_IP_HOUR = 5;
 const EDIT_CODE_SOURCE = 'registry_edit_code';
 const EDIT_SESSION_SOURCE = 'registry_edit_session';
 const EDIT_CODE_MINUTES = 10;
@@ -876,6 +877,9 @@ async function registryIntake(req) {
     const raw = await req.text();
     if (raw.length > 4096) return json({ok:false,error:'Submission is too large.'},413,headers);
     const input = JSON.parse(raw);
+    const message = 'Check your business email for a link to confirm your free Vendor Card.';
+    // People never see this field, so anything in it came from a bot. The bot gets a normal reply.
+    if (clean(input?.company_url,200)) return json({ok:true,message},200,headers);
     const first = clean(input?.first_name,70);
     const last = clean(input?.last_name,70);
     const businessName = clean(input?.business_name,180);
@@ -892,8 +896,16 @@ async function registryIntake(req) {
     const source = origin === 'https://aproposopportunity.org' ? 'boda_business_registry' : 'bdms_business_registry';
     const recent = await db('boda_vendor_claims','GET',
       `?select=id&source=in.(bdms_business_registry,boda_business_registry)&claimant_email=eq.${encodeURIComponent(email)}&created_at=gt.${encodeURIComponent(new Date(Date.now()-10*60*1000).toISOString())}&limit=1`);
-    const message = 'Check your business email for a link to confirm your free Vendor Card.';
     if (recent?.length) return json({ok:true,message},200,headers);
+
+    // Limits one connection from sending confirmation emails to many different addresses.
+    const clientIp = clean(req.headers.get('x-nf-client-connection-ip'),64);
+    const ipHash = clientIp ? hash(`registry-intake-ip:${clientIp}`) : '';
+    if (ipHash) {
+      const fromIp = await db('boda_vendor_claims','GET',
+        `?select=id&registry_details->>ip_hash=eq.${ipHash}&created_at=gt.${encodeURIComponent(new Date(Date.now()-60*60*1000).toISOString())}&limit=${REGISTRY_INTAKE_MAX_PER_IP_HOUR}`);
+      if ((fromIp?.length || 0) >= REGISTRY_INTAKE_MAX_PER_IP_HOUR) return json({ok:true,message},200,headers);
+    }
 
     const rawToken = token();
     const claimantName = `${first} ${last}`;
@@ -901,7 +913,7 @@ async function registryIntake(req) {
       business_name:businessName, claimant_name:claimantName, claimant_email:email, source,
       verification_token_hash:hash(rawToken),
       verification_expires_at:new Date(Date.now()+30*60*1000).toISOString(),
-      registry_details:{website:website.href,phone,email_consent:true}
+      registry_details:{website:website.href,phone,email_consent:true,...(ipHash ? {ip_hash:ipHash} : {})}
     }],'return=representation');
     try {
       await sendVerification({businessName,claimantName,email,rawToken,registry:true});
