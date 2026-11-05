@@ -25,20 +25,6 @@
 .resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .resource-grid h2{font-size:clamp(1.35rem,2.2vw,1.8rem);margin:0 0 12px}
 .resource-grid .btn{align-self:flex-start}
-.hero-layout{display:flex;align-items:flex-start;justify-content:space-between;gap:32px}
-.hero-text{min-width:0;flex:1}
-.yt-thumb{display:block;color:#f8f7f3;font-size:.8rem;line-height:1.35;font-weight:400;text-decoration:none}
-.yt-thumb-image{position:relative;display:block;border:1px solid var(--line);background:#000}
-.yt-thumb img{display:block;width:100%;height:auto}
-.yt-thumb-play{position:absolute;right:8px;bottom:8px;width:30px;height:22px;border-radius:5px;background:var(--gold)}
-.yt-thumb-play::after{content:"";position:absolute;left:11px;top:5px;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent #080808}
-.yt-thumb-caption{display:block;margin-top:6px}
-.yt-thumb-note{color:var(--gold)}
-.yt-thumb:hover .yt-thumb-image{border-color:var(--gold)}
-.yt-thumb:hover .yt-thumb-caption{text-decoration:underline}
-.yt-thumb:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-.hero-layout .yt-thumb{flex:0 0 clamp(190px,18vw,240px)}
-@media(max-width:860px){.hero-layout{flex-direction:column;gap:20px}.hero-layout .yt-thumb{flex:none;width:min(100%,280px)}}
 .resource-grid .btn.secondary{color:var(--gold);margin-top:10px}
 @media(max-width:800px){.resource-grid{grid-template-columns:1fr}.resource-grid .card{min-height:0}}
 .shell{max-width:1200px;margin:auto;padding:0 24px}
@@ -76,7 +62,7 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
 </script>
 </head><body>
 <header><div class="wrap nav"><a class="logo" href="/">BODA<span>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</span></a><nav aria-label="Primary navigation"><a href="#solutions">Solutions</a><a href="#opportunities">Free Business Resources</a><a href="#assessment">Business Assessment</a><a href="#future">Coming Soon</a><a href="#contact">Contact</a><a href="https://calendar.app.google/DNAMvEyWbg2jfxaN8">Consultation</a></nav></div></header>
-<main><div class="hero"><div class="wrap hero-layout"><div class="hero-text"><h1>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</h1><p class="hero-message">PROVIDING BUSINESSES WITH CONTRACT ACCESS, VISIBILITY, AND INTELLIGENT BUSINESS SYSTEMS</p></div><a class="yt-thumb" href="https://www.youtube.com/watch?v=CdX7yhhM_Tw" target="_blank" rel="noopener"><span class="yt-thumb-image"><img src="https://i.ytimg.com/vi/CdX7yhhM_Tw/mqdefault.jpg" width="320" height="180" alt="Tenant leak call answered by the Property Management Assistant"><span class="yt-thumb-play" aria-hidden="true"></span></span><span class="yt-thumb-caption">See an intelligent business system answer a real call<span class="yt-thumb-note"> (opens YouTube)</span></span></a></div></div>
+<main><div class="hero"><div class="wrap"><h1>BUSINESS OPPORTUNITY DEVELOPMENT AGENCY</h1><p class="hero-message">PROVIDING BUSINESSES WITH CONTRACT ACCESS, VISIBILITY, AND INTELLIGENT BUSINESS SYSTEMS</p></div></div>
 <section id="opportunities" aria-label="Business resources">
   <div class="wrap">
     <div class="resource-grid">
