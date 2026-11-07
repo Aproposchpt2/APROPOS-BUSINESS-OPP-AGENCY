@@ -101,6 +101,28 @@
     }
 /* === Site nav === */
 :root{--boda-hh:72px}body.nav-open{overflow:hidden}.boda-header{position:fixed;inset:0 0 auto 0;z-index:9000;height:var(--boda-hh);background:rgba(2,11,24,.95);border-bottom:1px solid rgba(199,167,90,.22);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#fff}.boda-hinner{max-width:1380px;height:100%;margin:0 auto;padding:0 max(24px,4vw);display:flex;align-items:center;justify-content:space-between;gap:32px}.boda-brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff;flex-shrink:0}.boda-rule{width:2px;height:36px;background:linear-gradient(#ead9a5,#c7a75a);flex-shrink:0}.boda-brand strong{display:block;font-size:.78rem;letter-spacing:.18em;font-weight:700;line-height:1}.boda-brand em{display:block;margin-top:5px;font-style:normal;font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.6)}.boda-nav{display:flex;align-items:center;gap:20px}.boda-nav a{text-decoration:none;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap;transition:color .2s}.boda-nav a:hover,.boda-nav a[aria-current]{color:#fff}.boda-nav .boda-cta{padding:10px 14px;border:1px solid rgba(229,207,154,.5);color:#ead9a5}.boda-toggle{display:none;background:transparent;border:0;color:#fff;cursor:pointer;font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;font-family:inherit;font-weight:600;padding:10px 0;flex-shrink:0}@media(max-width:860px){.boda-header{backdrop-filter:none;-webkit-backdrop-filter:none}body.nav-open .boda-header{background:#020b18}.boda-toggle{display:block}.boda-nav{position:fixed;inset:var(--boda-hh) 0 0 0;height:calc(100vh - var(--boda-hh));height:calc(100dvh - var(--boda-hh));box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;background:#020b18;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:32px max(32px,8vw) max(32px,env(safe-area-inset-bottom));gap:26px;opacity:0;visibility:hidden;transform:translateY(-12px);transition:.22s ease}.boda-nav.open{opacity:1;visibility:visible;transform:none}.boda-nav a{font-size:.78rem;flex-shrink:0;min-height:44px;display:flex;align-items:center}.boda-nav .boda-cta{padding:12px 0;border:0;border-bottom:1px solid rgba(229,207,154,.28)}}@media(max-width:480px){.boda-brand strong{font-size:.66rem;letter-spacing:.12em}}.boda-spacer{height:var(--boda-hh)}
+
+  /* Interactive contract education — accessible mobile-first, BODA black/gold/white */
+  .contract-learning{padding:74px 0;background:#080808;color:#fff;border-top:1px solid #544322;border-bottom:1px solid #544322;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+  .contract-learning *{box-sizing:border-box}
+  .contract-learning .learning-kicker{color:#d7b76d;letter-spacing:.16em;text-transform:uppercase;font-size:.76rem;margin:0 0 12px}
+  .contract-learning h2{font-family:inherit;font-weight:400;color:#d7b76d;font-size:clamp(1.65rem,3.8vw,2.7rem);line-height:1.2;margin:0 0 18px}
+  .contract-learning .learning-intro{max-width:850px;line-height:1.75;color:#f0f0ed;margin:0 0 30px}
+  .contract-learning .learning-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:14px}
+  .contract-learning .learning-card{appearance:none;display:flex;flex-direction:column;text-align:left;gap:11px;padding:22px 20px;background:#151515;border:1px solid #796337;border-radius:8px;color:#fff;font:inherit;font-weight:400;cursor:pointer;min-height:132px;transition:border-color .15s,background .15s}
+  .contract-learning .learning-card:hover,.contract-learning .learning-card[aria-expanded="true"]{background:#211b12;border-color:#d7b76d}
+  .contract-learning .learning-card:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  .contract-learning .learning-number{color:#d7b76d;font-size:.8rem;letter-spacing:.12em}
+  .contract-learning .learning-card-title{font-size:1.02rem;line-height:1.35}
+  .contract-learning .learning-detail{margin-top:20px;border:1px solid #aa8e53;background:#111;padding:clamp(20px,4vw,34px);border-radius:8px}
+  .contract-learning .learning-detail h3{font:400 1.4rem/1.3 system-ui,-apple-system,Segoe UI,sans-serif;color:#d7b76d;margin:0 0 14px}
+  .contract-learning .learning-detail p{margin:10px 0;line-height:1.7;color:#f1f1f1}
+  .contract-learning .learning-detail .detail-label{color:#d7b76d;font-weight:400}
+  .contract-learning .learning-action{margin-top:28px;padding:25px;border-top:1px solid #796337}
+  .contract-learning .learning-action p{line-height:1.7;margin:0 0 15px;color:#fff}
+  .contract-learning .learning-action a{display:inline-block;padding:13px 23px;background:#d7b76d;color:#080808;text-decoration:none;border-radius:4px;font-weight:400}
+  .contract-learning .learning-action a:focus-visible{outline:3px solid white;outline-offset:3px}
+  .contract-learning .learning-note{font-size:.83rem;color:#cfc8b9;line-height:1.6;margin:16px 0 0}
   </style>
 <!-- Google tag: Apropos Group LLC .ORG / Apropos Opportunity -->
 <script>
@@ -181,6 +203,36 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
       </div>
     </section>
 
+
+    <section class="contract-learning" id="contract-types" aria-labelledby="contract-types-heading">
+      <div class="shell">
+        <p class="learning-kicker">Government Contract Education</p>
+        <h2 id="contract-types-heading">Understanding Federal Contract Types</h2>
+        <p class="learning-intro">Not every government contract works the same way. Select a contract type to learn how payment works, who carries financial risk, and what your business should review before bidding.</p>
+        <div class="learning-grid" aria-label="Select a federal contract type">
+          <button type="button" class="learning-card" aria-expanded="true" aria-controls="contract-learning-detail" data-contract="0"><span class="learning-number">01</span><span class="learning-card-title">Firm-Fixed-Price (FFP)</span></button>
+          <button type="button" class="learning-card" aria-expanded="false" aria-controls="contract-learning-detail" data-contract="1"><span class="learning-number">02</span><span class="learning-card-title">Indefinite-Delivery / Indefinite-Quantity (IDIQ)</span></button>
+          <button type="button" class="learning-card" aria-expanded="false" aria-controls="contract-learning-detail" data-contract="2"><span class="learning-number">03</span><span class="learning-card-title">Cost-Plus-Fixed-Fee (CPFF)</span></button>
+          <button type="button" class="learning-card" aria-expanded="false" aria-controls="contract-learning-detail" data-contract="3"><span class="learning-number">04</span><span class="learning-card-title">Time-and-Materials / Labor-Hour (T&amp;M / LH)</span></button>
+          <button type="button" class="learning-card" aria-expanded="false" aria-controls="contract-learning-detail" data-contract="4"><span class="learning-number">05</span><span class="learning-card-title">Fixed-Price Incentive (FPI)</span></button>
+          <button type="button" class="learning-card" aria-expanded="false" aria-controls="contract-learning-detail" data-contract="5"><span class="learning-number">06</span><span class="learning-card-title">Cost-Plus-Incentive / Award-Fee (CPIF / CPAF)</span></button>
+          <button type="button" class="learning-card" aria-expanded="false" aria-controls="contract-learning-detail" data-contract="6"><span class="learning-number">07</span><span class="learning-card-title">Fixed-Price with Economic Price Adjustment (FP-EPA)</span></button>
+        </div>
+        <div class="learning-detail" id="contract-learning-detail" role="region" aria-live="polite" aria-atomic="true" aria-label="Selected contract type explanation">
+          <h3 id="learning-detail-title">Firm-Fixed-Price (FFP)</h3>
+          <p id="learning-detail-description">The contractor agrees to deliver the stated work for a set price. The price generally does not rise just because performance costs increase.</p>
+          <p><span class="detail-label">Financial risk:</span> <span id="learning-detail-risk">The contractor generally carries the greatest cost-overrun risk.</span></p>
+          <p><span class="detail-label">Business example:</span> <span id="learning-detail-example">A small landscaping company agrees to maintain a federal facility for a fixed annual amount.</span></p>
+          <p><span class="detail-label">Before you bid:</span> <span id="learning-detail-consider">Estimate labor, materials, schedule, and contingencies carefully before bidding.</span></p>
+        </div>
+        <div class="learning-action">
+          <p>Ready to put this knowledge to work? Explore complimentary federal and state contracting opportunities through our Business Development Management System.</p>
+          <a href="https://bdms.aproposgroupllc.com/">Explore Free Contract Opportunities</a>
+          <p class="learning-note">Educational overview only. These are seven common contract structures or groupings, not an exhaustive classification. Actual rights, pricing, and risks depend on solicitation terms and applicable acquisition rules. BODA is an independent private business, not a government agency.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="resources" id="resources">
       <div class="shell">
         <div class="section-head">
@@ -234,5 +286,21 @@ if (names.includes(campaign.get('utm_campaign'))) attribution.campaign_name = ca
 
   <footer style="background:#010713;border-top:1px solid rgba(199,167,90,.15);padding:30px 20px 50px;text-align:center;color:rgba(255,255,255,.4);font-size:.67rem"><strong style="color:#fff">Business Opportunity Development Agency</strong><br>A property of <strong style="color:#fff">Apropos Group LLC</strong></footer>
 <script>(function(){var t=document.getElementById('bodaToggle'),n=document.getElementById('bodaNav');if(!t||!n)return;t.addEventListener('click',function(){var o=n.classList.toggle('open');document.body.classList.toggle('nav-open',o);t.setAttribute('aria-expanded',String(o));t.textContent=o?'Close':'Menu';});n.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('open');document.body.classList.remove('nav-open');t.setAttribute('aria-expanded','false');t.textContent='Menu';});});}());</script>
+
+<script>
+(function(){
+  var data=[["Firm-Fixed-Price (FFP)","The contractor agrees to deliver the stated work for a set price. The price generally does not rise just because performance costs increase.","The contractor generally carries the greatest cost-overrun risk.","A small landscaping company agrees to maintain a federal facility for a fixed annual amount.","Estimate labor, materials, schedule, and contingencies carefully before bidding."],["Indefinite-Delivery / Indefinite-Quantity (IDIQ)","An umbrella contract establishes a period and ordering framework; the agency places individual task or delivery orders as needs arise, subject to the contract’s terms.","Workload and order timing can be uncertain; the government generally guarantees only the stated minimum.","An IT services firm holds a multi-year contract and competes for or receives individual support task orders.","Review guaranteed minimums, maximum ordering limits, task-order competition, and capacity."],["Cost-Plus-Fixed-Fee (CPFF)","The contractor is reimbursed for allowable incurred costs and receives a negotiated fixed fee that normally does not vary with actual cost.","The government takes more allowable cost risk, while cost allowability, funding limits, and accounting obligations remain critical.","A research firm performs an exploratory federal study with a fixed fee and reimbursable allowable expenses.","Confirm eligibility, accounting-system requirements, allowable costs, and funding ceilings."],["Time-and-Materials / Labor-Hour (T&M / LH)","Payment is based on specified hourly labor rates. Time-and-materials contracts also reimburse eligible materials under contract terms; labor-hour contracts omit contractor-supplied materials.","The government can carry more uncertainty about total hours; contractors must document hours and comply with ceilings.","A technical support firm bills agreed labor categories for emergency systems support.","Understand labor qualifications, invoices, surveillance, ceilings, and material rules."],["Fixed-Price Incentive (FPI)","The contract uses an incentive structure to adjust profit and, in some forms, the final price according to agreed performance or cost-sharing formulas.","The contractor and government share defined cost outcomes, but contract ceilings and formulas govern exposure.","A manufacturer earns a greater profit by delivering equipment below an agreed target cost.","Review target cost, target profit, sharing ratio, ceiling price, and delivery terms."],["Cost-Plus-Incentive / Award-Fee (CPIF / CPAF)","CPIF varies fee using a contractual incentive formula; CPAF allows an award fee based on the government’s evaluation against specified criteria.","The government reimburses allowable costs subject to contract limits; the contractor’s fee depends on defined cost or performance outcomes.","An engineering contractor earns additional fee for meeting negotiated research milestones.","Confirm evaluation criteria, fee limits, cost controls, and accounting requirements."],["Fixed-Price with Economic Price Adjustment (FP-EPA)","A fixed-price contract includes a clause allowing specified upward or downward price adjustments when defined economic conditions change.","Risk is allocated by the adjustment clause; changes outside it may remain the contractor’s responsibility.","A supplier’s multi-year materials contract adjusts using a specified commodity index.","Inspect the triggering index or formula, adjustment caps, timing, and documentation."]];
+  var buttons=document.querySelectorAll('#contract-types .learning-card');
+  var fields=['title','description','risk','example','consider'];
+  buttons.forEach(function(button){
+    button.addEventListener('click',function(){
+      var item=data[Number(button.getAttribute('data-contract'))];
+      if(!item)return;
+      buttons.forEach(function(b){b.setAttribute('aria-expanded',String(b===button));});
+      fields.forEach(function(field,i){document.getElementById('learning-detail-'+field).textContent=item[i];});
+    });
+  });
+}());
+</script>
 </body>
 </html>
